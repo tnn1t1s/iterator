@@ -134,18 +134,17 @@
         </blockquote>
         <p><em>Response: Full research pipeline with minimal user input, ready for review and critique.</em></p>
 
-        <h2>Review Summary</h2>
+        <h2>Candidate Submission</h2>
 
-        <p>The sections below collect artifacts created in response to the prompt above.</p>
-
-        <p><strong>What was submitted:</strong></p>
         <ul>
             <li>Three Java implementations for empirical comparison: LinearScan (naive baseline), HeapBased (standard approach), LoserTree (selected based on Grafana 2024 production validation showing 50% speedup over heaps)</li>
             <li>Seventy unit tests employing shared base pattern ensuring identical specification compliance across variants; systematic benchmark design covering twenty-four test scenarios across five dimensions</li>
             <li>Literature review beyond textbooks: TAOCP §5.4.1, CLRS, arxiv papers, Grafana 2024 production validation, Apache DataFusion benchmarks</li>
         </ul>
 
-        <p><strong>Critical deficiencies identified:</strong></p>
+        <h2>Reviewer Assessment</h2>
+
+        <p><strong>Critical deficiencies:</strong></p>
         <ul>
             <li>Loser tree implementation bug reducing theoretical O(log k) to actual O(k)</li>
             <li>Comparison count instrumentation absent, leaving core claims empirically unvalidated</li>
@@ -153,7 +152,7 @@
             <li>Production concerns unaddressed: error handling, thread safety, monitoring</li>
         </ul>
 
-        <p><strong>Assessment:</strong> Conditional hire at 7.4/10, pending technical deep-dive to demonstrate capacity for identifying and correcting the algorithmic error.</p>
+        <p><strong>Verdict:</strong> Conditional hire at 7.4/10, pending technical deep-dive to demonstrate capacity for identifying and correcting the algorithmic error.</p>
 
         <h2>Stages Overview</h2>
 

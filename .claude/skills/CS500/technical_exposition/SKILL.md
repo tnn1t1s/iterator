@@ -12,29 +12,28 @@ Produce clear, rigorous technical writing suitable for graduate-level systems co
 
 ## Document Structure
 
-### 0a. INDEX.html Review Summary (for artifact landing pages)
+### 0a. INDEX.html Candidate Submission + Reviewer Assessment (for artifact landing pages)
 
-**Purpose**: Clinical, third-person assessment of complete artifact. Scannable in 10 seconds.
+**Purpose**: Hegelian dialectic structure - separate what was submitted from independent critique. Scannable in 10 seconds.
 
 **Format**:
 ```
-## Review Summary
+## Candidate Submission
 
-The sections below collect artifacts created in response to the prompt above.
-
-**What was submitted:**
 - [3 bullets max]
 - Name specific algorithms/choices (LinearScan, HeapBased, LoserTree - NOT "naive, standard, optimized")
 - Praise specific decisions with evidence (e.g., "selected based on Grafana 2024 production validation showing 50% speedup")
 - Combine related items (tests + benchmarks in one bullet if needed)
 
-**Critical deficiencies identified:**
+## Reviewer Assessment
+
+**Critical deficiencies:**
 - [3-4 bullets max]
 - Specific bugs with complexity impact (e.g., "O(log k) to actual O(k)")
 - Missing validation/instrumentation
 - Production concerns
 
-**Assessment:** [Verdict] at [score]/10, pending [what would demonstrate competence]
+**Verdict:** [Verdict] at [score]/10, pending [what would demonstrate competence]
 ```
 
 **Tone**: Clinical, detached, third-person observer (like Freud or Derrida analyzing a case)
@@ -44,6 +43,7 @@ The sections below collect artifacts created in response to the prompt above.
 - No praise for good choices
 - Dense paragraphs instead of scannable bullets
 - More than 3 bullets per section
+- Combining submission and assessment in one section
 
 ### 0b. One-Page Executive Summary (for senior reviewers)
 
