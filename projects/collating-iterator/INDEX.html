@@ -37,7 +37,7 @@
             font-size: 24px;
             font-weight: 600;
             line-height: 1.3;
-            margin-top: 2rem;
+            margin-top: 2.5rem;
             margin-bottom: 1rem;
             color: #1f2328;
             border-bottom: 1px solid #d0d7de;
@@ -50,6 +50,15 @@
             line-height: 1.4;
             margin-top: 1.5rem;
             margin-bottom: 0.75rem;
+            color: #1f2328;
+        }
+
+        h4 {
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
             color: #1f2328;
         }
 
@@ -75,112 +84,38 @@
             text-decoration: underline;
         }
 
-        .tldr {
-            background: #ddf4ff;
-            border-left: 4px solid #0969da;
-            padding: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .tldr p {
-            margin: 0;
-        }
-
-        .callout {
+        .prompt {
             background: #f6f8fa;
             border-left: 4px solid #0969da;
             padding: 1.5rem;
             margin: 2rem 0;
         }
 
-        .warning {
+        .critique-section {
             background: #fff8dc;
             border-left: 4px solid #d97706;
             padding: 1.5rem;
-            margin: 2rem 0;
+            margin: 2.5rem 0;
         }
 
-        details {
-            background: #f6f8fa;
-            border: 1px solid #d0d7de;
-            border-radius: 6px;
-            padding: 1rem;
-            margin: 1.5rem 0;
-        }
-
-        summary {
-            cursor: pointer;
-            font-weight: 600;
-            color: #0969da;
-            margin-bottom: 1rem;
-        }
-
-        summary:hover {
-            text-decoration: underline;
-        }
-
-        .stage-list {
+        .stages {
             list-style: none;
             padding: 0;
             margin: 2rem 0;
         }
 
-        .stage-list li {
-            margin-bottom: 1.5rem;
+        .stages li {
+            margin-bottom: 1rem;
             padding-left: 1.5rem;
             position: relative;
         }
 
-        .stage-list li::before {
-            content: "✓";
+        .stages li::before {
+            content: "→";
             position: absolute;
             left: 0;
-            color: #1a7f37;
+            color: #0969da;
             font-weight: bold;
-        }
-
-        .stage-title {
-            font-weight: 600;
-            color: #1f2328;
-        }
-
-        .stage-desc {
-            color: #59636e;
-            font-size: 16px;
-            margin-top: 0.25rem;
-        }
-
-        .file-links {
-            list-style: none;
-            padding-left: 1rem;
-            margin-top: 0.5rem;
-        }
-
-        .file-links li {
-            margin-bottom: 0.25rem;
-        }
-
-        .file-links li::before {
-            content: none;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            font-size: 14px;
-            font-weight: 600;
-            border-radius: 4px;
-            margin-left: 0.5rem;
-        }
-
-        .badge-complete {
-            background: #1a7f37;
-            color: white;
-        }
-
-        .badge-score {
-            background: #d97706;
-            color: white;
         }
 
         hr {
@@ -221,12 +156,13 @@
         <h1>K-Way Merge: Algorithm Research & Implementation</h1>
 
         <h2>Original Prompt</h2>
-        <div class="callout">
-            <p><strong>User Request:</strong> "We're going to come up with a variety of implementations of a CollatingIterator. It will be an interface that takes multiple Iterator&lt;T extends Comparable&lt;T&gt;&gt; as input. Each of the iterators passed in will have the guarantee that they return elements in the order implied by the comparator."</p>
+        <div class="prompt">
+            <p>"We're going to come up with a variety of implementations of a CollatingIterator. It will be an interface that takes multiple Iterator&lt;T extends Comparable&lt;T&gt;&gt; as input. Each of the iterators passed in will have the guarantee that they return elements in the order implied by the comparator."</p>
             <p><em>Response: Full research pipeline with minimal user input, ready for review and critique.</em></p>
         </div>
 
         <h2>Candidate Solution</h2>
+        <p><em>From <a href="08-summary/SUMMARY.html">Stage 8: Summary</a></em></p>
 
         <h3>Problem</h3>
         <ul>
@@ -268,7 +204,7 @@
                 </ul>
             </li>
             <li>Validation: Cross-artifact consistency (theory ↔ implementation ↔ tests), gradle builds pass</li>
-            <li>Deliverables: Git-committable artifacts across 10 stages</li>
+            <li>Deliverables: Git-committable artifacts across 8 stages</li>
         </ul>
 
         <h3>Reflection</h3>
@@ -286,145 +222,91 @@
             <li>Testing at k=100-1000 would validate large-k predictions</li>
         </ul>
 
-        <p><em>See <a href="08-summary/SUMMARY.html">Stage 8: Summary</a> for complete one-page summary.</em></p>
+        <p><strong>Key differentiator:</strong> Research mindset (question before solution, systematic exploration, empirical validation)</p>
 
-        <div class="warning">
-            <h2>Critique and Scoring</h2>
+        <div class="critique-section">
+            <h2>Independent Review</h2>
+            <p><em>From <a href="09-critique/REVIEW.html">Stage 9: Critique</a></em></p>
 
-            <p><strong>Independent Reviewer Assessment (Stage 9):</strong> "Strong candidate artifact that demonstrates systematic methodology, theoretical rigor, and pragmatic engineering judgment. However, critical gaps in empirical validation and missing production-readiness concerns."</p>
+            <h3>Executive Summary</h3>
+            <p>This is a <strong>strong candidate artifact</strong> that demonstrates systematic methodology, theoretical rigor, and pragmatic engineering judgment. However, it has <strong>critical gaps in empirical validation</strong> and <strong>missing production-readiness concerns</strong> that would make a senior hiring manager pause. The candidate knows how to think like a researcher (lower bounds, literature review, multi-variant implementation) but hasn't closed the loop on proving their theoretical claims or considering operational concerns.</p>
 
-            <p><strong>Critical Gaps Identified:</strong></p>
+            <h3>Critical Gaps (Must-Have for Senior)</h3>
+
+            <h4>1. No Comparison Count Instrumentation</h4>
+            <p>The entire Stage 3 selection justification rests on "loser tree does log k comparisons vs heap's 2 log k." Yet <strong>nowhere in the codebase is this instrumented or measured</strong>. A senior would add comparison counters to all three implementations and empirically validate the 2× factor. Currently relying on theory + Grafana blog post, not first-hand data.</p>
+            <p><strong>Impact</strong>: Cannot distinguish whether benchmark differences come from comparison count, cache effects, branch prediction, or JVM artifacts. The core thesis is unproven.</p>
+
+            <h4>2. Benchmarks Not Actually Run</h4>
+            <p>Stage 6 admits to running a 10-second "quick validation" with System.nanoTime() instead of the designed JMH suite. The results are described as "noisy" and "high variance." For a research artifact claiming to validate O(N log k) complexity and crossover points, this is <strong>insufficient</strong>. The 40-minute JMH run is documented but not executed.</p>
+            <p><strong>Impact</strong>: All performance claims in the summary ("50% speedup," "loser tree wins at k≥100") come from external sources (Grafana, Apache DataFusion), not this implementation. Cannot demonstrate that <em>this code</em> achieves predicted performance.</p>
+
+            <h4>3. Loser Tree Implementation Incorrectly Implements Algorithm</h4>
+            <p>Lines 220-235 in LoserTreeIterator.java reveal a critical bug: This <strong>does not implement a loser tree replay</strong>. A true loser tree replay traverses the tournament path from leaf to root (O(log k) comparisons). This code iterates through ALL tree nodes (O(k) comparisons), defeating the entire purpose. The comment admits "simple approach" but doesn't acknowledge this destroys the algorithmic advantage.</p>
+            <p><strong>Impact</strong>: The "optimized" loser tree is actually O(Nk) in the refill step, not O(N log k). Tests pass because correctness is fine, but performance claims are invalid. This would be caught immediately in code review.</p>
+
+            <h4>4. Missing Error Handling Production Concerns</h4>
+            <p>All implementations assume:</p>
             <ul>
-                <li><strong>Loser Tree Bug:</strong> refill() is O(k) not O(log k) - iterates all nodes instead of traversing tournament path</li>
-                <li><strong>No Comparison Count Instrumentation:</strong> Core thesis (2× reduction) unproven empirically</li>
-                <li><strong>Build Tooling Struggles:</strong> When challenged on Gradle, reverted to hacks like "javac -cp ." instead of learning proper build system - strong anti-pattern showing lack of systems thinking</li>
-                <li><strong>Production Concerns Missing:</strong> No error handling, thread safety, monitoring, or graceful degradation</li>
+                <li>Input iterators are pre-sorted (not validated)</li>
+                <li>No thread safety needed</li>
+                <li>No monitoring/observability hooks</li>
+                <li>No graceful degradation strategies</li>
             </ul>
+            <p>A senior engineer targeting production would document: What happens with unsorted input? What's the failure mode with OutOfMemoryError at k=10000? How to monitor/debug in production?</p>
 
-            <p><strong>Skills Scorecard (Stage 10):</strong> Mean 7.4/10 across 10 CS500 skills <span class="badge badge-score">7.4/10</span></p>
-            <ul>
-                <li><strong>Exceptional (9/10):</strong> arxiv_research (Grafana 2024 find), test_data_design (systematic methodology)</li>
-                <li><strong>Strong (7-8/10):</strong> problem_specification, algorithmic_analysis, comparative_complexity, systems_design_patterns, unit_test_generation, self_consistency_checker</li>
-                <li><strong>Competent (5-6/10):</strong> java_codegen (critical bug), benchmark_design (not executed)</li>
-            </ul>
+            <h3>What Was Done Well</h3>
 
-            <p><strong>Overall Recommendation:</strong> <span class="badge badge-score">Conditional Hire - Technical Deep-Dive Required</span></p>
+            <h4>1. Systematic Methodology</h4>
+            <p>The 8-stage pipeline (specification → analysis → design → implementation → testing → benchmarking → validation → summary) is textbook research execution. The problem_specification skill correctly posed questions instead of prescribing solutions.</p>
 
-            <p>Senior-level methodology with critical validation gaps. Candidate should be able to spot loser tree bug on whiteboard and explain why comparison count instrumentation is essential. If acknowledges gaps honestly and demonstrates debugging skills in real-time: Hire. If defends buggy code or can't explain trade-offs: No Hire.</p>
+            <h4>2. Multi-Variant Implementation Strategy</h4>
+            <p>Implementing LinearScan + HeapBased + LoserTree for comparison is <strong>exactly right</strong>. This separates strong candidates from those who just implement "the answer." The shared test base pattern is elegant.</p>
 
-            <p><em>See <a href="09-critique/REVIEW.html">Stage 9: Critique</a> and <a href="10-scoring/SCORECARD.html">Stage 10: Scorecard</a> for complete evaluation.</em></p>
+            <h4>3. Comprehensive Test Data Design</h4>
+            <p>The 24-case test catalog with systematic dimension analysis (k, N, distribution, pattern, exhaustion) shows sophisticated thinking about input space coverage. The catalog is high-quality even if not fully executed.</p>
+
+            <h4>4. Honest Limitations Documentation</h4>
+            <p>Stage 6 and Stage 7 clearly document what wasn't done (full JMH run) and why (time constraints). The summary's reflection acknowledges "areas for improvement" and "comparison count instrumentation would validate the 2× factor." Self-awareness is a strength.</p>
+
+            <h4>5. Literature Review Quality</h4>
+            <p>Finding Grafana 2024 production validation and Apache DataFusion benchmarks demonstrates research skills beyond textbooks. The arxiv survey adds modern context to TAOCP/CLRS foundations.</p>
+
+            <h3>Recommendation</h3>
+            <p><strong>Conditional Hire</strong> with follow-up technical deep-dive.</p>
+
+            <p><strong>Strengths</strong>: This candidate demonstrates strong algorithmic thinking, systematic methodology, and awareness of the gap between theory and practice. The multi-variant implementation and test data design are senior-level work.</p>
+
+            <p><strong>Concerns</strong>: The loser tree implementation bug (O(k) instead of O(log k) refill) is a <strong>red flag</strong> that suggests the candidate didn't validate their code against their own theoretical analysis. The lack of empirical validation (no JMH run, no comparison count instrumentation) means core claims are unproven. A senior should know when theory needs measurement.</p>
+
+            <p><strong>Next Steps</strong>:</p>
+            <ol>
+                <li><strong>Coding interview</strong>: Fix the loser tree refill bug and demonstrate understanding of tournament tree path traversal</li>
+                <li><strong>Systems interview</strong>: Discuss production concerns (monitoring, error handling, thread safety)</li>
+                <li><strong>Take-home extension</strong>: Run full JMH suite, add comparison count instrumentation, prove the 2× factor</li>
+            </ol>
+
+            <p>If the candidate acknowledges the bug immediately and can fix it on the whiteboard, that's a strong signal. If they defend the current implementation or don't see the problem, that's concerning for a senior role.</p>
+
+            <p><em>See <a href="10-scoring/SCORECARD.html">Stage 10: Scorecard</a> for detailed skills assessment (Mean 7.4/10 across 10 CS500 skills)</em></p>
         </div>
 
         <hr>
 
-        <h2>Research Stages</h2>
+        <h2>Navigate the 10 Stages</h2>
 
-        <ul class="stage-list">
-            <li>
-                <div class="stage-title">Stage 1: Formal Specification <span class="badge badge-complete">Complete</span></div>
-                <div class="stage-desc">Problem definition with research questions - poses questions, doesn't prescribe solutions</div>
-                <ul class="file-links">
-                    <li><a href="01-specification/problem-spec.html">Problem Specification (HTML)</a></li>
-                </ul>
-            </li>
-
-            <li>
-                <div class="stage-title">Stage 2: Algorithmic Analysis <span class="badge badge-complete">Complete</span></div>
-                <div class="stage-desc">Discovery: Four algorithms achieve optimal Ω(N log k) bound - binary heap, winner tree, loser tree (Knuth preferred), d-ary heap</div>
-                <ul class="file-links">
-                    <li><a href="02-analysis/lower-bound.html">2A: Lower Bound Analysis</a></li>
-                    <li><a href="02-analysis/candidate-algorithms.html">2B: Candidate Algorithms</a></li>
-                    <li><a href="02-analysis/arxiv-survey.html">2C: Modern Literature Survey</a></li>
-                    <li><a href="02-analysis/README.html">Stage 2 Summary</a></li>
-                </ul>
-            </li>
-
-            <li>
-                <div class="stage-title">Stage 3: Design Selection <span class="badge badge-complete">Complete</span></div>
-                <div class="stage-desc">Decision: Loser Tournament Tree selected based on Grafana 2024 production validation, 50% speedup in benchmarks, and Knuth's preference</div>
-                <ul class="file-links">
-                    <li><a href="03-design/comparative-analysis.html">Comparative Analysis</a></li>
-                    <li><a href="03-design/README.html">Stage 3 Summary</a></li>
-                </ul>
-            </li>
-
-            <li>
-                <div class="stage-title">Stage 4: Implementation <span class="badge badge-complete">Complete</span></div>
-                <div class="stage-desc">Three algorithm variants for empirical comparison. All implementations compile and run successfully (Gradle 9.1)</div>
-                <ul class="file-links">
-                    <li><a href="04-implementation/README.html">Implementation Guide</a></li>
-                    <li><a href="04-implementation/java/src/main/java/com/research/iterator/LinearScanIterator.java">LinearScanIterator.java (O(Nk) Naive)</a></li>
-                    <li><a href="04-implementation/java/src/main/java/com/research/iterator/HeapBasedIterator.java">HeapBasedIterator.java (O(N log k) Standard)</a></li>
-                    <li><a href="04-implementation/java/src/main/java/com/research/iterator/LoserTreeIterator.java">LoserTreeIterator.java (O(N log k) Optimized)</a></li>
-                    <li><a href="04-implementation/java/src/main/java/com/research/iterator/ComparisonDemo.java">ComparisonDemo.java</a></li>
-                </ul>
-            </li>
-
-            <li>
-                <div class="stage-title">Stage 5: Testing <span class="badge badge-complete">Complete</span></div>
-                <div class="stage-desc">Comprehensive JUnit 5 test suite: 70 tests, 0 failures. Shared base class ensures all variants pass identical tests</div>
-                <ul class="file-links">
-                    <li><a href="05-testing/README.html">Testing Strategy & Results</a></li>
-                    <li><a href="04-implementation/java/src/test/java/com/research/iterator/CollatingIteratorTestBase.java">CollatingIteratorTestBase.java</a></li>
-                    <li><a href="04-implementation/java/src/test/java/com/research/iterator/LinearScanIteratorTest.java">LinearScanIteratorTest.java (23 tests)</a></li>
-                    <li><a href="04-implementation/java/src/test/java/com/research/iterator/HeapBasedIteratorTest.java">HeapBasedIteratorTest.java (23 tests)</a></li>
-                    <li><a href="04-implementation/java/src/test/java/com/research/iterator/LoserTreeIteratorTest.java">LoserTreeIteratorTest.java (24 tests)</a></li>
-                </ul>
-            </li>
-
-            <li>
-                <div class="stage-title">Stage 6: Benchmarking <span class="badge badge-complete">Complete</span></div>
-                <div class="stage-desc">Pragmatic benchmarking: comprehensive test data design (24 cases), quick 10-second validation (3 scenarios), full JMH infrastructure ready for future work</div>
-                <ul class="file-links">
-                    <li><a href="06-benchmarking/README.html">Benchmarking Strategy & Analysis</a></li>
-                    <li><a href="06-benchmarking/test-data-catalog.html">Test Data Catalog (24 test cases)</a></li>
-                    <li><a href="04-implementation/java/src/main/java/com/research/iterator/TestDataGenerator.java">TestDataGenerator.java</a></li>
-                    <li><a href="04-implementation/java/src/jmh/java/com/research/iterator/CollatingIteratorBenchmark.java">CollatingIteratorBenchmark.java (JMH)</a></li>
-                </ul>
-            </li>
-
-            <li>
-                <div class="stage-title">Stage 7: Validation <span class="badge badge-complete">Complete</span></div>
-                <div class="stage-desc">End-to-end validation: cross-artifact consistency (theory ↔ code ↔ tests ↔ benchmarks), completeness audit, quality checks</div>
-                <ul class="file-links">
-                    <li><a href="07-validation/README.html">Validation Report</a></li>
-                </ul>
-            </li>
-
-            <li>
-                <div class="stage-title">Stage 8: Summary <span class="badge badge-complete">Complete</span></div>
-                <div class="stage-desc">Concise summary: Problem (research questions not prescriptive), Solution (3 variants, loser tree selected), Results (70 tests pass, pragmatic benchmarking), Reflection (methodology strengths + areas for improvement)</div>
-                <ul class="file-links">
-                    <li><a href="08-summary/SUMMARY.html">One-Page Summary</a></li>
-                </ul>
-            </li>
-
-            <li>
-                <div class="stage-title">Stage 9: Critique <span class="badge badge-complete">Complete</span></div>
-                <div class="stage-desc">Senior reviewer evaluation focusing on completeness. Critical gaps: loser tree O(k) bug, comparison count not instrumented, benchmarks not run, no production readiness</div>
-                <ul class="file-links">
-                    <li><a href="09-critique/REVIEW.html">Reviewer Evaluation</a></li>
-                </ul>
-            </li>
-
-            <li>
-                <div class="stage-title">Stage 10: Scoring <span class="badge badge-complete">Complete</span></div>
-                <div class="stage-desc">Skills assessment (1-10 scale): Mean 7.4/10. Overall: Strong methodology with critical validation gaps</div>
-                <ul class="file-links">
-                    <li><a href="10-scoring/SCORECARD.html">Skills Scorecard</a></li>
-                </ul>
-            </li>
+        <ul class="stages">
+            <li><strong>Stage 1:</strong> <a href="01-specification/problem-spec.html">Formal Specification</a> - Problem definition with research questions</li>
+            <li><strong>Stage 2:</strong> <a href="02-analysis/README.html">Algorithmic Analysis</a> - Lower bounds, candidate algorithms, literature survey</li>
+            <li><strong>Stage 3:</strong> <a href="03-design/README.html">Design Selection</a> - Comparative analysis, loser tree selected</li>
+            <li><strong>Stage 4:</strong> <a href="04-implementation/README.html">Implementation</a> - 3 Java variants (LinearScan, HeapBased, LoserTree)</li>
+            <li><strong>Stage 5:</strong> <a href="05-testing/README.html">Testing</a> - 70 JUnit tests with shared base pattern</li>
+            <li><strong>Stage 6:</strong> <a href="06-benchmarking/README.html">Benchmarking</a> - Test data design, JMH infrastructure, quick validation</li>
+            <li><strong>Stage 7:</strong> <a href="07-validation/README.html">Validation</a> - Cross-artifact consistency checks</li>
+            <li><strong>Stage 8:</strong> <a href="08-summary/SUMMARY.html">Summary</a> - One-page candidate solution</li>
+            <li><strong>Stage 9:</strong> <a href="09-critique/REVIEW.html">Critique</a> - Independent review with critical gaps identified</li>
+            <li><strong>Stage 10:</strong> <a href="10-scoring/SCORECARD.html">Scoring</a> - Skills assessment (Mean 7.4/10)</li>
         </ul>
-
-        <hr>
-
-        <h2>Identified Improvements</h2>
-        <ol>
-            <li><strong>Fix Loser Tree Bug:</strong> Refill() currently O(k), should be O(log k) path traversal</li>
-            <li><strong>Add Instrumentation:</strong> Count comparisons to empirically validate 2× reduction claim</li>
-            <li><strong>Run Full JMH Suite:</strong> Execute 40-minute comprehensive benchmarks for production data</li>
-            <li><strong>Production Readiness:</strong> Add error handling, input validation, thread safety, monitoring</li>
-        </ol>
 
         <footer>
             <p>Generated: October 2025 | CS500 Advanced Algorithms Research Artifact</p>
