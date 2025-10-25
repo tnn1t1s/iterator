@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>arxiv-survey</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
+</head>
+<body>
+<h1 id="modern-literature-survey-arxiv-research">Modern Literature
+Survey (Arxiv Research)</h1>
+<h2 id="search-date">Search Date</h2>
+<p>2025-10-25</p>
+<h2 id="keywords-searched">Keywords Searched</h2>
+<ul>
+<li>“k-way merge algorithm 2020-2025”</li>
+<li>“parallel k-way merge GPU SIMD”</li>
+<li>“heap optimization cache-aware 2020”</li>
+</ul>
+<h2 id="new-candidates-found">New Candidates Found</h2>
+<h3 id="none-for-sequential-lazy-k-way-merge">None for Sequential Lazy
+K-way Merge</h3>
+<p><strong>Finding</strong>: No new algorithms discovered beyond
+classical TAOCP/CLRS approaches for sequential, lazy-evaluation k-way
+merge.</p>
+<h2 id="optimizations-of-existing-candidates">Optimizations of Existing
+Candidates</h2>
+<h3
+id="optimization-adaptive-cache-friendly-priority-queue">Optimization:
+Adaptive Cache-Friendly Priority Queue</h3>
+<ul>
+<li><strong>Improves</strong>: Binary heap</li>
+<li><strong>Paper</strong>: “Adaptive Cache-Friendly Priority Queue:
+Enhancing Heap…” arXiv:2310.06663 (2023)</li>
+<li><strong>Technique</strong>: Cache-aware heap layout
+optimizations</li>
+<li><strong>Benefit</strong>: Reduces cache misses, improves practical
+performance</li>
+<li><strong>Status</strong>: Defer to Stage 3 or mention in Stage 7
+report as future work</li>
+</ul>
+<h3 id="optimization-merge-path-gpu-parallel-merging">Optimization:
+Merge Path (GPU Parallel Merging)</h3>
+<ul>
+<li><strong>Improves</strong>: K-way merge for parallel
+architectures</li>
+<li><strong>Paper</strong>: “Merge Path - A Visually Intuitive Approach
+to Parallel Merging” arXiv:1406.2628 (2014)</li>
+<li><strong>Technique</strong>: Divide merge work across GPU stream
+processors</li>
+<li><strong>Benefit</strong>: Fast parallel merging on GPUs</li>
+<li><strong>Status</strong>: Different problem domain (parallel, not
+lazy sequential)</li>
+<li><strong>Note</strong>: Not applicable to Iterator pattern (requires
+random access, not streaming)</li>
+</ul>
+<h3 id="optimization-vectorized-merge-sort-simd">Optimization:
+Vectorized Merge Sort (SIMD)</h3>
+<ul>
+<li><strong>Improves</strong>: Merge operations using SIMD
+instructions</li>
+<li><strong>Paper</strong>: “A Hybrid Vectorized Merge Sort on ARM NEON”
+arXiv:2409.03970 (2024)</li>
+<li><strong>Technique</strong>: Vectorized sorting networks for
+small-scale data</li>
+<li><strong>Benefit</strong>: SIMD speedup for merge operations</li>
+<li><strong>Status</strong>: Different context (in-memory arrays, not
+iterators)</li>
+</ul>
+<h2 id="theoretical-results">Theoretical Results</h2>
+<h3 id="lower-bound-confirmation">Lower Bound Confirmation</h3>
+<p><strong>Finding</strong>: No papers found that improve upon the Ω(N
+log k) lower bound established via decision tree analysis in Stage
+2A.</p>
+<p>The classical lower bound remains tight and optimal.</p>
+<h2 id="related-work-different-problem">Related Work (Different
+Problem)</h2>
+<h3 id="parallel-k-way-in-place-merging">Parallel K-way In-place
+Merging</h3>
+<ul>
+<li><strong>Papers</strong>: ACM Transactions on Parallel Computing
+(2020)</li>
+<li><strong>Relevance</strong>: Time-space efficient parallel k-way
+merge</li>
+<li><strong>Why different</strong>:
+<ul>
+<li>Parallel (not sequential iterator)</li>
+<li>In-place (requires random access to arrays)</li>
+<li>Different constraints than lazy evaluation</li>
+</ul></li>
+</ul>
+<h3 id="gpu-sample-sort">GPU Sample Sort</h3>
+<ul>
+<li><strong>Papers</strong>: arXiv:0909.5649v1 (2009)</li>
+<li><strong>Relevance</strong>: Multi-way partitioning on GPUs</li>
+<li><strong>Why different</strong>: GPU architecture, bulk processing,
+not streaming</li>
+</ul>
+<h3 id="llm-adapter-merging">LLM Adapter Merging</h3>
+<ul>
+<li><strong>Papers</strong>: “K-Merge: Online Continual Merging of
+Adapters” arXiv:2510.13537 (2025)</li>
+<li><strong>Relevance</strong>: Uses “k-merge” terminology but for
+neural networks</li>
+<li><strong>Why different</strong>: Completely different problem
+domain</li>
+</ul>
+<h2 id="search-dead-ends">Search Dead Ends</h2>
+<ul>
+<li>Query “arxiv k-way merge algorithm 2020-2025” → Few results, mostly
+LLM/neural network domain</li>
+<li>Query “arxiv parallel k-way merge GPU SIMD” → Parallel algorithms
+(not applicable to lazy sequential iterators)</li>
+<li>Query “arxiv heap optimization cache-aware 2020” → Cache
+optimization exists but for different contexts</li>
+</ul>
+<h2 id="conclusion">Conclusion</h2>
+<p><strong>Modern literature has not introduced fundamentally new
+algorithms for sequential lazy k-way merge beyond classical
+approaches.</strong></p>
+<p>The problem is well-studied and considered “solved” from an
+algorithmic perspective: - Classical algorithms (heap, loser tree)
+remain state-of-the-art - Research focus has shifted to: * Parallel/GPU
+implementations (different constraints) * Cache-aware optimizations
+(implementation details) * Different problem domains (LLMs, external
+memory)</p>
+<h2 id="recommendations">Recommendations</h2>
+<p><strong>Add to Analysis</strong>: - None - no new candidates
+discovered</p>
+<p><strong>Defer to Later Stages</strong>: 1. <strong>Stage 3</strong>:
+Mention cache-aware heap optimization papers as future work 2.
+<strong>Stage 7 Related Work</strong>: - Cite parallel k-way merge (GPU
+Merge Path) - Cite cache-oblivious algorithms (funnelsort) - Explain why
+parallel/GPU approaches don’t apply to lazy Iterator pattern</p>
+<p><strong>Archive for Future</strong>: - Parallel merging techniques
+(if we ever need bulk processing) - SIMD vectorization (if implementing
+primitive-specialized versions) - Cache-oblivious structures (advanced
+optimization)</p>
+<h2 id="key-insight">Key Insight</h2>
+<p>The classical TAOCP/CLRS algorithms (binary heap, loser tree)
+discovered in Phase B literature review <strong>remain the
+state-of-the-art</strong> for lazy sequential k-way merge.</p>
+<p>Modern research focuses on different problem variants (parallel, GPU,
+cache-oblivious) that don’t apply to the Iterator<T> lazy evaluation
+constraint.</p>
+<p>Our comprehensive literature review (TAOCP + WebSearch + Arxiv) has
+successfully identified all relevant algorithms for this specific
+problem.</p>
+</body>
+</html>
