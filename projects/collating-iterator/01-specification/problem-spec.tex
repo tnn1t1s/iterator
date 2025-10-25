@@ -1,0 +1,130 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+
+\title{Collating Iterator: Formal Specification}
+\author{Research Artifact}
+\date{October 2025}
+
+\begin{document}
+\maketitle
+
+\section{Problem Statement}
+
+Design and implement \texttt{CollatingIterator<T>}, an iterator that merges $k$ sorted input iterators into a single sorted output stream, where $T$ implements \texttt{Comparable<T>}.
+
+\section{Inputs}
+
+\begin{itemize}
+    \item \textbf{Type}: $\texttt{Collection<Iterator<T>>}$ where $T \texttt{ extends Comparable<T>}$
+    \item \textbf{Constraints}:
+    \begin{itemize}
+        \item Each input iterator yields elements in non-decreasing order per \texttt{compareTo()}
+        \item $k \geq 0$ iterators (empty collection yields empty output)
+        \item Each iterator is single-pass, forward-only
+        \item No iterator in collection is \texttt{null}
+    \end{itemize}
+\end{itemize}
+
+\section{Outputs}
+
+\begin{itemize}
+    \item \textbf{Type}: $\texttt{Iterator<T>}$ implementing standard Java Iterator interface
+    \item \textbf{Guarantees}:
+    \begin{itemize}
+        \item Elements yielded in globally non-decreasing order per \texttt{compareTo()}
+        \item All elements from all input iterators appear exactly once in output
+        \item Lazy evaluation: no element retrieved until \texttt{next()} called
+        \item Output exhausted $\Leftrightarrow$ all input iterators exhausted
+    \end{itemize}
+\end{itemize}
+
+\section{Invariants}
+
+Let $I = \{I_0, I_1, \ldots, I_{k-1}\}$ be the set of input iterators and $H$ be the internal heap.
+
+\begin{enumerate}
+    \item \textbf{Heap Property}: $H$ contains at most one element from each non-exhausted input iterator
+    \[
+    \forall i \in [0, k): I_i.\texttt{exhausted} \lor \exists! e \in H : \texttt{source}(e) = I_i
+    \]
+
+    \item \textbf{Heap Size}:
+    \[
+    |H| = |\{i : \neg I_i.\texttt{exhausted}\}|
+    \]
+
+    \item \textbf{Minimum Guarantee}: Each element in heap is minimum of its source iterator
+    \[
+    \forall e \in H: e = \min(\texttt{remaining}(\texttt{source}(e)))
+    \]
+
+    \item \textbf{Sorted Output}: Elements output so far form non-decreasing sequence
+    \[
+    \forall i < j \text{ in output sequence}: \texttt{output}[i] \leq \texttt{output}[j]
+    \]
+
+    \item \textbf{Conservation}: Total elements output equals elements consumed from inputs
+    \[
+    |\texttt{outputted}| = \sum_{i=0}^{k-1} |\texttt{consumed}(I_i)|
+    \]
+\end{enumerate}
+
+\section{Assumptions}
+
+\begin{enumerate}
+    \item \textbf{Total Order}: \texttt{compareTo()} defines a total order (transitive, antisymmetric, complete)
+    \item \textbf{Consistency}: \texttt{compareTo()} is consistent with \texttt{equals()} (though duplicates across streams allowed)
+    \item \textbf{No Exceptions}: Input iterators do not throw exceptions during normal traversal
+    \item \textbf{No Concurrency}: No concurrent modification of underlying collections during iteration
+    \item \textbf{Idempotent hasNext()}: Multiple calls to \texttt{hasNext()} without intervening \texttt{next()} return same result
+    \item \textbf{Non-null Elements}: $T$ elements are non-null (or nulls handled consistently by comparator)
+\end{enumerate}
+
+\section{Contract}
+
+\subsection{Preconditions}
+
+\begin{itemize}
+    \item Each iterator $I_i$ is sorted: $\forall j < j': I_i[j] \leq I_i[j']$
+    \item No iterator in input collection is \texttt{null}
+    \item Input collection itself is non-null
+    \item Elements are mutually comparable (no \texttt{ClassCastException})
+\end{itemize}
+
+\subsection{Postconditions}
+
+\begin{itemize}
+    \item Output contains exactly the multiset union of all input elements:
+    \[
+    \texttt{multiset}(\texttt{output}) = \bigcup_{i=0}^{k-1} \texttt{multiset}(I_i)
+    \]
+    \item Output is sorted: $\forall j < j': \texttt{output}[j] \leq \texttt{output}[j']$
+    \item All input iterators exhausted when output exhausted:
+    \[
+    \neg \texttt{hasNext()} \Leftrightarrow \forall i: \neg I_i.\texttt{hasNext()}
+    \]
+\end{itemize}
+
+\subsection{Exceptions}
+
+\begin{itemize}
+    \item \texttt{NullPointerException}: if input collection is \texttt{null} or contains \texttt{null} iterator
+    \item \texttt{ClassCastException}: if elements are not mutually comparable
+    \item \texttt{NoSuchElementException}: if \texttt{next()} called when \texttt{hasNext()} returns \texttt{false}
+    \item \texttt{UnsupportedOperationException}: if \texttt{remove()} called (optional operation)
+\end{itemize}
+
+\section{Complexity Requirements}
+
+\begin{itemize}
+    \item \textbf{Time}: $O(N \log k)$ where $N = \sum_{i=0}^{k-1} |I_i|$
+    \item \textbf{Space}: $O(k)$ auxiliary space for heap
+    \item \textbf{Per Operation}:
+    \begin{itemize}
+        \item \texttt{hasNext()}: $O(1)$
+        \item \texttt{next()}: $O(\log k)$ amortized
+    \end{itemize}
+\end{itemize}
+
+\end{document}
