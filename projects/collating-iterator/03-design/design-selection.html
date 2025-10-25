@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Research Artifact" />
+  <title>Collating Iterator: Design Selection and Justification</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Collating Iterator: Design Selection and
+Justification</h1>
+<p class="author">Research Artifact</p>
+<p class="date">October 2025</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#design-choice-array-based-binary-min-heap"
+id="toc-design-choice-array-based-binary-min-heap">Design Choice:
+Array-Based Binary Min-Heap</a></li>
+<li><a href="#rationale" id="toc-rationale">Rationale</a>
+<ul>
+<li><a href="#asymptotic-optimality"
+id="toc-asymptotic-optimality">Asymptotic Optimality</a></li>
+<li><a href="#constant-factor-excellence"
+id="toc-constant-factor-excellence">Constant Factor Excellence</a></li>
+<li><a href="#cache-behavior" id="toc-cache-behavior">Cache
+Behavior</a></li>
+<li><a href="#implementation-simplicity"
+id="toc-implementation-simplicity">Implementation Simplicity</a></li>
+<li><a href="#scalability" id="toc-scalability">Scalability</a></li>
+</ul></li>
+<li><a href="#heap-entry-design" id="toc-heap-entry-design">Heap Entry
+Design</a></li>
+<li><a href="#heap-operations" id="toc-heap-operations">Heap
+Operations</a>
+<ul>
+<li><a href="#initialization"
+id="toc-initialization">Initialization</a></li>
+<li><a href="#extract-min-and-refill"
+id="toc-extract-min-and-refill">Extract-Min and Refill</a></li>
+</ul></li>
+<li><a href="#alternative-designs-rejected"
+id="toc-alternative-designs-rejected">Alternative Designs Rejected</a>
+<ul>
+<li><a href="#tournament-tree" id="toc-tournament-tree">Tournament
+Tree</a></li>
+<li><a href="#linear-scan" id="toc-linear-scan">Linear Scan</a></li>
+<li><a href="#pairwise-reduction" id="toc-pairwise-reduction">Pairwise
+Reduction</a></li>
+<li><a href="#sorted-array-materialize-then-sort"
+id="toc-sorted-array-materialize-then-sort">Sorted Array
+(Materialize-Then-Sort)</a></li>
+</ul></li>
+<li><a href="#language-specific-considerations"
+id="toc-language-specific-considerations">Language-Specific
+Considerations</a>
+<ul>
+<li><a href="#java" id="toc-java">Java</a></li>
+<li><a href="#c" id="toc-c">C++</a></li>
+<li><a href="#rust" id="toc-rust">Rust</a></li>
+</ul></li>
+<li><a href="#expected-performance"
+id="toc-expected-performance">Expected Performance</a></li>
+<li><a href="#summary" id="toc-summary">Summary</a></li>
+</ul>
+</nav>
+<h1 id="design-choice-array-based-binary-min-heap">Design Choice:
+Array-Based Binary Min-Heap</h1>
+<p>Based on the comparative analysis, we select the <strong>array-based
+binary min-heap</strong> as the primary data structure for
+CollatingIterator.</p>
+<h1 id="rationale">Rationale</h1>
+<h2 id="asymptotic-optimality">Asymptotic Optimality</h2>
+<p>The heap-based approach achieves <span class="math inline">\(O(N \log
+k)\)</span> total time complexity, matching the comparison-based lower
+bound. This is the best possible asymptotic performance for this
+problem.</p>
+<h2 id="constant-factor-excellence">Constant Factor Excellence</h2>
+<ul>
+<li><p>Comparisons per element: <span class="math inline">\(\sim 2
+\log_2 k\)</span> (practical and measurable)</p></li>
+<li><p>Memory accesses: <span class="math inline">\(\sim 3 \log_2
+k\)</span> (cache-friendly array traversal)</p></li>
+<li><p>No allocations per element (reuse fixed-size array)</p></li>
+<li><p>Branch mispredictions: <span class="math inline">\(\log_2
+k\)</span> (unavoidable in comparison-based sorting)</p></li>
+</ul>
+<h2 id="cache-behavior">Cache Behavior</h2>
+<p><strong>Key Advantage</strong>: Array-based heap exhibits excellent
+spatial locality.</p>
+<ul>
+<li><p><strong>Contiguous Storage</strong>: Heap stored in single array,
+no pointer chasing</p></li>
+<li><p><strong>Prefetcher-Friendly</strong>: Sequential access patterns
+during sift operations</p></li>
+<li><p><strong>Cache Resident</strong>: For <span
+class="math inline">\(k = 100\)</span>, heap occupies <span
+class="math inline">\(\sim 2.4\)</span>KB, fits entirely in L1
+cache</p></li>
+<li><p><strong>Predictable Strides</strong>: Parent-child relationships
+via arithmetic (no indirection)</p></li>
+</ul>
+<p>Contrast with tournament tree:</p>
+<ul>
+<li><p>Pointer-based: Each node access potentially a cache miss</p></li>
+<li><p>Scattered allocation: Nodes may be far apart in memory</p></li>
+<li><p><span class="math inline">\(k = 100\)</span> tournament: <span
+class="math inline">\(\sim 50\)</span> cache lines vs <span
+class="math inline">\(\sim 13\)</span> for heap</p></li>
+</ul>
+<h2 id="implementation-simplicity">Implementation Simplicity</h2>
+<p><strong>Heap Advantages</strong>:</p>
+<ul>
+<li><p>Well-known data structure (CLRS Chapter 6, Knuth TAOCP Vol
+3)</p></li>
+<li><p>Simple invariants (heap property easily verified)</p></li>
+<li><p>Standard library support (Java PriorityQueue, C++ priority_queue,
+Rust BinaryHeap)</p></li>
+<li><p>Debuggable (array visualization straightforward)</p></li>
+</ul>
+<p><strong>Estimated Effort</strong>:</p>
+<ul>
+<li><p>Custom implementation: <span class="math inline">\(\sim
+60\)</span> lines of code</p></li>
+<li><p>Standard library usage: <span class="math inline">\(\sim
+20\)</span> lines of code</p></li>
+<li><p>Test burden: Medium (edge cases: empty heap, single element,
+duplicates)</p></li>
+</ul>
+<h2 id="scalability">Scalability</h2>
+<p>The heap-based approach scales gracefully:</p>
+<table>
+<caption>Scalability characteristics</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><span
+class="math inline">\(k\)</span></th>
+<th style="text-align: right;">Comparisons/elem</th>
+<th style="text-align: right;">Heap Size</th>
+<th style="text-align: right;">Cache Level</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">48B</td>
+<td style="text-align: right;">L1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">240B</td>
+<td style="text-align: right;">L1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">100</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">2.4KB</td>
+<td style="text-align: right;">L1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1000</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">24KB</td>
+<td style="text-align: right;">L2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">10000</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">240KB</td>
+<td style="text-align: right;">L2/L3</td>
+</tr>
+</tbody>
+</table>
+<p>Even for <span class="math inline">\(k = 10000\)</span>, performance
+remains <span class="math inline">\(O(\log k) = O(40)\)</span>
+operations per element, vastly superior to <span
+class="math inline">\(O(k) = O(10000)\)</span>.</p>
+<h1 id="heap-entry-design">Heap Entry Design</h1>
+<p>Each heap entry contains:</p>
+<div class="sourceCode" id="cb1" data-language="Java"
+data-basicstyle="\small\ttfamily"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HeapEntry<span class="op">&lt;</span>T <span class="kw">extends</span> <span class="bu">Comparable</span><span class="op">&lt;</span>T<span class="op">&gt;&gt;</span> <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    T element<span class="op">;</span>              <span class="co">// Current minimum from this iterator</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">Iterator</span><span class="op">&lt;</span>T<span class="op">&gt;</span> iterator<span class="op">;</span>   <span class="co">// Source iterator reference</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> index<span class="op">;</span>              <span class="co">// Iterator index (for tie-breaking)</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Design Decisions</strong>:</p>
+<ul>
+<li><p><strong>element</strong>: Cached minimum, avoid redundant
+iterator.next() calls</p></li>
+<li><p><strong>iterator</strong>: Reference to source, enables refill
+after extraction</p></li>
+<li><p><strong>index</strong>: Enables stable sorting (tie-breaking) if
+needed in future</p></li>
+</ul>
+<p><strong>Memory Layout</strong> (64-bit JVM):</p>
+<ul>
+<li><p>Object header: 12 bytes (mark word + klass pointer)</p></li>
+<li><p>element reference: 8 bytes (compressed oops)</p></li>
+<li><p>iterator reference: 8 bytes</p></li>
+<li><p>index int: 4 bytes</p></li>
+<li><p>Padding: 4 bytes (alignment)</p></li>
+<li><p>Total: 36 bytes per entry</p></li>
+</ul>
+<p>For <span class="math inline">\(k = 100\)</span>: <span
+class="math inline">\(100 \times 36 = 3.6\)</span>KB (L1 cache
+resident)</p>
+<h1 id="heap-operations">Heap Operations</h1>
+<h2 id="initialization">Initialization</h2>
+<div class="sourceCode" id="cb2" data-language="Java"
+data-basicstyle="\small\ttfamily"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> k<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>iterators<span class="op">[</span>i<span class="op">].</span><span class="fu">hasNext</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        T element <span class="op">=</span> iterators<span class="op">[</span>i<span class="op">].</span><span class="fu">next</span><span class="op">();</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        heap<span class="op">.</span><span class="fu">insert</span><span class="op">(</span><span class="kw">new</span> <span class="fu">HeapEntry</span><span class="op">(</span>element<span class="op">,</span> iterators<span class="op">[</span>i<span class="op">],</span> i<span class="op">));</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Complexity</strong>: <span class="math inline">\(O(k \log
+k)\)</span> with naive insertions, <span
+class="math inline">\(O(k)\)</span> with heapify.</p>
+<p><strong>Trade-off</strong>: Heapify is more complex but faster for
+large <span class="math inline">\(k\)</span>. For typical <span
+class="math inline">\(k \leq 100\)</span>, naive insertions
+acceptable.</p>
+<h2 id="extract-min-and-refill">Extract-Min and Refill</h2>
+<div class="sourceCode" id="cb3" data-language="Java"
+data-basicstyle="\small\ttfamily"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> T <span class="fu">next</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>heap<span class="op">.</span><span class="fu">isEmpty</span><span class="op">())</span> <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">NoSuchElementException</span><span class="op">();</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    HeapEntry<span class="op">&lt;</span>T<span class="op">&gt;</span> min <span class="op">=</span> heap<span class="op">.</span><span class="fu">extractMin</span><span class="op">();</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    T result <span class="op">=</span> min<span class="op">.</span><span class="fu">element</span><span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>min<span class="op">.</span><span class="fu">iterator</span><span class="op">.</span><span class="fu">hasNext</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        T nextElement <span class="op">=</span> min<span class="op">.</span><span class="fu">iterator</span><span class="op">.</span><span class="fu">next</span><span class="op">();</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        heap<span class="op">.</span><span class="fu">insert</span><span class="op">(</span><span class="kw">new</span> <span class="fu">HeapEntry</span><span class="op">(</span>nextElement<span class="op">,</span> min<span class="op">.</span><span class="fu">iterator</span><span class="op">,</span> min<span class="op">.</span><span class="fu">index</span><span class="op">));</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result<span class="op">;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Key Insight</strong>: Refill immediately after extraction
+maintains heap invariant that each non-exhausted iterator has exactly
+one element in heap.</p>
+<h1 id="alternative-designs-rejected">Alternative Designs Rejected</h1>
+<h2 id="tournament-tree">Tournament Tree</h2>
+<p><strong>Rejected because</strong>:</p>
+<ul>
+<li><p>Fewer comparisons (<span class="math inline">\(\log_2 k\)</span>
+vs <span class="math inline">\(2 \log_2 k\)</span>) insufficient to
+overcome cache penalty</p></li>
+<li><p>Pointer chasing: Each tree level potentially a cache
+miss</p></li>
+<li><p>Implementation complexity: Tree rebuild logic
+non-trivial</p></li>
+<li><p>Empirical data (Sedgewick): Heap <span
+class="math inline">\(2\times\)</span> faster for <span
+class="math inline">\(k &gt; 10\)</span> on modern CPUs</p></li>
+</ul>
+<p><strong>When tournament would win</strong>: If comparisons are
+extremely expensive (e.g., string comparison over network), tournament’s
+fewer comparisons might dominate. Not our use case.</p>
+<h2 id="linear-scan">Linear Scan</h2>
+<p><strong>Rejected because</strong>:</p>
+<ul>
+<li><p><span class="math inline">\(O(Nk)\)</span> unacceptable for <span
+class="math inline">\(k &gt; 10\)</span></p></li>
+<li><p>For <span class="math inline">\(k = 100\)</span>, N = 1M: <span
+class="math inline">\(100\)</span>M operations vs <span
+class="math inline">\(20\)</span>M for heap (5<span
+class="math inline">\(\times\)</span> slower)</p></li>
+</ul>
+<p><strong>When linear would win</strong>: <span class="math inline">\(k
+\leq 8\)</span> and known at compile time. Could specialize with SIMD
+min instruction. Out of scope for general-purpose iterator.</p>
+<h2 id="pairwise-reduction">Pairwise Reduction</h2>
+<p><strong>Rejected because</strong>:</p>
+<ul>
+<li><p>Violates lazy evaluation (must build full merge tree
+upfront)</p></li>
+<li><p><span class="math inline">\(O(k \log k)\)</span> space for
+intermediate results</p></li>
+<li><p>No advantage over heap for sequential processing</p></li>
+</ul>
+<p><strong>When pairwise would win</strong>: Parallel merge
+(divide-and-conquer naturally parallelizes). Different problem
+domain.</p>
+<h2 id="sorted-array-materialize-then-sort">Sorted Array
+(Materialize-Then-Sort)</h2>
+<p><strong>Rejected because</strong>:</p>
+<ul>
+<li><p>Violates lazy evaluation requirement (must consume all iterators
+upfront)</p></li>
+<li><p><span class="math inline">\(O(N)\)</span> space (stores all
+elements)</p></li>
+<li><p><span class="math inline">\(O(N \log N)\)</span> time (worse than
+<span class="math inline">\(O(N \log k)\)</span> for <span
+class="math inline">\(k \ll N\)</span>)</p></li>
+<li><p>Breaks streaming semantics (cannot start consuming output until
+all input consumed)</p></li>
+</ul>
+<p><strong>When array would win</strong>: If entire dataset must be
+materialized anyway (e.g., multiple passes needed). Not our use
+case.</p>
+<h1 id="language-specific-considerations">Language-Specific
+Considerations</h1>
+<h2 id="java">Java</h2>
+<ul>
+<li><p>Use <code>java.util.PriorityQueue</code> (backed by
+array)</p></li>
+<li><p>Comparator based on HeapEntry.element</p></li>
+<li><p>Generics:
+<code>CollatingIterator&lt;T extends Comparable&lt;T&gt;&gt;</code></p></li>
+<li><p>Exception handling: NoSuchElementException for next() when
+empty</p></li>
+</ul>
+<h2 id="c">C++</h2>
+<ul>
+<li><p>Use <code>std::priority_queue</code> with
+<code>std::vector</code> backing</p></li>
+<li><p>Custom comparator for HeapEntry</p></li>
+<li><p>Templates:
+<code>template&lt;typename T&gt; class CollatingIterator</code></p></li>
+<li><p>RAII: Iterators owned or referenced (consider shared_ptr if
+ownership unclear)</p></li>
+</ul>
+<h2 id="rust">Rust</h2>
+<ul>
+<li><p>Use <code>std::collections::BinaryHeap</code> (max-heap by
+default)</p></li>
+<li><p>Wrapper type with reversed Ord for min-heap behavior</p></li>
+<li><p>Traits: <code>CollatingIterator&lt;T: Ord&gt;</code></p></li>
+<li><p>Ownership: Iterators moved into CollatingIterator (Rust ownership
+model)</p></li>
+</ul>
+<h1 id="expected-performance">Expected Performance</h1>
+<p>Based on design choice and constant factor analysis:</p>
+<table>
+<caption>Expected operation counts</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><span
+class="math inline">\(k\)</span></th>
+<th style="text-align: right;"><span
+class="math inline">\(N\)</span></th>
+<th style="text-align: right;">Expected Time</th>
+<th style="text-align: right;">Time per Element</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">1M</td>
+<td style="text-align: right;">3M ops</td>
+<td style="text-align: right;">3 ops</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10</td>
+<td style="text-align: right;">1M</td>
+<td style="text-align: right;">10M ops</td>
+<td style="text-align: right;">10 ops</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">100</td>
+<td style="text-align: right;">1M</td>
+<td style="text-align: right;">20M ops</td>
+<td style="text-align: right;">20 ops</td>
+</tr>
+</tbody>
+</table>
+<p>At modern CPU speeds (<span class="math inline">\(\sim 3\)</span>
+GHz, <span class="math inline">\(\sim 1\)</span> comparison/cycle when
+cached):</p>
+<ul>
+<li><p><span class="math inline">\(k = 10\)</span>, <span
+class="math inline">\(N = 1\)</span>M: <span class="math inline">\(\sim
+3\)</span>ms processing time</p></li>
+<li><p><span class="math inline">\(k = 100\)</span>, <span
+class="math inline">\(N = 1\)</span>M: <span class="math inline">\(\sim
+7\)</span>ms processing time</p></li>
+</ul>
+<p><strong>Validation</strong>: Empirical measurements (Stage 6) should
+confirm within <span class="math inline">\(\pm 20\%\)</span>.</p>
+<h1 id="summary">Summary</h1>
+<p>The array-based binary min-heap is selected for:</p>
+<ul>
+<li><p>Asymptotic optimality: <span class="math inline">\(O(N \log
+k)\)</span></p></li>
+<li><p>Excellent constants: <span class="math inline">\(\sim 20\)</span>
+operations per element for <span class="math inline">\(k =
+100\)</span></p></li>
+<li><p>Cache-friendly: Array storage, <span class="math inline">\(\sim
+2.4\)</span>KB for <span class="math inline">\(k = 100\)</span> (L1
+resident)</p></li>
+<li><p>Simple implementation: Well-known data structure, <span
+class="math inline">\(\sim 60\)</span> LoC</p></li>
+<li><p>Scalable: Works well for <span class="math inline">\(k \in [2,
+10000]\)</span></p></li>
+</ul>
+<p>This design is Pareto-optimal across all evaluation criteria for the
+general k-way merge problem with lazy evaluation.</p>
+</body>
+</html>

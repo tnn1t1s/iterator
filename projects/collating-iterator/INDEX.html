@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CollatingIterator Research Artifact - Index</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <style>
+        .stage { margin: 2rem 0; padding: 1rem; border-left: 4px solid #0366d6; }
+        .stage h2 { margin-top: 0; }
+        .file-list { list-style: none; padding: 0; }
+        .file-list li { margin: 0.5rem 0; }
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            background: #28a745;
+            color: white;
+            border-radius: 3px;
+            font-size: 0.85rem;
+            margin-left: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔬 CollatingIterator Research Artifact</h1>
+    <p><strong>K-Way Merge via Heap-Based Iterator Collation</strong></p>
+    <p>Complete research pipeline: Specification → Analysis → Design → Implementation → Validation</p>
+
+    <hr>
+
+    <div class="stage">
+        <h2>📋 Stage 1: Formal Specification</h2>
+        <ul class="file-list">
+            <li>📄 <a href="01-specification/problem-spec.html">Problem Specification</a>
+                <span class="badge">HTML</span></li>
+        </ul>
+        <p><em>Type constraints, invariants, contracts, complexity requirements</em></p>
+    </div>
+
+    <div class="stage">
+        <h2>🧮 Stage 2: Algorithmic Analysis</h2>
+        <ul class="file-list">
+            <li>📄 <a href="02-analysis/algorithmic-analysis.html">Algorithmic Analysis</a>
+                <span class="badge">HTML</span></li>
+            <li>📄 <a href="02-analysis/comparative-complexity.html">Comparative Complexity</a>
+                <span class="badge">HTML</span></li>
+        </ul>
+        <p><em>Correctness proofs, O(N log k) complexity, comparison of 5 design alternatives</em></p>
+    </div>
+
+    <div class="stage">
+        <h2>🏗️ Stage 3: Design Selection</h2>
+        <ul class="file-list">
+            <li>📄 <a href="03-design/design-selection.html">Design Selection & Justification</a>
+                <span class="badge">HTML</span></li>
+        </ul>
+        <p><em>Why array-based binary heap beats tournament tree (cache locality wins)</em></p>
+    </div>
+
+    <div class="stage">
+        <h2>💻 Stage 4: Implementation</h2>
+        <ul class="file-list">
+            <li>☕ <a href="04-implementation/java/src/main/java/com/iterator/CollatingIterator.java">Java Implementation</a></li>
+            <li>🧪 <a href="04-implementation/java/src/test/java/com/iterator/CollatingIteratorTest.java">Java Tests (14 tests)</a></li>
+            <li>📦 <a href="04-implementation/java/build.gradle">Gradle Build</a></li>
+        </ul>
+        <p><em>Production-ready Java with PriorityQueue-based heap, comprehensive test suite</em></p>
+    </div>
+
+    <div class="stage">
+        <h2>✅ Stage 5: Testing</h2>
+        <ul class="file-list">
+            <li>📄 <a href="05-testing/test-strategy.md">Test Strategy</a></li>
+            <li>📄 <a href="05-testing/test-results.md">Expected Test Results</a></li>
+        </ul>
+        <p><em>14 tests covering edge cases, duplicates, large k (100 iterators)</em></p>
+    </div>
+
+    <div class="stage">
+        <h2>⚡ Stage 6: Benchmarking</h2>
+        <ul class="file-list">
+            <li>📄 <a href="06-benchmarks/benchmark-design.md">Benchmark Design</a></li>
+            <li>📂 <a href="06-benchmarks/results/README.md">Results Directory</a></li>
+        </ul>
+        <p><em>JMH framework, k ∈ {2, 10, 100, 1000}, empirical validation of O(N log k)</em></p>
+    </div>
+
+    <div class="stage">
+        <h2>📝 Stage 7: Technical Report</h2>
+        <ul class="file-list">
+            <li>📄 <a href="07-report/technical-report.html">Complete CS500-Level Report</a>
+                <span class="badge">HTML</span></li>
+        </ul>
+        <p><em>Abstract, intro, theory, implementation, evaluation, discussion, conclusion</em></p>
+    </div>
+
+    <div class="stage">
+        <h2>🔍 Stage 8: Validation</h2>
+        <ul class="file-list">
+            <li>📄 <a href="08-validation/consistency-check.md">Consistency Check</a></li>
+        </ul>
+        <p><em>10 cross-artifact checks - all passed ✓</em></p>
+    </div>
+
+    <hr>
+
+    <h2>📚 Additional Resources</h2>
+    <ul>
+        <li>📄 <a href="README.md">Project README</a></li>
+        <li>📄 <a href="BUILD-STATUS.md">Build Status & Instructions</a></li>
+    </ul>
+
+    <hr>
+
+    <footer>
+        <p><small>Generated: October 2025 | CS500 Advanced Algorithms Research Artifact</small></p>
+        <p><small>🤖 Created with <a href="https://claude.com/claude-code">Claude Code</a> research pipeline</small></p>
+    </footer>
+</body>
+</html>

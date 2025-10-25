@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Research Artifact" />
+  <title>Collating Iterator: Formal Specification</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Collating Iterator: Formal Specification</h1>
+<p class="author">Research Artifact</p>
+<p class="date">October 2025</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#problem-statement" id="toc-problem-statement">Problem
+Statement</a></li>
+<li><a href="#inputs" id="toc-inputs">Inputs</a></li>
+<li><a href="#outputs" id="toc-outputs">Outputs</a></li>
+<li><a href="#invariants" id="toc-invariants">Invariants</a></li>
+<li><a href="#assumptions" id="toc-assumptions">Assumptions</a></li>
+<li><a href="#contract" id="toc-contract">Contract</a>
+<ul>
+<li><a href="#preconditions"
+id="toc-preconditions">Preconditions</a></li>
+<li><a href="#postconditions"
+id="toc-postconditions">Postconditions</a></li>
+<li><a href="#exceptions" id="toc-exceptions">Exceptions</a></li>
+</ul></li>
+<li><a href="#complexity-requirements"
+id="toc-complexity-requirements">Complexity Requirements</a></li>
+</ul>
+</nav>
+<h1 id="problem-statement">Problem Statement</h1>
+<p>Design and implement <code>CollatingIterator&lt;T&gt;</code>, an
+iterator that merges <span class="math inline">\(k\)</span> sorted input
+iterators into a single sorted output stream, where <span
+class="math inline">\(T\)</span> implements
+<code>Comparable&lt;T&gt;</code>.</p>
+<h1 id="inputs">Inputs</h1>
+<ul>
+<li><p><strong>Type</strong>: <span
+class="math inline">\(\texttt{Collection&lt;Iterator&lt;T&gt;&gt;}\)</span>
+where <span class="math inline">\(T \texttt{ extends
+Comparable&lt;T&gt;}\)</span></p></li>
+<li><p><strong>Constraints</strong>:</p>
+<ul>
+<li><p>Each input iterator yields elements in non-decreasing order per
+<code>compareTo()</code></p></li>
+<li><p><span class="math inline">\(k \geq 0\)</span> iterators (empty
+collection yields empty output)</p></li>
+<li><p>Each iterator is single-pass, forward-only</p></li>
+<li><p>No iterator in collection is <code>null</code></p></li>
+</ul></li>
+</ul>
+<h1 id="outputs">Outputs</h1>
+<ul>
+<li><p><strong>Type</strong>: <span
+class="math inline">\(\texttt{Iterator&lt;T&gt;}\)</span> implementing
+standard Java Iterator interface</p></li>
+<li><p><strong>Guarantees</strong>:</p>
+<ul>
+<li><p>Elements yielded in globally non-decreasing order per
+<code>compareTo()</code></p></li>
+<li><p>All elements from all input iterators appear exactly once in
+output</p></li>
+<li><p>Lazy evaluation: no element retrieved until <code>next()</code>
+called</p></li>
+<li><p>Output exhausted <span
+class="math inline">\(\Leftrightarrow\)</span> all input iterators
+exhausted</p></li>
+</ul></li>
+</ul>
+<h1 id="invariants">Invariants</h1>
+<p>Let <span class="math inline">\(I = \{I_0, I_1, \ldots,
+I_{k-1}\}\)</span> be the set of input iterators and <span
+class="math inline">\(H\)</span> be the internal heap.</p>
+<ol>
+<li><p><strong>Heap Property</strong>: <span
+class="math inline">\(H\)</span> contains at most one element from each
+non-exhausted input iterator <span class="math display">\[\forall i \in
+[0, k): I_i.\texttt{exhausted} \lor \exists! e \in H :
+\texttt{source}(e) = I_i\]</span></p></li>
+<li><p><strong>Heap Size</strong>: <span class="math display">\[|H| =
+|\{i : \neg I_i.\texttt{exhausted}\}|\]</span></p></li>
+<li><p><strong>Minimum Guarantee</strong>: Each element in heap is
+minimum of its source iterator <span class="math display">\[\forall e
+\in H: e =
+\min(\texttt{remaining}(\texttt{source}(e)))\]</span></p></li>
+<li><p><strong>Sorted Output</strong>: Elements output so far form
+non-decreasing sequence <span class="math display">\[\forall i &lt; j
+\text{ in output sequence}: \texttt{output}[i] \leq
+\texttt{output}[j]\]</span></p></li>
+<li><p><strong>Conservation</strong>: Total elements output equals
+elements consumed from inputs <span
+class="math display">\[|\texttt{outputted}| = \sum_{i=0}^{k-1}
+|\texttt{consumed}(I_i)|\]</span></p></li>
+</ol>
+<h1 id="assumptions">Assumptions</h1>
+<ol>
+<li><p><strong>Total Order</strong>: <code>compareTo()</code> defines a
+total order (transitive, antisymmetric, complete)</p></li>
+<li><p><strong>Consistency</strong>: <code>compareTo()</code> is
+consistent with <code>equals()</code> (though duplicates across streams
+allowed)</p></li>
+<li><p><strong>No Exceptions</strong>: Input iterators do not throw
+exceptions during normal traversal</p></li>
+<li><p><strong>No Concurrency</strong>: No concurrent modification of
+underlying collections during iteration</p></li>
+<li><p><strong>Idempotent hasNext()</strong>: Multiple calls to
+<code>hasNext()</code> without intervening <code>next()</code> return
+same result</p></li>
+<li><p><strong>Non-null Elements</strong>: <span
+class="math inline">\(T\)</span> elements are non-null (or nulls handled
+consistently by comparator)</p></li>
+</ol>
+<h1 id="contract">Contract</h1>
+<h2 id="preconditions">Preconditions</h2>
+<ul>
+<li><p>Each iterator <span class="math inline">\(I_i\)</span> is sorted:
+<span class="math inline">\(\forall j &lt; j&#39;: I_i[j] \leq
+I_i[j&#39;]\)</span></p></li>
+<li><p>No iterator in input collection is <code>null</code></p></li>
+<li><p>Input collection itself is non-null</p></li>
+<li><p>Elements are mutually comparable (no
+<code>ClassCastException</code>)</p></li>
+</ul>
+<h2 id="postconditions">Postconditions</h2>
+<ul>
+<li><p>Output contains exactly the multiset union of all input elements:
+<span class="math display">\[\texttt{multiset}(\texttt{output}) =
+\bigcup_{i=0}^{k-1} \texttt{multiset}(I_i)\]</span></p></li>
+<li><p>Output is sorted: <span class="math inline">\(\forall j &lt;
+j&#39;: \texttt{output}[j] \leq
+\texttt{output}[j&#39;]\)</span></p></li>
+<li><p>All input iterators exhausted when output exhausted: <span
+class="math display">\[\neg \texttt{hasNext()} \Leftrightarrow \forall
+i: \neg I_i.\texttt{hasNext()}\]</span></p></li>
+</ul>
+<h2 id="exceptions">Exceptions</h2>
+<ul>
+<li><p><code>NullPointerException</code>: if input collection is
+<code>null</code> or contains <code>null</code> iterator</p></li>
+<li><p><code>ClassCastException</code>: if elements are not mutually
+comparable</p></li>
+<li><p><code>NoSuchElementException</code>: if <code>next()</code>
+called when <code>hasNext()</code> returns <code>false</code></p></li>
+<li><p><code>UnsupportedOperationException</code>: if
+<code>remove()</code> called (optional operation)</p></li>
+</ul>
+<h1 id="complexity-requirements">Complexity Requirements</h1>
+<ul>
+<li><p><strong>Time</strong>: <span class="math inline">\(O(N \log
+k)\)</span> where <span class="math inline">\(N = \sum_{i=0}^{k-1}
+|I_i|\)</span></p></li>
+<li><p><strong>Space</strong>: <span class="math inline">\(O(k)\)</span>
+auxiliary space for heap</p></li>
+<li><p><strong>Per Operation</strong>:</p>
+<ul>
+<li><p><code>hasNext()</code>: <span
+class="math inline">\(O(1)\)</span></p></li>
+<li><p><code>next()</code>: <span class="math inline">\(O(\log
+k)\)</span> amortized</p></li>
+</ul></li>
+</ul>
+</body>
+</html>
