@@ -1,24 +1,36 @@
-# Iterator: Systematic Research via Anthropic Skills
+# Iterator
 
-**Double meaning**:
-1. **Topic**: K-way merge of sorted iterators (first research challenge)
-2. **Method**: Iterative optimization toward objective function (research methodology)
+**What is this?** A framework for systematic algorithm research using Claude AI.
 
-**Philosophy**: Question before solution. Iterate toward optimal. Empirical validation of theory.
+**What does it do?** Takes a problem like "merge sorted lists efficiently" and walks through the complete research process: analyzing it, implementing multiple solutions, testing them, and honestly evaluating the results.
+
+**Why "iterator"?** Two reasons:
+1. The first project tackles iterator merging (the CS problem)
+2. The method keeps asking "can we do better?" until you reach the goal (the research approach)
 
 ---
 
-## What Is This?
+## See It In Action
 
-A systematic research framework built on [Anthropic's Claude Skills](https://www.anthropic.com/news/skills), demonstrating:
+**Example**: [K-way merge iterator](projects/collating-iterator/INDEX.html)
+- Started with: "How do we efficiently merge multiple sorted streams?"
+- Ended with: 3 different implementations, 70 tests, honest assessment (7.4/10 with identified bugs)
+- Time: Full pipeline with minimal human input
 
-- **10-stage research pipeline**: Specification → Analysis → Design → Implementation → Testing → Benchmarking → Validation → Summary → Critique → Scoring
-- **Multi-variant approach**: Baseline, standard, optimized implementations for empirical comparison
-- **Production validation**: Literature review (TAOCP, CLRS, arxiv) + real-world deployment evidence
-- **Iterative optimization**: "Can we do better?" until objective reached
-- **Honest assessment**: Independent critique identifying strengths and gaps
+**Not**: Pre-written answers to memorize.
+**Is**: A method for discovering and validating solutions.
 
-**Not**: Interview "answers" to memorize. This is methodology for discovering solutions.
+---
+
+## For Different Audiences
+
+**Just browsing?** → Look at the [example project](projects/collating-iterator/INDEX.html) to see what this produces
+
+**Want to understand the approach?** → Read [CLAUDE.md](CLAUDE.md) for methodology and principles
+
+**Ready to use it?** → Read [SKILLS.md](SKILLS.md) to learn the 19 skills you can use
+
+**Technical deep dive?** → See [.claude/skills/CS500/SKILL_INDEX.md](.claude/skills/CS500/SKILL_INDEX.md)
 
 ---
 
@@ -77,92 +89,36 @@ Never stops until you say stop. Simulates relentless senior interviewer.
 
 ---
 
-## Anthropic Skills: What Are They?
+## What Are Anthropic Skills?
 
-**Announced**: October 2025 | **Available**: Claude Pro, Team, Enterprise
+**Simple explanation**: Skills are packaged instructions that teach Claude how to do specific tasks well.
 
-From [Anthropic's announcement](https://www.anthropic.com/news/skills):
+**Why it matters**: Instead of re-explaining "how to analyze an algorithm" every time, you package those instructions once. Claude automatically uses them when needed.
 
-> "Skills are folders that include instructions, scripts, and resources that Claude can load when needed. Think of them as specialized expertise you can give Claude for specific tasks."
+**Example**:
+- **Without skill**: "Claude, analyze the complexity of this algorithm. Make sure you check lower bounds using decision trees, cite TAOCP, and..."
+- **With skill**: "Analyze this algorithm" → Claude automatically loads `algorithmic_analysis` skill which knows the process
 
-### How Skills Work
+**This project has 19 skills** covering everything from writing formal specifications to benchmarking code.
 
-**Progressive disclosure architecture**:
-1. **Startup**: Claude loads skill names + descriptions only (lightweight)
-2. **Trigger**: User request matches skill description
-3. **Load**: Skill instructions → reference files → scripts (as needed)
-4. **Execute**: Skill runs within tool restrictions
-5. **Clean**: Context cleared after task completes
-
-**Key features**:
-- **Composable**: Skills stack automatically. Claude coordinates which skills work together.
-- **Portable**: Same format works in Claude.ai, Claude Code, and API
-- **Efficient**: Load only what's needed, when it's needed
-
-**Example**: Instead of telling Claude "analyze this algorithm's complexity", you have an `algorithmic_analysis` skill that knows exactly how to:
-- Prove lower bounds via decision trees
-- Analyze time/space complexity
-- Write correctness proofs
-- Reference canonical sources (TAOCP, CLRS)
-
-### Skills vs Prompts
-
-| Traditional Prompting | Skills |
-|----------------------|---------|
-| Re-explain every time | Instructions packaged once |
-| Full context loaded | Progressive disclosure |
-| Manual coordination | Automatic composition |
-| Session-specific | Portable across sessions |
-
-### Skills vs MCP (Model Context Protocol)
-
-**MCP**: Connects Claude to external data/tools (databases, APIs, browsers)
-**Skills**: Teaches Claude specialized workflows and methodologies
-
-**Complementary**: Skills often *use* MCP tools. Example: `arxiv_research` skill uses web search MCP to find production validation.
+**Learn more**: [Anthropic's announcement](https://www.anthropic.com/news/skills) (October 2025)
 
 ---
 
-## CS500 Skills Framework
+## The 19 Skills (Quick Overview)
 
-**19 specialized skills** organized in 7 categories:
+**Research skills** - Define and analyze problems
+**Design skills** - Choose the right approach
+**Implementation skills** - Write multi-variant code
+**Testing skills** - Validate correctness and performance
+**Documentation skills** - Explain findings clearly
+**Orchestration skills** - Coordinate everything automatically
 
-### Core Research (3 skills)
-- `problem_specification` - Formal specs with research questions
-- `algorithmic_analysis` - Lower bounds, complexity, correctness
-- `comparative_complexity` - Multi-design comparison tables
+**One skill does one thing well.** Example: `iterative_optimizer` keeps asking "can we do better?" until you say stop.
 
-### Design Optimization (3 skills)
-- `systems_design_patterns` - Production-validated selection
-- `microarchitectural_modeling` - Cache, branch prediction, ILP
-- `language_comparative_runtime` - Java vs C++ vs Rust
+**They work together.** The pipeline automatically coordinates all 19 skills from problem → solution → critique.
 
-### Iterative Improvement (1 skill)
-- `iterative_optimizer` - "Can we do better?" (5 challenge levels)
-
-### Implementation (3 skills)
-- `java_codegen` - Multi-variant Java implementations
-- `unit_test_generation` - JUnit with shared test base
-- `safety_invariants` - Assertions, invariant checking
-
-### Benchmarking (3 skills)
-- `benchmark_design` - JMH controlled benchmarks
-- `test_data_design` - Systematic test data across dimensions
-- `performance_interpretation` - Bottleneck analysis
-
-### Documentation (2 skills)
-- `technical_exposition` - Academic papers + scannable summaries
-- `pedagogical_reflection` - Lessons learned, future work
-
-### Orchestration (4 skills)
-- `research_to_code_pipeline` - 8-stage coordinator
-- `self_consistency_checker` - Theory ↔ code validation
-- `skill_context_cache` - Cross-stage memory
-- `arxiv_research` - Modern literature survey
-
-**Learn more**: [SKILLS.md](SKILLS.md) - Beginner guide with examples and triggers
-
-**Technical reference**: [.claude/skills/CS500/SKILL_INDEX.md](.claude/skills/CS500/SKILL_INDEX.md)
+**See full list**: [SKILLS.md](SKILLS.md) has beginner-friendly descriptions of each skill
 
 ---
 
@@ -249,60 +205,31 @@ mkdir -p projects/my-problem/{01-specification,02-analysis,03-design,04-implemen
 
 ---
 
-## Key Principles
+## Core Ideas
 
-### 1. No Solution Leak
-**Anti-pattern**: "Implement O(N log k) heap-based merge"
-**Correct**: "What is minimum achievable complexity? Which algorithms reach it?"
+**Ask questions, don't prescribe answers** - Start with "what's the best approach?" not "implement a heap"
 
-### 2. Multi-Variant Implementation
-**Anti-pattern**: Only implement "the answer"
-**Correct**: Baseline + Standard + Optimized for empirical comparison
+**Try multiple solutions** - Build baseline, standard, and optimized versions to compare
 
-### 3. Production Validation
-**Anti-pattern**: "Textbook says X is optimal"
-**Correct**: "Grafana 2024 production: 50% speedup [cite]"
+**Cite real production use** - "Grafana uses this" beats "textbook says so"
 
-### 4. Scannable Summaries
-**Anti-pattern**: Dense paragraph prose
-**Correct**: Bullets, quantitative (50% speedup, 70 tests), 30-second grok
+**Be scannable** - Bullets and numbers, not dense paragraphs
 
-### 5. Honest Limitations
-**Anti-pattern**: "Successfully implemented optimal solution"
-**Correct**: "Loser tree has O(k) bug, build tooling struggles, comparison count not instrumented"
+**Admit gaps** - "Here are the bugs I found" not "perfect implementation"
 
-### 6. Iterative Optimization
-**Anti-pattern**: Accept first working solution
-**Correct**: "Can we do better?" until objective function maximized
+**Keep iterating** - "Can we do better?" until you hit the goal
 
 ---
 
 ## Contributing
 
-### Add Your Research Artifact
-1. Create project directory: `projects/your-problem/`
-2. Follow 10-stage structure (see `projects/collating-iterator/`)
-3. Use `research_to_code_pipeline` skill or build stages manually
-4. Submit PR with scannable summary in `projects/README.md`
+**Add a research project**: Create `projects/your-problem/`, follow the 10-stage structure, submit PR
 
-### Improve Existing Skills
-1. Identify gap in existing skill (see `10-scoring/SCORECARD.md` for examples)
-2. Edit skill in `.claude/skills/CS500/skill-name/SKILL.md`
-3. Test with relevant project
-4. Submit PR with before/after comparison
+**Improve a skill**: Edit `.claude/skills/CS500/skill-name/SKILL.md`, test it, show before/after
 
-### Create New Skill
-1. Study existing skills in `.claude/skills/CS500/`
-2. Create `new-skill/SKILL.md` with YAML frontmatter
-3. Document: purpose, inputs, outputs, usage examples
-4. Add to `SKILL_INDEX.md`
-5. Submit PR
+**Create a new skill**: Study existing ones, write `SKILL.md`, add to index, submit PR
 
-### Guidelines
-- **Beginner-friendly**: Skills should explain "why" not just "how"
-- **Composable**: Skills should call other skills (not duplicate)
-- **Measurable**: Include success criteria (how do we know it worked?)
-- **Honest**: Document limitations and failure modes
+**Guidelines**: Make it understandable, composable, and honest about limitations
 
 ---
 
