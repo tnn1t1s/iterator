@@ -38,16 +38,20 @@
 <ul>
 <li><a href="#research-question" id="toc-research-question">Research
 Question</a></li>
+<li><a href="#literature-review" id="toc-literature-review">Literature
+Review</a></li>
 <li><a href="#candidate-approaches"
-id="toc-candidate-approaches">Candidate Approaches</a></li>
-<li><a href="#approach-1-linear-scan"
-id="toc-approach-1-linear-scan">Approach 1: Linear Scan</a>
+id="toc-candidate-approaches">Candidate Approaches</a>
+<ul>
+<li><a href="#candidate-1-linear-scan"
+id="toc-candidate-1-linear-scan">Candidate 1: Linear Scan</a>
 <ul>
 <li><a href="#algorithm" id="toc-algorithm">Algorithm</a></li>
 <li><a href="#analysis" id="toc-analysis">Analysis</a></li>
 </ul></li>
-<li><a href="#approach-2-priority-queue"
-id="toc-approach-2-priority-queue">Approach 2: Priority Queue</a>
+<li><a href="#candidate-2-priority-queue-binary-min-heap"
+id="toc-candidate-2-priority-queue-binary-min-heap">Candidate 2:
+Priority Queue (Binary Min-Heap)</a>
 <ul>
 <li><a href="#algorithm-idea" id="toc-algorithm-idea">Algorithm
 Idea</a></li>
@@ -57,29 +61,56 @@ Implementation</a></li>
 <li><a href="#analysis-1" id="toc-analysis-1">Analysis</a></li>
 <li><a href="#correctness" id="toc-correctness">Correctness</a></li>
 </ul></li>
-<li><a href="#approach-3-tournament-tree"
-id="toc-approach-3-tournament-tree">Approach 3: Tournament Tree</a>
+<li><a href="#candidate-3-winner-tournament-tree"
+id="toc-candidate-3-winner-tournament-tree">Candidate 3: Winner
+Tournament Tree</a>
 <ul>
 <li><a href="#algorithm-idea-1" id="toc-algorithm-idea-1">Algorithm
 Idea</a></li>
 <li><a href="#analysis-2" id="toc-analysis-2">Analysis</a></li>
 </ul></li>
-<li><a href="#approach-4-pairwise-merging"
-id="toc-approach-4-pairwise-merging">Approach 4: Pairwise Merging</a>
+<li><a href="#candidate-4-loser-tournament-tree"
+id="toc-candidate-4-loser-tournament-tree">Candidate 4: Loser Tournament
+Tree</a>
 <ul>
 <li><a href="#algorithm-idea-2" id="toc-algorithm-idea-2">Algorithm
 Idea</a></li>
 <li><a href="#analysis-3" id="toc-analysis-3">Analysis</a></li>
 </ul></li>
-<li><a href="#approach-5-collect-and-sort"
-id="toc-approach-5-collect-and-sort">Approach 5: Collect-and-Sort</a>
+<li><a href="#candidate-5-d-ary-heap"
+id="toc-candidate-5-d-ary-heap">Candidate 5: D-ary Heap</a>
+<ul>
+<li><a href="#algorithm-idea-3" id="toc-algorithm-idea-3">Algorithm
+Idea</a></li>
+<li><a href="#analysis-4" id="toc-analysis-4">Analysis</a></li>
+</ul></li>
+<li><a href="#candidate-6-pairwise-merge"
+id="toc-candidate-6-pairwise-merge">Candidate 6: Pairwise Merge</a>
+<ul>
+<li><a href="#algorithm-idea-4" id="toc-algorithm-idea-4">Algorithm
+Idea</a></li>
+<li><a href="#analysis-5" id="toc-analysis-5">Analysis</a></li>
+</ul></li>
+<li><a href="#candidate-7-collect-and-sort"
+id="toc-candidate-7-collect-and-sort">Candidate 7: Collect-and-Sort</a>
 <ul>
 <li><a href="#algorithm-1" id="toc-algorithm-1">Algorithm</a></li>
-<li><a href="#analysis-4" id="toc-analysis-4">Analysis</a></li>
+<li><a href="#analysis-6" id="toc-analysis-6">Analysis</a></li>
+</ul></li>
+<li><a href="#candidate-8-cache-oblivious-funnelsort"
+id="toc-candidate-8-cache-oblivious-funnelsort">Candidate 8:
+Cache-Oblivious Funnelsort</a>
+<ul>
+<li><a href="#algorithm-idea-5" id="toc-algorithm-idea-5">Algorithm
+Idea</a></li>
+<li><a href="#analysis-7" id="toc-analysis-7">Analysis</a></li>
+</ul></li>
 </ul></li>
 <li><a href="#summary-of-candidate-algorithms"
 id="toc-summary-of-candidate-algorithms">Summary of Candidate
 Algorithms</a></li>
+<li><a href="#constant-factor-analysis"
+id="toc-constant-factor-analysis">Constant Factor Analysis</a></li>
 <li><a href="#conclusion" id="toc-conclusion">Conclusion</a></li>
 </ul>
 </nav>
@@ -90,23 +121,39 @@ bound?”</em></p>
 <p>We know from Stage 2A that <span class="math inline">\(\Omega(N \log
 k)\)</span> comparisons are required. Now we explore which algorithms
 achieve this bound.</p>
-<h1 id="candidate-approaches">Candidate Approaches</h1>
-<p>Without assuming the answer, we consider five natural approaches:</p>
+<h1 id="literature-review">Literature Review</h1>
+<p><strong>Sources consulted:</strong></p>
+<ul>
+<li><p><strong>Knuth TAOCP Vol 3 §5.4.1</strong>: K-way merge using
+heap, tournament tree, loser tree</p></li>
+<li><p><strong>CLRS Ch 6, Problem 6-2</strong>: Binary heaps, d-ary heap
+variants</p></li>
+<li><p><strong>Wikipedia</strong>: K-way merge algorithm
+overview</p></li>
+<li><p><strong>Grafana Labs blog (2024)</strong>: Practical loser tree
+implementations</p></li>
+<li><p><strong>Frigo et al. (1999)</strong>: Cache-oblivious
+funnelsort</p></li>
+<li><p><strong>WebSearch</strong>: Modern surveys and Stack Overflow
+discussions</p></li>
+</ul>
+<p><strong>Algorithms discovered in literature:</strong></p>
 <ol>
-<li><p><strong>Linear Scan</strong>: Check all <span
-class="math inline">\(k\)</span> iterators for minimum each
-time</p></li>
-<li><p><strong>Priority Queue</strong>: Use a data structure optimized
-for repeated minimum extraction</p></li>
-<li><p><strong>Tournament Tree</strong>: Track minimums via complete
-binary tree</p></li>
-<li><p><strong>Pairwise Merging</strong>: Recursively merge
-pairs</p></li>
-<li><p><strong>Collect-and-Sort</strong>: Materialize all elements,
-sort, return</p></li>
+<li><p>Linear scan (naive baseline)</p></li>
+<li><p>Binary min-heap / priority queue</p></li>
+<li><p>Winner tournament tree</p></li>
+<li><p><strong>Loser tournament tree</strong> (Knuth preferred, used in
+production)</p></li>
+<li><p>D-ary heap (d=4 common in practice)</p></li>
+<li><p>Pairwise merge (divide-and-conquer)</p></li>
+<li><p>Collect-and-sort (ignores pre-sorted property)</p></li>
+<li><p>Cache-oblivious funnelsort</p></li>
 </ol>
-<h1 id="approach-1-linear-scan">Approach 1: Linear Scan</h1>
-<h2 id="algorithm">Algorithm</h2>
+<h1 id="candidate-approaches">Candidate Approaches</h1>
+<p>Without assuming the answer, we analyze eight natural approaches:</p>
+<h2 id="candidate-1-linear-scan">Candidate 1: Linear Scan</h2>
+<p><strong>Source</strong>: First principles (naive baseline)</p>
+<h3 id="algorithm">Algorithm</h3>
 <div class="algorithm">
 <div class="algorithmic">
 <p><strong>next()</strong>: <span class="math inline">\(\text{minVal}
@@ -119,7 +166,7 @@ class="math inline">\(\text{iterators}[\text{minIdx}].\texttt{next()}\)</span>
 <span class="math inline">\(\text{minVal}\)</span></p>
 </div>
 </div>
-<h2 id="analysis">Analysis</h2>
+<h3 id="analysis">Analysis</h3>
 <p><strong>Time Complexity</strong>:</p>
 <ul>
 <li><p>Per <code>next()</code>: <span
@@ -127,25 +174,23 @@ class="math inline">\(O(k)\)</span> (scan all iterators)</p></li>
 <li><p>Total: <span class="math inline">\(O(Nk)\)</span> for <span
 class="math inline">\(N\)</span> elements</p></li>
 </ul>
-<p><strong>Space Complexity</strong>:</p>
-<ul>
-<li><p>Auxiliary: <span class="math inline">\(O(k)\)</span> (iterator
-references only)</p></li>
-</ul>
+<p><strong>Space Complexity</strong>: <span
+class="math inline">\(O(k)\)</span> (iterator references only)</p>
 <p><strong>Comparison to Lower Bound</strong>: <span
 class="math display">\[O(Nk) \gg \Omega(N \log k) \quad \text{for } k
 &gt; \log k\]</span></p>
-<p><strong>Verdict</strong>: <span style="color: red">Sub-optimal
-asymptotically for <span class="math inline">\(k &gt;\)</span>
-constant</span></p>
+<p><strong>Achieves bound?</strong> <span style="color: red">NO</span> -
+Sub-optimal asymptotically for <span class="math inline">\(k
+&gt;\)</span> constant</p>
 <p><strong>When Competitive</strong>: For small <span
 class="math inline">\(k\)</span> (say <span class="math inline">\(k \leq
-8\)</span>), the simplicity and cache locality may make this practical
+8\)</span>), the simplicity and cache locality may make this competitive
 despite poor asymptotics.</p>
-<h1 id="approach-2-priority-queue">Approach 2: Priority Queue</h1>
-<h2 id="algorithm-idea">Algorithm Idea</h2>
-<p>Maintain a priority queue (min-heap or similar structure)
-containing:</p>
+<h2 id="candidate-2-priority-queue-binary-min-heap">Candidate 2:
+Priority Queue (Binary Min-Heap)</h2>
+<p><strong>Source</strong>: Standard (CLRS Ch 6, TAOCP Vol 3 §5.4.1)</p>
+<h3 id="algorithm-idea">Algorithm Idea</h3>
+<p>Maintain a priority queue (min-heap) containing:</p>
 <ul>
 <li><p>One element from each non-empty iterator</p></li>
 <li><p>Each entry: (element value, source iterator)</p></li>
@@ -155,8 +200,8 @@ containing:</p>
 <li><p><code>extractMin()</code>: Remove minimum from queue</p></li>
 <li><p>Refill: Advance source iterator, insert next element</p></li>
 </ul>
-<h2 id="binary-min-heap-implementation">Binary Min-Heap
-Implementation</h2>
+<h3 id="binary-min-heap-implementation">Binary Min-Heap
+Implementation</h3>
 <div class="algorithm">
 <div class="algorithmic">
 <p><strong>Initialize</strong>: <span class="math inline">\(H \gets
@@ -168,7 +213,7 @@ class="math inline">\((val, iter) \gets H.\texttt{extractMin}()\)</span>
 iter))\)</span> <span class="math inline">\(val\)</span></p>
 </div>
 </div>
-<h2 id="analysis-1">Analysis</h2>
+<h3 id="analysis-1">Analysis</h3>
 <p><strong>Heap Operations</strong>:</p>
 <ul>
 <li><p><code>insert()</code>: <span class="math inline">\(O(\log
@@ -187,16 +232,13 @@ k)\)</span></p></li>
 <li><p>Total: <span class="math inline">\(O(k \log k + N \log k) = O(N
 \log k)\)</span></p></li>
 </ul>
-<p><strong>Space Complexity</strong>:</p>
-<ul>
-<li><p>Auxiliary: <span class="math inline">\(O(k)\)</span> (heap
-storage)</p></li>
-</ul>
+<p><strong>Space Complexity</strong>: <span
+class="math inline">\(O(k)\)</span> (heap storage)</p>
 <p><strong>Comparison to Lower Bound</strong>: <span
-class="math display">\[O(N \log k) = \Omega(N \log k)\]</span></p>
-<p><strong>Verdict</strong>: <span style="color: green">Asymptotically
-optimal! Matches lower bound.</span></p>
-<h2 id="correctness">Correctness</h2>
+class="math inline">\(O(N \log k) = \Omega(N \log k)\)</span></p>
+<p><strong>Achieves bound?</strong> <span style="color: green">YES
+✓</span> - Asymptotically optimal!</p>
+<h3 id="correctness">Correctness</h3>
 <div class="invariant">
 <p><strong>Invariant 1</strong> (Heap Invariant). <em>At the start of
 each <code>next()</code> call:</em></p>
@@ -204,8 +246,7 @@ each <code>next()</code> call:</em></p>
 <li><p><em><span class="math inline">\(H\)</span> contains at most one
 element from each non-exhausted iterator</em></p></li>
 <li><p><em>Each element in <span class="math inline">\(H\)</span> is the
-next unconsumed element from its source iterator (the minimum
-remaining)</em></p></li>
+next unconsumed element from its source iterator</em></p></li>
 <li><p><em>All elements output so far are <span
 class="math inline">\(\leq\)</span> all elements in <span
 class="math inline">\(H\)</span></em></p></li>
@@ -235,16 +276,18 @@ becomes empty iff all iterators exhausted. All <span
 class="math inline">\(N\)</span> elements extracted in sorted order.
 <span class="math inline">\(\square\)</span> ◻</p>
 </div>
-<h1 id="approach-3-tournament-tree">Approach 3: Tournament Tree</h1>
-<h2 id="algorithm-idea-1">Algorithm Idea</h2>
+<h2 id="candidate-3-winner-tournament-tree">Candidate 3: Winner
+Tournament Tree</h2>
+<p><strong>Source</strong>: TAOCP Vol 3 §5.4.1 “tournament sort”</p>
+<h3 id="algorithm-idea-1">Algorithm Idea</h3>
 <p>Build a complete binary tree with:</p>
 <ul>
 <li><p><span class="math inline">\(k\)</span> leaves (one per
 iterator)</p></li>
-<li><p>Each internal node: minimum of its children</p></li>
+<li><p>Each internal node: minimum of its children (“winner”)</p></li>
 <li><p>Root: global minimum</p></li>
 </ul>
-<h2 id="analysis-2">Analysis</h2>
+<h3 id="analysis-2">Analysis</h3>
 <p><strong>Time Complexity</strong>:</p>
 <ul>
 <li><p>Per <code>next()</code>: Extract root, refill leaf, propagate
@@ -253,23 +296,104 @@ up</p></li>
 (tree height)</p></li>
 <li><p>Total: <span class="math inline">\(O(N \log k)\)</span></p></li>
 </ul>
-<p><strong>Space Complexity</strong>:</p>
-<ul>
-<li><p>Auxiliary: <span class="math inline">\(O(k)\)</span> (tree
-nodes)</p></li>
-</ul>
+<p><strong>Space Complexity</strong>: <span
+class="math inline">\(O(k)\)</span> (tree nodes)</p>
 <p><strong>Comparison to Lower Bound</strong>: <span
-class="math display">\[O(N \log k) = \Omega(N \log k)\]</span></p>
-<p><strong>Verdict</strong>: <span style="color: green">Asymptotically
-optimal! Matches lower bound.</span></p>
+class="math inline">\(O(N \log k) = \Omega(N \log k)\)</span></p>
+<p><strong>Achieves bound?</strong> <span style="color: green">YES
+✓</span> - Asymptotically optimal!</p>
 <p><strong>Comparison to Heap</strong>: Same asymptotic complexity.
 Constant factors differ (see Stage 3).</p>
-<h1 id="approach-4-pairwise-merging">Approach 4: Pairwise Merging</h1>
-<h2 id="algorithm-idea-2">Algorithm Idea</h2>
+<h2 id="candidate-4-loser-tournament-tree">Candidate 4: Loser Tournament
+Tree</h2>
+<p><strong>Source</strong>: TAOCP Vol 3 §5.4.1 (Knuth’s preferred
+variant), Grafana Labs production use (2024)</p>
+<h3 id="algorithm-idea-2">Algorithm Idea</h3>
+<p>A variant of tournament tree where:</p>
+<ul>
+<li><p>Internal nodes store the <strong>loser</strong> of each
+comparison</p></li>
+<li><p>Winner propagates up to next level</p></li>
+<li><p>Root pointer indicates overall winner</p></li>
+</ul>
+<p><strong>Key difference from winner tree</strong>: During refill, only
+need to compare against losers on path to root, not recompute entire
+subtree.</p>
+<h3 id="analysis-3">Analysis</h3>
+<p><strong>Time Complexity</strong>:</p>
+<ul>
+<li><p>Per <code>next()</code>: Read winner, refill leaf, compare
+against losers up path</p></li>
+<li><p>Comparisons: Exactly <span class="math inline">\(\log_2
+k\)</span> (one per level)</p></li>
+<li><p>Total: <span class="math inline">\(O(N \log k)\)</span></p></li>
+</ul>
+<p><strong>Space Complexity</strong>: <span
+class="math inline">\(O(k)\)</span> (tree nodes + root pointer)</p>
+<p><strong>Comparison to Lower Bound</strong>: <span
+class="math inline">\(O(N \log k) = \Omega(N \log k)\)</span></p>
+<p><strong>Achieves bound?</strong> <span style="color: green">YES
+✓</span> - Asymptotically optimal!</p>
+<p><strong>Advantages over Winner Tree</strong>:</p>
+<ul>
+<li><p>Simpler refill logic (only compare with losers, not
+siblings)</p></li>
+<li><p>Fewer branches in code</p></li>
+<li><p>Better for expensive comparison operations</p></li>
+<li><p>Used in production (Grafana Loki log aggregation system)</p></li>
+</ul>
+<p><strong>Disadvantages</strong>:</p>
+<ul>
+<li><p>More complex to implement than binary heap</p></li>
+<li><p>Pointer-based structure (worse cache behavior than heap)</p></li>
+</ul>
+<h2 id="candidate-5-d-ary-heap">Candidate 5: D-ary Heap</h2>
+<p><strong>Source</strong>: CLRS Problem 6-2, generalization of binary
+heap</p>
+<h3 id="algorithm-idea-3">Algorithm Idea</h3>
+<p>Generalization of binary heap where each node has <span
+class="math inline">\(d\)</span> children instead of 2.</p>
+<p><strong>Operations</strong>:</p>
+<ul>
+<li><p><code>extractMin()</code>: <span class="math inline">\((d-1)
+\log_d k\)</span> comparisons (compare <span
+class="math inline">\(d\)</span> children per level)</p></li>
+<li><p>Tree height: <span class="math inline">\(\log_d
+k\)</span></p></li>
+</ul>
+<h3 id="analysis-4">Analysis</h3>
+<p><strong>Time Complexity</strong>:</p>
+<ul>
+<li><p>Per <code>next()</code>: <span class="math inline">\(O(d \log_d
+k) = O(d \frac{\log k}{\log d})\)</span></p></li>
+<li><p>For fixed <span class="math inline">\(d\)</span>: <span
+class="math inline">\(O(\log k)\)</span></p></li>
+<li><p>Total: <span class="math inline">\(O(N \log k)\)</span></p></li>
+</ul>
+<p><strong>Space Complexity</strong>: <span
+class="math inline">\(O(k)\)</span> (array storage)</p>
+<p><strong>Trade-off</strong>:</p>
+<ul>
+<li><p>Larger <span class="math inline">\(d\)</span> <span
+class="math inline">\(\rightarrow\)</span> shallower tree (fewer
+levels)</p></li>
+<li><p>But: more comparisons per level (<span
+class="math inline">\(d-1\)</span> instead of 2)</p></li>
+<li><p>Optimal <span class="math inline">\(d\)</span> depends on cache
+behavior and comparison cost</p></li>
+</ul>
+<p><strong>Practical Choice</strong>: <span
+class="math inline">\(d=4\)</span> commonly used (.NET PriorityQueue
+uses quaternary heap)</p>
+<p><strong>Achieves bound?</strong> <span style="color: green">YES
+✓</span> - Still <span class="math inline">\(O(N \log k)\)</span></p>
+<h2 id="candidate-6-pairwise-merge">Candidate 6: Pairwise Merge</h2>
+<p><strong>Source</strong>: Divide-and-conquer mergesort pattern</p>
+<h3 id="algorithm-idea-4">Algorithm Idea</h3>
 <p>Recursively merge iterators in pairs: <span
 class="math display">\[((I_0 \oplus I_1) \oplus (I_2 \oplus I_3)) \oplus
 \ldots\]</span></p>
-<h2 id="analysis-3">Analysis</h2>
+<h3 id="analysis-5">Analysis</h3>
 <p><strong>Problem</strong>: Violates lazy evaluation requirement!</p>
 <p>Pairwise merging forces materialization of intermediate results. For
 example, <span class="math inline">\((I_0 \oplus I_1)\)</span> must
@@ -280,20 +404,22 @@ I_3)\)</span>.</p>
 <p><strong>Space Complexity</strong>: <span
 class="math inline">\(O(N)\)</span> (must store intermediate merged
 sequences).</p>
-<p><strong>Verdict</strong>: <span style="color: red">Violates problem
-constraints (lazy evaluation)</span>. Space requirement <span
+<p><strong>Achieves bound?</strong> <span style="color: red">NO</span> -
+Violates problem constraints (lazy evaluation). Space requirement <span
 class="math inline">\(O(N) \gg O(k)\)</span>.</p>
 <p><strong>When Useful</strong>: Parallel merging (divide-and-conquer
 parallelizes naturally). Different problem domain.</p>
-<h1 id="approach-5-collect-and-sort">Approach 5: Collect-and-Sort</h1>
-<h2 id="algorithm-1">Algorithm</h2>
+<h2 id="candidate-7-collect-and-sort">Candidate 7: Collect-and-Sort</h2>
+<p><strong>Source</strong>: First principles (ignores pre-sorted
+property)</p>
+<h3 id="algorithm-1">Algorithm</h3>
 <div class="algorithmic">
 <p>Consume all <span class="math inline">\(k\)</span> iterators into
 array <span class="math inline">\(A\)</span> Sort <span
 class="math inline">\(A\)</span> Return sequential iterator over <span
 class="math inline">\(A\)</span></p>
 </div>
-<h2 id="analysis-4">Analysis</h2>
+<h3 id="analysis-6">Analysis</h3>
 <p><strong>Time Complexity</strong>: <span class="math inline">\(O(N
 \log N)\)</span></p>
 <p><strong>Space Complexity</strong>: <span
@@ -301,20 +427,54 @@ class="math inline">\(O(N)\)</span> (must store all elements)</p>
 <p><strong>Comparison to Lower Bound</strong>: <span
 class="math display">\[O(N \log N) \gg O(N \log k) \quad \text{when } k
 \ll N\]</span></p>
-<p><strong>Verdict</strong>: <span
-style="color: red">Sub-optimal</span>. Doesn’t exploit pre-sorted
-property of inputs. Violates lazy evaluation and space constraints.</p>
+<p><strong>Achieves bound?</strong> <span style="color: red">NO</span> -
+Sub-optimal. Doesn’t exploit pre-sorted property of inputs. Violates
+lazy evaluation and space constraints.</p>
+<h2 id="candidate-8-cache-oblivious-funnelsort">Candidate 8:
+Cache-Oblivious Funnelsort</h2>
+<p><strong>Source</strong>: Frigo, Leiserson, Prokop, and Ramachandran
+(1999)</p>
+<h3 id="algorithm-idea-5">Algorithm Idea</h3>
+<p>A cache-oblivious sorting algorithm designed for external memory:</p>
+<ul>
+<li><p>Recursive k-way merge with “funnels”</p></li>
+<li><p>Adapts to memory hierarchy without knowing cache
+parameters</p></li>
+<li><p>Optimal I/O complexity in external memory model</p></li>
+</ul>
+<h3 id="analysis-7">Analysis</h3>
+<p><strong>Time Complexity</strong>: <span class="math inline">\(O(N
+\log N)\)</span> comparisons (for full sort, not just k-way merge)</p>
+<p><strong>I/O Complexity</strong>: <span
+class="math inline">\(O(\frac{N}{B} \log_{M/B} \frac{N}{B})\)</span>
+where <span class="math inline">\(B\)</span> = block size, <span
+class="math inline">\(M\)</span> = memory size</p>
+<p><strong>Relevance to Our Problem</strong>:</p>
+<ul>
+<li><p>Designed for full sorting, not k-way merge of pre-sorted
+sequences</p></li>
+<li><p>Cache-oblivious property interesting but not directly
+applicable</p></li>
+<li><p>Complexity doesn’t improve on simple k-way merge for our
+constraints</p></li>
+</ul>
+<p><strong>Achieves bound?</strong> <span style="color: red">NO</span> -
+Different problem domain (external memory sorting vs lazy k-way
+merge)</p>
+<p><strong>Note</strong>: Interesting for Stage 7 related work
+discussion</p>
 <h1 id="summary-of-candidate-algorithms">Summary of Candidate
 Algorithms</h1>
 <table>
 <caption>Comparison of candidate algorithms</caption>
 <thead>
 <tr class="header">
-<th style="text-align: left;"><strong>Approach</strong></th>
+<th style="text-align: left;"><strong>Algorithm</strong></th>
 <th style="text-align: center;"><strong>Time</strong></th>
 <th style="text-align: center;"><strong>Space</strong></th>
 <th style="text-align: center;"><strong>Lazy?</strong></th>
 <th style="text-align: center;"><strong>Optimal?</strong></th>
+<th style="text-align: center;"><strong>Source</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -326,63 +486,145 @@ class="math inline">\(O(Nk)\)</span></td>
 class="math inline">\(O(k)\)</span></td>
 <td style="text-align: center;">Yes</td>
 <td style="text-align: center;">No</td>
+<td style="text-align: center;">Baseline</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Priority Queue (Heap)</td>
+<td style="text-align: left;">Binary Heap</td>
 <td style="text-align: center;"><span class="math inline">\(O(N \log
 k)\)</span></td>
 <td style="text-align: center;"><span
 class="math inline">\(O(k)\)</span></td>
 <td style="text-align: center;">Yes</td>
 <td style="text-align: center;"><strong>Yes</strong></td>
+<td style="text-align: center;">CLRS/TAOCP</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Tournament Tree</td>
+<td style="text-align: left;">Winner Tree</td>
 <td style="text-align: center;"><span class="math inline">\(O(N \log
 k)\)</span></td>
 <td style="text-align: center;"><span
 class="math inline">\(O(k)\)</span></td>
 <td style="text-align: center;">Yes</td>
 <td style="text-align: center;"><strong>Yes</strong></td>
+<td style="text-align: center;">TAOCP §5.4.1</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Pairwise Merge</td>
+<td style="text-align: left;">Loser Tree</td>
+<td style="text-align: center;"><span class="math inline">\(O(N \log
+k)\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(O(k)\)</span></td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;"><strong>Yes</strong></td>
+<td style="text-align: center;">TAOCP §5.4.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">D-ary Heap</td>
+<td style="text-align: center;"><span class="math inline">\(O(N \log
+k)\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(O(k)\)</span></td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;"><strong>Yes</strong></td>
+<td style="text-align: center;">CLRS Prob 6-2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Pairwise</td>
 <td style="text-align: center;"><span class="math inline">\(O(N \log
 k)\)</span></td>
 <td style="text-align: center;"><span
 class="math inline">\(O(N)\)</span></td>
 <td style="text-align: center;">No</td>
 <td style="text-align: center;">No</td>
+<td style="text-align: center;">Divide-conquer</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Collect-and-Sort</td>
+<td style="text-align: left;">Collect-Sort</td>
 <td style="text-align: center;"><span class="math inline">\(O(N \log
 N)\)</span></td>
 <td style="text-align: center;"><span
 class="math inline">\(O(N)\)</span></td>
 <td style="text-align: center;">No</td>
 <td style="text-align: center;">No</td>
+<td style="text-align: center;">Naive</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Funnelsort</td>
+<td style="text-align: center;"><span class="math inline">\(O(N \log
+N)\)</span></td>
+<td style="text-align: center;">Varies</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">Frigo et al.</td>
 </tr>
 </tbody>
 </table>
+<h1 id="constant-factor-analysis">Constant Factor Analysis</h1>
+<p>For the four optimal candidates:</p>
+<table>
+<caption>Constant factors for optimal algorithms</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><strong>Algorithm</strong></th>
+<th style="text-align: center;"><strong>Comparisons per
+<code>next()</code></strong></th>
+<th style="text-align: center;"><strong>Memory Pattern</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Binary Heap</td>
+<td style="text-align: center;"><span class="math inline">\(2 \log_2
+k\)</span></td>
+<td style="text-align: center;">Array (excellent cache)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Winner Tree</td>
+<td style="text-align: center;"><span class="math inline">\(\log_2
+k\)</span></td>
+<td style="text-align: center;">Pointer-based (poor cache)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Loser Tree</td>
+<td style="text-align: center;"><span class="math inline">\(\log_2
+k\)</span></td>
+<td style="text-align: center;">Pointer-based (poor cache)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">D-ary Heap (d=4)</td>
+<td style="text-align: center;"><span class="math inline">\(3 \log_4 k
+\approx 1.5 \log_2 k\)</span></td>
+<td style="text-align: center;">Array (excellent cache)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Observations</strong>:</p>
+<ul>
+<li><p>Winner/loser trees: Fewer comparisons but worse memory access
+patterns</p></li>
+<li><p>Heaps: More comparisons but better cache locality</p></li>
+<li><p>Modern processors: Memory access often dominates comparison
+cost</p></li>
+<li><p>D-ary heap: Best of both worlds? (fewer comparisons + array
+storage)</p></li>
+</ul>
 <h1 id="conclusion">Conclusion</h1>
-<p><strong>Discovery</strong>: Two approaches achieve the <span
+<p><strong>Discovery</strong>: Four algorithm families achieve <span
 class="math inline">\(\Omega(N \log k)\)</span> lower bound:</p>
 <ol>
-<li><p><strong>Priority Queue</strong> (binary min-heap)</p></li>
-<li><p><strong>Tournament Tree</strong></p></li>
+<li><p>Binary min-heap (standard, simple, good cache behavior)</p></li>
+<li><p>Winner tournament tree (fewer comparisons,
+pointer-based)</p></li>
+<li><p><strong>Loser tournament tree</strong> (Knuth preferred,
+production-proven, simpler refill)</p></li>
+<li><p>D-ary heap (trade-off parameter <span
+class="math inline">\(d\)</span>, d=4 common)</p></li>
 </ol>
-<p>Both are <strong>asymptotically optimal</strong> with:</p>
-<ul>
-<li><p>Time: <span class="math inline">\(O(N \log k)\)</span> (matches
-lower bound)</p></li>
-<li><p>Space: <span class="math inline">\(O(k)\)</span> (matches lower
-bound)</p></li>
-<li><p>Lazy evaluation: Yes</p></li>
-</ul>
-<p><strong>Open Question</strong>: Which is better in practice? Both
-have <span class="math inline">\(O(N \log k)\)</span> complexity, but
-constant factors differ. This is explored in Stage 3 (Comparative
-Complexity).</p>
+<p><strong>Linear scan</strong> competitive for <span
+class="math inline">\(k \leq 8\)</span> despite poor asymptotics.</p>
+<p><strong>Open Question</strong>: Which is better in practice? (heap vs
+loser tree vs d-ary heap)</p>
+<p>This constant factor analysis is deferred to <strong>Stage 3: Design
+Selection</strong>.</p>
 </body>
 </html>
