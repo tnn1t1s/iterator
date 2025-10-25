@@ -12,7 +12,7 @@
 
 ## See It In Action
 
-**Example**: [K-way merge iterator](projects/collating-iterator/INDEX.html)
+**Example**: [K-way merge iterator](https://htmlpreview.github.io/?https://github.com/tnn1t1s/iterator/blob/main/projects/collating-iterator/INDEX.html)
 - Started with: "How do we efficiently merge multiple sorted streams?"
 - Ended with: 3 different implementations, 70 tests, honest assessment (7.4/10 with identified bugs)
 - Time: Full pipeline with minimal human input
@@ -24,7 +24,7 @@
 
 ## For Different Audiences
 
-**Just browsing?** → Look at the [example project](projects/collating-iterator/INDEX.html) to see what this produces
+**Just browsing?** → Look at the [example project](https://htmlpreview.github.io/?https://github.com/tnn1t1s/iterator/blob/main/projects/collating-iterator/INDEX.html) to see what this produces
 
 **Want to understand the approach?** → Read [CLAUDE.md](CLAUDE.md) for methodology and principles
 
@@ -38,7 +38,7 @@
 
 **Newcomers**: Read [SKILLS.md](SKILLS.md) - Beginner-friendly guide to all 19 skills
 
-**View example**: [projects/collating-iterator/INDEX.html](projects/collating-iterator/INDEX.html) - Complete artifact with assessment
+**View example**: [projects/collating-iterator/INDEX.html](https://htmlpreview.github.io/?https://github.com/tnn1t1s/iterator/blob/main/projects/collating-iterator/INDEX.html) - Complete artifact with assessment
 
 **Understand methodology**: [CLAUDE.md](CLAUDE.md) - Design decisions, anti-patterns, principles
 
@@ -126,7 +126,7 @@ Never stops until you say stop. Simulates relentless senior interviewer.
 
 All projects follow the 10-stage research pipeline.
 
-### [collating-iterator](projects/collating-iterator/INDEX.html)
+### [collating-iterator](https://htmlpreview.github.io/?https://github.com/tnn1t1s/iterator/blob/main/projects/collating-iterator/INDEX.html)
 **Status**: Complete | **Assessment**: Mean 7.4/10, "Conditional Hire"
 
 **Problem**: K-way merge for sorted iterators
@@ -147,7 +147,7 @@ All projects follow the 10-stage research pipeline.
 
 **Skills demonstrated**: Exceptional arxiv research, test data design. Strong theoretical analysis.
 
-**View**: [projects/collating-iterator/INDEX.html](projects/collating-iterator/INDEX.html)
+**View**: [projects/collating-iterator/INDEX.html](https://htmlpreview.github.io/?https://github.com/tnn1t1s/iterator/blob/main/projects/collating-iterator/INDEX.html)
 
 ### More projects coming...
 
@@ -259,7 +259,7 @@ mkdir -p projects/my-problem/{01-specification,02-analysis,03-design,04-implemen
 
 ### Learning Path
 1. **New to skills?** → [SKILLS.md](SKILLS.md)
-2. **See example** → [projects/collating-iterator/INDEX.html](projects/collating-iterator/INDEX.html)
+2. **See example** → [projects/collating-iterator/INDEX.html](https://htmlpreview.github.io/?https://github.com/tnn1t1s/iterator/blob/main/projects/collating-iterator/INDEX.html)
 3. **Understand methodology** → [CLAUDE.md](CLAUDE.md)
 4. **Technical deep-dive** → [.claude/skills/CS500/SKILL_INDEX.md](.claude/skills/CS500/SKILL_INDEX.md)
 5. **Try it yourself** → "Use research_to_code_pipeline skill to solve: [problem]"
