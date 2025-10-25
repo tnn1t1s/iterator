@@ -50,34 +50,65 @@ Establish theoretical limits BEFORE analyzing specific algorithms:
 
 Systematically explore multiple approaches WITHOUT assuming answer:
 
-1. **Enumerate Candidates**
-   - List 4-6 natural approaches
-   - Include naive, standard, and clever alternatives
-   - Example: linear scan, heap, tree, pairwise merge, collect-sort
+1. **Literature Review (REQUIRED FIRST)**
 
-2. **Analyze Each Candidate**
+   **CRITICAL**: Do NOT enumerate candidates from memory alone. Research comprehensively.
+
+   **Canonical References** (consult training data):
+   - **Knuth TAOCP**: Search relevant volumes for problem domain
+   - **CLRS**: Search relevant chapters for related structures/algorithms
+   - **Sedgewick**: Domain-specific patterns if applicable
+   - **Classic papers**: If problem is well-studied
+
+   **Web Research Strategy**:
+   - WebSearch: "[problem description] algorithms survey"
+   - WebSearch: "[problem description] optimal complexity"
+   - WebSearch: "arxiv [problem keywords]" for recent papers
+   - WebSearch: "[data structure] variants" for known structures
+
+   **What to Extract**:
+   - All algorithm names mentioned for this problem
+   - Variants (e.g., binary vs d-ary, winner vs loser)
+   - Classic vs modern approaches
+   - Trade-offs mentioned in literature
+
+   **Documentation in Output**:
+   - Cite sources for each algorithm found
+   - Note which reference discusses which variant
+   - Format: "Source: TAOCP Vol X §Y" or "Source: [Author Year]"
+
+2. **Enumerate Candidates** (from research + first principles)
+   - Minimum 5-8 candidates including:
+     * Naive approach (baseline - what's simplest?)
+     * Standard textbook solutions (from TAOCP/CLRS)
+     * Variants mentioned in literature
+     * First-principles alternatives
+     * Related problem solutions adapted to this problem
+
+3. **Analyze Each Candidate**
    - Time complexity (best, average, worst)
    - Space complexity (auxiliary + total)
    - Does it satisfy problem constraints? (lazy evaluation, etc.)
    - Does it achieve lower bound?
+   - Cite source if from literature (e.g., "TAOCP §5.4.1")
 
-3. **Comparison Table**
+4. **Comparison Table**
    - Create table comparing all candidates
-   - Columns: Algorithm, Time, Space, Constraints Met, Optimal?
+   - Columns: Algorithm, Time, Space, Constraints Met, Optimal?, Source
    - Identify which (if any) achieve lower bound
 
-4. **Correctness Proof** (for optimal candidates only)
+5. **Correctness Proof** (for optimal candidates only)
    - Loop invariants for iterative algorithms
    - Induction for recursive algorithms
    - Termination argument
    - Proof that output satisfies postconditions
 
-5. **Constant Factors** (for optimal candidates)
+6. **Constant Factors** (for optimal candidates)
    - Note hidden constants in Big-O
    - Memory overhead per element/node
    - Number of comparisons/swaps in practice
 
-6. **Output Structure**
+7. **Output Structure**
 
 Phase A (lower-bound.tex):
 ```
@@ -130,98 +161,103 @@ CONCLUSION:
 - Defer constant factor comparison to Stage 3
 ```
 
-## Examples
+## Output Template
 
-### Example 1: K-Way Merge Analysis (Two-Phase)
+### Phase A: Lower Bound (lower-bound.tex)
 
-**Phase A: Lower Bound (lower-bound.tex)**
+```latex
+\section{Research Question}
+From Stage 1: ``What is the minimum [resource] required for [problem]?''
 
+\section{Problem Setup}
+- Input characteristics: ...
+- Output requirements: ...
+- Constraints: ...
+
+\section{Lower Bound via [Method]}
+[Use decision tree, adversary argument, information theory, etc.]
+
+\subsection{Counting Possible Outputs}
+[Combinatorial argument for number of valid outputs]
+
+\begin{lemma}[Output Count]
+Number of distinct outputs is [formula with justification]
+\end{lemma}
+
+\subsection{Lower Bound Theorem}
+\begin{theorem}[Comparison/Time Lower Bound]
+Any algorithm for this problem requires at least Ω(...) [comparisons/time]
+\end{theorem}
+
+\begin{proof}
+[Decision tree depth / information-theoretic argument]
+\end{proof}
+
+\section{Space Lower Bound}
+\begin{theorem}[Space Lower Bound]
+At least Ω(...) auxiliary space required because [minimal state needed]
+\end{theorem}
+
+\section{Summary}
+Lower bounds established:
+- Time: Ω(...)
+- Space: Ω(...)
+- These bounds are tight (will be achieved in Phase B)
 ```
-RESEARCH QUESTION: What is the minimum number of comparisons required?
 
-LOWER BOUND ANALYSIS:
-Problem: Merge k sorted sequences with N total elements
+### Phase B: Candidate Algorithms (candidate-algorithms.tex)
 
-Possible outputs: Multinomial coefficient
-  C(N; n₀,n₁,...,n_{k-1}) = N! / (n₀! · n₁! · ... · n_{k-1}!)
+```latex
+\section{Research Question}
+From Stage 2A: ``Which algorithms (if any) achieve the Ω(...) lower bound?''
 
-Decision tree depth: log₂(C) comparisons required
+\section{Literature Review}
+Sources consulted:
+- [Reference 1]: [what it covers]
+- [Reference 2]: [what it covers]
+- WebSearch results: [keywords used, findings]
 
-Equal-length case (n_i = N/k):
-  log₂(N!/(N/k!)^k) = N log N - k·(N/k)·log(N/k)
-                    = N log N - N(log N - log k)
-                    = N log k
+Algorithms discovered in literature: [list]
+Variants mentioned: [list]
 
-THEOREM: Any comparison-based k-way merge requires Ω(N log k) comparisons
+\section{Candidate Approaches}
 
-PROOF:
-- Decision tree must have C(N;...) leaves (one per output permutation)
-- Binary tree of depth d has ≤ 2^d leaves
-- Therefore d ≥ log₂(C) = Ω(N log k)
+\subsection{Candidate 1: [Naive/Baseline Name]}
+\textbf{Algorithm}: [description]
+\textbf{Time}: [analysis]
+\textbf{Space}: [analysis]
+\textbf{Source}: First principles / [citation]
+\textbf{Achieves bound?} Yes/No [explanation]
 
-SPACE BOUND: Ω(k) required
-- Must track position in each of k iterators
-- Minimum k references/pointers
+\subsection{Candidate 2: [Standard Approach]}
+\textbf{Algorithm}: [description]
+\textbf{Time}: [analysis]
+\textbf{Space}: [analysis]
+\textbf{Source}: [TAOCP / CLRS / paper citation]
+\textbf{Correctness}:
+  Invariant: [formal statement]
+  Proof: [sketch]
+\textbf{Achieves bound?} Yes/No
 
-CONCLUSION: Bounds are tight (achievable - see Phase B)
-```
+[Continue for 5-8 candidates total]
 
-**Phase B: Candidate Algorithms (candidate-algorithms.tex)**
+\section{Summary Table}
+\begin{table}
+| Algorithm | Time | Space | Constraints | Optimal? | Source |
+|-----------|------|-------|-------------|----------|--------|
+| ...       | ...  | ...   | ...         | ...      | ...    |
+\end{table}
 
-```
-RESEARCH QUESTION: Which algorithms (if any) achieve Ω(N log k)?
+\section{Conclusion}
+\textbf{Discovery}: [N] algorithms achieve Ω(...) lower bound:
+1. [Algorithm 1] - [key characteristic]
+2. [Algorithm 2] - [key characteristic]
+...
 
-CANDIDATE 1: Linear Scan
-Algorithm: Check all k iterators for minimum each time
-Time: O(Nk) - scan k iterators N times
-Space: O(k) - iterator references only
-Achieves bound? NO (O(Nk) >> Ω(N log k) for k > log k)
-When competitive: k ≤ 8 (simple, cache-friendly)
-
-CANDIDATE 2: Priority Queue (Binary Min-Heap)
-Algorithm: Maintain heap of k elements (one per iterator)
-Time: O(N log k) - N operations × log k heap cost
-Space: O(k) - heap storage
-Correctness:
-  Invariant: Heap contains min unconsumed element from each non-empty iterator
-  Proof: Extract min, refill from source iterator, repeat
-Achieves bound? YES ✓
-
-CANDIDATE 3: Tournament Tree
-Algorithm: Binary tree with k leaves, internal nodes = min(children)
-Time: O(N log k) - propagate up log k levels per extraction
-Space: O(k) - tree nodes
-Achieves bound? YES ✓
-
-CANDIDATE 4: Pairwise Merge
-Algorithm: Recursively merge pairs (I₀⊕I₁)⊕(I₂⊕I₃)...
-Time: O(N log k) if materialized
-Space: O(N) - must store intermediate results
-Achieves bound? NO (violates lazy evaluation, wrong space)
-
-CANDIDATE 5: Collect-and-Sort
-Algorithm: Consume all iterators → array, sort, return iterator
-Time: O(N log N)
-Space: O(N)
-Achieves bound? NO (doesn't exploit pre-sorted property)
-
-COMPARISON TABLE:
-| Algorithm      | Time         | Space | Lazy? | Optimal? |
-|----------------|--------------|-------|-------|----------|
-| Linear Scan    | O(Nk)        | O(k)  | Yes   | No       |
-| Priority Queue | O(N log k)   | O(k)  | Yes   | YES ✓    |
-| Tournament     | O(N log k)   | O(k)  | Yes   | YES ✓    |
-| Pairwise       | O(N log k)   | O(N)  | No    | No       |
-| Collect-Sort   | O(N log N)   | O(N)  | No    | No       |
-
-DISCOVERY: Two algorithms achieve Ω(N log k) lower bound:
-1. Priority Queue (binary min-heap)
-2. Tournament Tree
-
-CONCLUSION:
-- Both asymptotically optimal
-- Constant factor comparison deferred to Stage 3
-- Open question: Which is better in practice?
+\textbf{Next Steps}:
+- Multiple optimal solutions found
+- Constant factor/practical comparison deferred to Stage 3
+- Open question: Which is best in practice?
 ```
 
 ### Example 2: Lazy FlatMap
