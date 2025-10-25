@@ -3,67 +3,247 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CollatingIterator Research Artifact - Index</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <title>K-Way Merge: Algorithm Research & Implementation</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 18px;
+            line-height: 1.6;
             color: #24292e;
             background: #ffffff;
-            font-size: 16px;
-            line-height: 1.6;
+            padding: 2rem 1rem;
         }
-        h1, h2, h3 { color: #24292e; }
-        p, li { color: #24292e; }
-        a { color: #0366d6; }
-        .stage { margin: 2rem 0; padding: 1rem; border-left: 4px solid #0366d6; }
-        .stage h2 { margin-top: 0; }
-        .file-list { list-style: none; padding: 0; }
-        .file-list li { margin: 0.5rem 0; }
+
+        main {
+            max-width: 65ch;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.25;
+            margin-bottom: 1rem;
+            color: #1f2328;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #1f2328;
+            border-bottom: 1px solid #d0d7de;
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #1f2328;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        ul, ol {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        a {
+            color: #0969da;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .tldr {
+            background: #ddf4ff;
+            border-left: 4px solid #0969da;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .tldr p {
+            margin: 0;
+        }
+
+        .callout {
+            background: #f6f8fa;
+            border-left: 4px solid #0969da;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .warning {
+            background: #fff8dc;
+            border-left: 4px solid #d97706;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        details {
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: #0969da;
+            margin-bottom: 1rem;
+        }
+
+        summary:hover {
+            text-decoration: underline;
+        }
+
+        .stage-list {
+            list-style: none;
+            padding: 0;
+            margin: 2rem 0;
+        }
+
+        .stage-list li {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .stage-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #1a7f37;
+            font-weight: bold;
+        }
+
+        .stage-title {
+            font-weight: 600;
+            color: #1f2328;
+        }
+
+        .stage-desc {
+            color: #59636e;
+            font-size: 16px;
+            margin-top: 0.25rem;
+        }
+
+        .file-links {
+            list-style: none;
+            padding-left: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .file-links li {
+            margin-bottom: 0.25rem;
+        }
+
+        .file-links li::before {
+            content: none;
+        }
+
         .badge {
             display: inline-block;
-            padding: 0.2rem 0.5rem;
-            background: #28a745;
-            color: white;
-            border-radius: 3px;
-            font-size: 0.85rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 4px;
             margin-left: 0.5rem;
         }
-        .badge-pending {
-            background: #ffc107;
-            color: #000;
+
+        .badge-complete {
+            background: #1a7f37;
+            color: white;
+        }
+
+        .badge-score {
+            background: #d97706;
+            color: white;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #d0d7de;
+            margin: 3rem 0;
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #d0d7de;
+            color: #59636e;
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+
+            h3 {
+                font-size: 18px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>K-Way Merge: Algorithm Research & Implementation</h1>
+    <main>
+        <h1>K-Way Merge: Algorithm Research & Implementation</h1>
 
-    <div style="background: #f6f8fa; padding: 1.5rem; border-left: 4px solid #0366d6; margin: 1rem 0 2rem 0;">
-        <p style="margin: 0;"><strong>TL;DR:</strong> Complete research artifact demonstrating systematic algorithm design for merging k sorted iterators. Includes formal specification, complexity analysis, 3 implementation variants (naive, standard, optimized), 70 passing tests, and honest self-critique identifying bugs and gaps. Scored 7.4/10 with "Conditional Hire" recommendation.</p>
-    </div>
+        <div class="tldr">
+            <p><strong>TL;DR:</strong> Complete research artifact demonstrating systematic algorithm design for merging k sorted iterators. Includes formal specification, complexity analysis, 3 implementation variants (naive, standard, optimized), 70 passing tests, and honest self-critique identifying bugs and gaps. Scored 7.4/10 with "Conditional Hire" recommendation.</p>
+        </div>
 
-    <h2>📝 Original Prompt</h2>
-    <blockquote style="background: #f6f8fa; padding: 1rem; border-left: 4px solid #0366d6; margin: 1rem 0;">
-        <p><strong>User Request:</strong></p>
-        <p>"We're going to come up with a variety of implementations of a CollatingIterator. It will be an interface that takes multiple Iterator&lt;T extends Comparable&lt;T&gt;&gt; as input. Each of the iterators passed in will have the guarantee that they return elements in the order implied by the comparator."</p>
-        <p style="margin-bottom: 0;"><em>→ Response: Full research pipeline with minimal user input, ready for review and critique.</em></p>
-    </blockquote>
+        <details>
+            <summary>Original Prompt</summary>
+            <p><strong>User Request:</strong> "We're going to come up with a variety of implementations of a CollatingIterator. It will be an interface that takes multiple Iterator&lt;T extends Comparable&lt;T&gt;&gt; as input. Each of the iterators passed in will have the guarantee that they return elements in the order implied by the comparator."</p>
+            <p><em>Response: Full research pipeline with minimal user input, ready for review and critique.</em></p>
+        </details>
 
-    <hr>
+        <h2>Candidate Solution</h2>
 
-    <h2>📋 Candidate Solution</h2>
-    <div style="background: #e7f3ff; padding: 1.5rem; border-left: 4px solid #0366d6; margin: 1rem 0;">
-        <p><strong>Problem:</strong></p>
-        <ul style="margin: 0.5rem 0 1rem 1.5rem;">
+        <h3>Problem</h3>
+        <ul>
             <li>Challenge: Design efficient k-way merge for sorted iterators</li>
             <li>Research questions: What is minimum achievable complexity? Which algorithms reach it? Which performs best accounting for comparison count and cache locality?</li>
             <li>Approach: Systematic exploration from lower bounds → candidate evaluation → production-validated implementation</li>
         </ul>
 
-        <p><strong>Solution:</strong></p>
-        <ul style="margin: 0.5rem 0 1rem 1.5rem;">
+        <h3>Solution</h3>
+        <ul>
             <li>Lower bounds established: Ω(N log k) time via decision tree arguments, Ω(k) space</li>
             <li>Candidates evaluated (4 algorithms):
-                <ul style="margin: 0.25rem 0 0 1rem;">
+                <ul>
                     <li>Binary heap: O(N log k), 2 log k comparisons, array-based (good cache locality)</li>
                     <li>Winner tree: O(N log k), log k comparisons, complex refill</li>
                     <li>Loser tree: O(N log k), log k comparisons, simpler refill (Knuth TAOCP §5.4.1)</li>
@@ -72,7 +252,7 @@
             </li>
             <li>Selected: Loser tournament tree based on Grafana 2024 production validation (Loki/Pyroscope/Prometheus: 50% speedup over heaps)</li>
             <li>Multi-variant implementation for empirical comparison:
-                <ul style="margin: 0.25rem 0 0 1rem;">
+                <ul>
                     <li>LinearScanIterator: O(Nk) naive baseline (competitive k≤8 due to cache locality)</li>
                     <li>HeapBasedIterator: O(N log k) standard (robust middle ground)</li>
                     <li>LoserTreeIterator: O(N log k) optimized (excels large k where comparison count dominates)</li>
@@ -80,11 +260,11 @@
             </li>
         </ul>
 
-        <p><strong>Results:</strong></p>
-        <ul style="margin: 0.5rem 0 1rem 1.5rem;">
+        <h3>Results</h3>
+        <ul>
             <li>Testing: 70 passing JUnit tests (23-24 per variant), shared base class ensures identical specification compliance</li>
             <li>Benchmarking:
-                <ul style="margin: 0.25rem 0 0 1rem;">
+                <ul>
                     <li>Designed: 24 test scenarios across 5 dimensions (k, N, distribution, pattern, exhaustion)</li>
                     <li>Executed: 10-second validation on 3 critical points (k=3, 10, 50)</li>
                     <li>Documented: Full 40-minute JMH suite ready as future work</li>
@@ -92,194 +272,168 @@
                 </ul>
             </li>
             <li>Validation: Cross-artifact consistency (theory ↔ implementation ↔ tests), gradle builds pass</li>
-            <li>Deliverables: Git-committable artifacts across 8 stages</li>
+            <li>Deliverables: Git-committable artifacts across 10 stages</li>
         </ul>
 
-        <p><strong>Reflection:</strong></p>
-        <ul style="margin: 0.5rem 0 0 1.5rem;">
-            <li>Strengths demonstrated:
-                <ul style="margin: 0.25rem 0 0 1rem;">
-                    <li>Research-driven approach: Started with open questions, literature review (TAOCP, CLRS, arxiv) identified loser tree variant</li>
-                    <li>Multi-variant strategy: Baseline/standard/optimized implementations enable empirical comparison (not just "the answer")</li>
-                    <li>Pragmatic time management: Comprehensive benchmark design + focused execution + documented future work</li>
+        <h3>Reflection</h3>
+        <p><strong>Strengths demonstrated:</strong></p>
+        <ul>
+            <li>Research-driven approach: Started with open questions, literature review (TAOCP, CLRS, arxiv) identified loser tree variant</li>
+            <li>Multi-variant strategy: Baseline/standard/optimized implementations enable empirical comparison (not just "the answer")</li>
+            <li>Pragmatic time management: Comprehensive benchmark design + focused execution + documented future work</li>
+        </ul>
+
+        <p><strong>Areas for improvement:</strong></p>
+        <ul>
+            <li>Comparison count instrumentation needed to empirically validate 2× reduction claim</li>
+            <li>Full JMH execution would provide statistical confidence intervals</li>
+            <li>Testing at k=100-1000 would validate large-k predictions</li>
+        </ul>
+
+        <p><em>See <a href="08-summary/SUMMARY.html">Stage 8: Summary</a> for complete one-page summary.</em></p>
+
+        <div class="warning">
+            <h2>Critique and Scoring</h2>
+
+            <p><strong>Independent Reviewer Assessment (Stage 9):</strong> "Strong candidate artifact that demonstrates systematic methodology, theoretical rigor, and pragmatic engineering judgment. However, critical gaps in empirical validation and missing production-readiness concerns."</p>
+
+            <p><strong>Critical Gaps Identified:</strong></p>
+            <ul>
+                <li><strong>Loser Tree Bug:</strong> refill() is O(k) not O(log k) - iterates all nodes instead of traversing tournament path</li>
+                <li><strong>No Comparison Count Instrumentation:</strong> Core thesis (2× reduction) unproven empirically</li>
+                <li><strong>Build Tooling Struggles:</strong> When challenged on Gradle, reverted to hacks like "javac -cp ." instead of learning proper build system - strong anti-pattern showing lack of systems thinking</li>
+                <li><strong>Production Concerns Missing:</strong> No error handling, thread safety, monitoring, or graceful degradation</li>
+            </ul>
+
+            <p><strong>Skills Scorecard (Stage 10):</strong> Mean 7.4/10 across 10 CS500 skills <span class="badge badge-score">7.4/10</span></p>
+            <ul>
+                <li><strong>Exceptional (9/10):</strong> arxiv_research (Grafana 2024 find), test_data_design (systematic methodology)</li>
+                <li><strong>Strong (7-8/10):</strong> problem_specification, algorithmic_analysis, comparative_complexity, systems_design_patterns, unit_test_generation, self_consistency_checker</li>
+                <li><strong>Competent (5-6/10):</strong> java_codegen (critical bug), benchmark_design (not executed)</li>
+            </ul>
+
+            <p><strong>Overall Recommendation:</strong> <span class="badge badge-score">Conditional Hire - Technical Deep-Dive Required</span></p>
+
+            <p>Senior-level methodology with critical validation gaps. Candidate should be able to spot loser tree bug on whiteboard and explain why comparison count instrumentation is essential. If acknowledges gaps honestly and demonstrates debugging skills in real-time: Hire. If defends buggy code or can't explain trade-offs: No Hire.</p>
+
+            <p><em>See <a href="09-critique/REVIEW.html">Stage 9: Critique</a> and <a href="10-scoring/SCORECARD.html">Stage 10: Scorecard</a> for complete evaluation.</em></p>
+        </div>
+
+        <hr>
+
+        <h2>Research Stages</h2>
+
+        <ul class="stage-list">
+            <li>
+                <div class="stage-title">Stage 1: Formal Specification <span class="badge badge-complete">Complete</span></div>
+                <div class="stage-desc">Problem definition with research questions - poses questions, doesn't prescribe solutions</div>
+                <ul class="file-links">
+                    <li><a href="01-specification/problem-spec.html">Problem Specification (HTML)</a></li>
                 </ul>
             </li>
-            <li>Areas for improvement:
-                <ul style="margin: 0.25rem 0 0 1rem;">
-                    <li>Comparison count instrumentation needed to empirically validate 2× reduction claim</li>
-                    <li>Full JMH execution would provide statistical confidence intervals</li>
-                    <li>Testing at k=100-1000 would validate large-k predictions</li>
+
+            <li>
+                <div class="stage-title">Stage 2: Algorithmic Analysis <span class="badge badge-complete">Complete</span></div>
+                <div class="stage-desc">Discovery: Four algorithms achieve optimal Ω(N log k) bound - binary heap, winner tree, loser tree (Knuth preferred), d-ary heap</div>
+                <ul class="file-links">
+                    <li><a href="02-analysis/lower-bound.html">2A: Lower Bound Analysis</a></li>
+                    <li><a href="02-analysis/candidate-algorithms.html">2B: Candidate Algorithms</a></li>
+                    <li><a href="02-analysis/arxiv-survey.html">2C: Modern Literature Survey</a></li>
+                    <li><a href="02-analysis/README.html">Stage 2 Summary</a></li>
                 </ul>
             </li>
-            <li>Key differentiator: Research mindset (question before solution, systematic exploration, empirical validation)</li>
+
+            <li>
+                <div class="stage-title">Stage 3: Design Selection <span class="badge badge-complete">Complete</span></div>
+                <div class="stage-desc">Decision: Loser Tournament Tree selected based on Grafana 2024 production validation, 50% speedup in benchmarks, and Knuth's preference</div>
+                <ul class="file-links">
+                    <li><a href="03-design/comparative-analysis.html">Comparative Analysis</a></li>
+                    <li><a href="03-design/README.html">Stage 3 Summary</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <div class="stage-title">Stage 4: Implementation <span class="badge badge-complete">Complete</span></div>
+                <div class="stage-desc">Three algorithm variants for empirical comparison. All implementations compile and run successfully (Gradle 9.1)</div>
+                <ul class="file-links">
+                    <li><a href="04-implementation/README.html">Implementation Guide</a></li>
+                    <li><a href="04-implementation/java/src/main/java/com/research/iterator/LinearScanIterator.java">LinearScanIterator.java (O(Nk) Naive)</a></li>
+                    <li><a href="04-implementation/java/src/main/java/com/research/iterator/HeapBasedIterator.java">HeapBasedIterator.java (O(N log k) Standard)</a></li>
+                    <li><a href="04-implementation/java/src/main/java/com/research/iterator/LoserTreeIterator.java">LoserTreeIterator.java (O(N log k) Optimized)</a></li>
+                    <li><a href="04-implementation/java/src/main/java/com/research/iterator/ComparisonDemo.java">ComparisonDemo.java</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <div class="stage-title">Stage 5: Testing <span class="badge badge-complete">Complete</span></div>
+                <div class="stage-desc">Comprehensive JUnit 5 test suite: 70 tests, 0 failures. Shared base class ensures all variants pass identical tests</div>
+                <ul class="file-links">
+                    <li><a href="05-testing/README.html">Testing Strategy & Results</a></li>
+                    <li><a href="04-implementation/java/src/test/java/com/research/iterator/CollatingIteratorTestBase.java">CollatingIteratorTestBase.java</a></li>
+                    <li><a href="04-implementation/java/src/test/java/com/research/iterator/LinearScanIteratorTest.java">LinearScanIteratorTest.java (23 tests)</a></li>
+                    <li><a href="04-implementation/java/src/test/java/com/research/iterator/HeapBasedIteratorTest.java">HeapBasedIteratorTest.java (23 tests)</a></li>
+                    <li><a href="04-implementation/java/src/test/java/com/research/iterator/LoserTreeIteratorTest.java">LoserTreeIteratorTest.java (24 tests)</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <div class="stage-title">Stage 6: Benchmarking <span class="badge badge-complete">Complete</span></div>
+                <div class="stage-desc">Pragmatic benchmarking: comprehensive test data design (24 cases), quick 10-second validation (3 scenarios), full JMH infrastructure ready for future work</div>
+                <ul class="file-links">
+                    <li><a href="06-benchmarking/README.html">Benchmarking Strategy & Analysis</a></li>
+                    <li><a href="06-benchmarking/test-data-catalog.html">Test Data Catalog (24 test cases)</a></li>
+                    <li><a href="04-implementation/java/src/main/java/com/research/iterator/TestDataGenerator.java">TestDataGenerator.java</a></li>
+                    <li><a href="04-implementation/java/src/jmh/java/com/research/iterator/CollatingIteratorBenchmark.java">CollatingIteratorBenchmark.java (JMH)</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <div class="stage-title">Stage 7: Validation <span class="badge badge-complete">Complete</span></div>
+                <div class="stage-desc">End-to-end validation: cross-artifact consistency (theory ↔ code ↔ tests ↔ benchmarks), completeness audit, quality checks</div>
+                <ul class="file-links">
+                    <li><a href="07-validation/README.html">Validation Report</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <div class="stage-title">Stage 8: Summary <span class="badge badge-complete">Complete</span></div>
+                <div class="stage-desc">Concise summary: Problem (research questions not prescriptive), Solution (3 variants, loser tree selected), Results (70 tests pass, pragmatic benchmarking), Reflection (methodology strengths + areas for improvement)</div>
+                <ul class="file-links">
+                    <li><a href="08-summary/SUMMARY.html">One-Page Summary</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <div class="stage-title">Stage 9: Critique <span class="badge badge-complete">Complete</span></div>
+                <div class="stage-desc">Senior reviewer evaluation focusing on completeness. Critical gaps: loser tree O(k) bug, comparison count not instrumented, benchmarks not run, no production readiness</div>
+                <ul class="file-links">
+                    <li><a href="09-critique/REVIEW.html">Reviewer Evaluation</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <div class="stage-title">Stage 10: Scoring <span class="badge badge-complete">Complete</span></div>
+                <div class="stage-desc">Skills assessment (1-10 scale): Mean 7.4/10. Overall: Strong methodology with critical validation gaps</div>
+                <ul class="file-links">
+                    <li><a href="10-scoring/SCORECARD.html">Skills Scorecard</a></li>
+                </ul>
+            </li>
         </ul>
 
-        <p style="margin-top: 1rem;"><em>See <a href="08-summary/SUMMARY.html">Stage 8: Summary</a> for full one-page summary.</em></p>
-    </div>
+        <hr>
 
-    <h2>🔍 Critique and Scoring</h2>
-    <div style="background: #fff3cd; padding: 1.5rem; border-left: 4px solid #ffc107; margin: 1rem 0;">
-        <p><strong>Independent Reviewer Assessment (Stage 9):</strong> "Strong candidate artifact that demonstrates systematic methodology, theoretical rigor, and pragmatic engineering judgment. However, critical gaps in empirical validation and missing production-readiness concerns."</p>
+        <h2>Identified Improvements</h2>
+        <ol>
+            <li><strong>Fix Loser Tree Bug:</strong> Refill() currently O(k), should be O(log k) path traversal</li>
+            <li><strong>Add Instrumentation:</strong> Count comparisons to empirically validate 2× reduction claim</li>
+            <li><strong>Run Full JMH Suite:</strong> Execute 40-minute comprehensive benchmarks for production data</li>
+            <li><strong>Production Readiness:</strong> Add error handling, input validation, thread safety, monitoring</li>
+        </ol>
 
-        <p><strong>Critical Gaps Identified:</strong></p>
-        <ul style="margin: 0.5rem 0;">
-            <li><strong>Loser Tree Bug:</strong> refill() is O(k) not O(log k) - iterates all nodes instead of traversing tournament path</li>
-            <li><strong>No Comparison Count Instrumentation:</strong> Core thesis (2× reduction) unproven empirically</li>
-            <li><strong>Build Tooling Struggles:</strong> When challenged on Gradle, reverted to hacks like "javac -cp ." instead of learning proper build system - strong anti-pattern showing lack of systems thinking</li>
-            <li><strong>Production Concerns Missing:</strong> No error handling, thread safety, monitoring, or graceful degradation</li>
-        </ul>
-
-        <p><strong>Skills Scorecard (Stage 10):</strong> Mean 7.4/10 across 10 CS500 skills</p>
-        <ul style="margin: 0.5rem 0;">
-            <li><strong>Exceptional (9/10):</strong> arxiv_research (Grafana 2024 find), test_data_design (systematic methodology)</li>
-            <li><strong>Strong (7-8/10):</strong> problem_specification, algorithmic_analysis, comparative_complexity, systems_design_patterns, unit_test_generation, self_consistency_checker</li>
-            <li><strong>Competent (5-6/10):</strong> java_codegen (critical bug), benchmark_design (not executed)</li>
-        </ul>
-
-        <p><strong>Overall Recommendation:</strong> <span style="background: #ffc107; padding: 0.2rem 0.5rem; border-radius: 3px; font-weight: bold;">Conditional Hire - Technical Deep-Dive Required</span></p>
-        <p style="margin-bottom: 0;">Senior-level methodology with critical validation gaps. Candidate should be able to spot loser tree bug on whiteboard and explain why comparison count instrumentation is essential. If acknowledges gaps honestly and demonstrates debugging skills in real-time: Hire. If defends buggy code or can't explain trade-offs: No Hire.</p>
-
-        <p style="margin-top: 1rem;"><em>See <a href="09-critique/REVIEW.html">Stage 9: Critique</a> and <a href="10-scoring/SCORECARD.html">Stage 10: Scorecard</a> for complete evaluation.</em></p>
-    </div>
-
-    <hr>
-
-    <div class="stage">
-        <h2>✅ Stage 1: Formal Specification</h2>
-        <ul class="file-list">
-            <li>📄 <a href="01-specification/problem-spec.html">Problem Specification</a>
-                <span class="badge">HTML</span></li>
-        </ul>
-        <p><em>Problem definition with research questions - poses questions, doesn't prescribe solutions</em></p>
-    </div>
-
-    <div class="stage">
-        <h2>✅ Stage 2: Algorithmic Analysis</h2>
-        <ul class="file-list">
-            <li>📄 <a href="02-analysis/lower-bound.html">2A: Lower Bound Analysis</a>
-                <span class="badge">HTML</span></li>
-            <li>📄 <a href="02-analysis/candidate-algorithms.html">2B: Candidate Algorithms</a>
-                <span class="badge">HTML</span></li>
-            <li>📄 <a href="02-analysis/arxiv-survey.html">2C: Modern Literature Survey (Arxiv)</a>
-                <span class="badge">HTML</span></li>
-            <li>📄 <a href="02-analysis/README.html">Stage 2 Summary</a>
-                <span class="badge">HTML</span></li>
-        </ul>
-        <p><em>Discovery: Four algorithms achieve optimal Ω(N log k) bound - binary heap, winner tree, <strong>loser tree</strong> (Knuth preferred), d-ary heap</em></p>
-    </div>
-
-    <div class="stage">
-        <h2>✅ Stage 3: Design Selection</h2>
-        <ul class="file-list">
-            <li>📄 <a href="03-design/comparative-analysis.html">Comparative Analysis</a>
-                <span class="badge">HTML</span></li>
-            <li>📄 <a href="03-design/README.html">Stage 3 Summary</a>
-                <span class="badge">HTML</span></li>
-        </ul>
-        <p><em>Decision: <strong>Loser Tournament Tree</strong> selected based on Grafana 2024 production validation, 50% speedup in benchmarks, and Knuth's preference</em></p>
-    </div>
-
-    <div class="stage">
-        <h2>✅ Stage 4: Implementation</h2>
-        <ul class="file-list">
-            <li>📄 <a href="04-implementation/README.html">Implementation Guide</a>
-                <span class="badge">HTML</span></li>
-            <li>💻 <a href="04-implementation/java/src/main/java/com/research/iterator/LinearScanIterator.java">LinearScanIterator.java</a>
-                <span class="badge">O(Nk) Naive</span></li>
-            <li>💻 <a href="04-implementation/java/src/main/java/com/research/iterator/HeapBasedIterator.java">HeapBasedIterator.java</a>
-                <span class="badge">O(N log k) Standard</span></li>
-            <li>💻 <a href="04-implementation/java/src/main/java/com/research/iterator/LoserTreeIterator.java">LoserTreeIterator.java</a>
-                <span class="badge">O(N log k) Optimized</span></li>
-            <li>📋 <a href="04-implementation/java/src/main/java/com/research/iterator/ComparisonDemo.java">ComparisonDemo.java</a>
-                <span class="badge">Demo</span></li>
-        </ul>
-        <p><em>Three algorithm variants for empirical comparison. All implementations compile and run successfully (Gradle 9.1). Demonstrates multi-variant approach for benchmark validation.</em></p>
-    </div>
-
-    <div class="stage">
-        <h2>✅ Stage 5: Testing</h2>
-        <ul class="file-list">
-            <li>📄 <a href="05-testing/README.html">Testing Strategy & Results</a>
-                <span class="badge">HTML</span></li>
-            <li>💻 <a href="04-implementation/java/src/test/java/com/research/iterator/CollatingIteratorTestBase.java">CollatingIteratorTestBase.java</a>
-                <span class="badge">Shared Tests</span></li>
-            <li>💻 <a href="04-implementation/java/src/test/java/com/research/iterator/LinearScanIteratorTest.java">LinearScanIteratorTest.java</a>
-                <span class="badge">23 tests</span></li>
-            <li>💻 <a href="04-implementation/java/src/test/java/com/research/iterator/HeapBasedIteratorTest.java">HeapBasedIteratorTest.java</a>
-                <span class="badge">23 tests</span></li>
-            <li>💻 <a href="04-implementation/java/src/test/java/com/research/iterator/LoserTreeIteratorTest.java">LoserTreeIteratorTest.java</a>
-                <span class="badge">24 tests</span></li>
-        </ul>
-        <p><em>Comprehensive JUnit 5 test suite: 70 tests, 0 failures. Shared base class ensures all variants pass identical tests. Contract, correctness, edge cases, and property tests.</em></p>
-    </div>
-
-    <div class="stage">
-        <h2>✅ Stage 6: Benchmarking</h2>
-        <ul class="file-list">
-            <li>📄 <a href="06-benchmarking/README.html">Benchmarking Strategy & Analysis</a>
-                <span class="badge">HTML</span></li>
-            <li>📄 <a href="06-benchmarking/test-data-catalog.html">Test Data Catalog</a>
-                <span class="badge">24 test cases</span></li>
-            <li>💻 <a href="04-implementation/java/src/main/java/com/research/iterator/TestDataGenerator.java">TestDataGenerator.java</a>
-                <span class="badge">Data Generator</span></li>
-            <li>💻 <a href="04-implementation/java/src/jmh/java/com/research/iterator/CollatingIteratorBenchmark.java">CollatingIteratorBenchmark.java</a>
-                <span class="badge">JMH Benchmarks</span></li>
-        </ul>
-        <p><em>Pragmatic benchmarking: comprehensive test data design (24 cases), quick 10-second validation (3 scenarios), full JMH infrastructure ready for future work (40+ min). Demonstrates top-candidate balance: thorough design + focused execution + documented future work.</em></p>
-    </div>
-
-    <div class="stage">
-        <h2>✅ Stage 7: Validation</h2>
-        <ul class="file-list">
-            <li>📄 <a href="07-validation/README.html">Validation Report</a>
-                <span class="badge">HTML</span></li>
-        </ul>
-        <p><em>End-to-end validation: cross-artifact consistency (theory ↔ code ↔ tests ↔ benchmarks), completeness audit (all stages present), quality checks. Status: ✅ READY FOR PRESENTATION. All checks passed, limitations documented.</em></p>
-    </div>
-
-    <div class="stage">
-        <h2>✅ Stage 8: Summary</h2>
-        <ul class="file-list">
-            <li>📄 <a href="08-summary/SUMMARY.html">One-Page Summary</a>
-                <span class="badge">4 paragraphs</span></li>
-        </ul>
-        <p><em>Concise summary: Problem (research questions not prescriptive), Solution (3 variants, loser tree selected), Results (70 tests pass, pragmatic benchmarking), Reflection (methodology strengths + areas for improvement).</em></p>
-    </div>
-
-    <div class="stage">
-        <h2>✅ Stage 9: Critique</h2>
-        <ul class="file-list">
-            <li>📄 <a href="09-critique/REVIEW.html">Reviewer Evaluation</a>
-                <span class="badge">Gaps Analysis</span></li>
-        </ul>
-        <p><em>Senior reviewer evaluation focusing on completeness. Critical gaps: loser tree O(k) bug, comparison count not instrumented, benchmarks not run, no production readiness. Recommendation: Conditional Hire with technical deep-dive required.</em></p>
-    </div>
-
-    <div class="stage">
-        <h2>✅ Stage 10: Scoring</h2>
-        <ul class="file-list">
-            <li>📄 <a href="10-scoring/SCORECARD.html">Skills Scorecard</a>
-                <span class="badge">10 skills rated</span></li>
-        </ul>
-        <p><em>Skills assessment (1-10 scale): Mean 7.4/10. Exceptional (9/10): arxiv_research, test_data_design. Strong (7-8/10): 6 skills. Competent (5-6/10): java_codegen, benchmark_design. Overall: Strong methodology with critical validation gaps.</em></p>
-    </div>
-
-    <hr>
-
-    <h2>🔧 Identified Improvements (from Stage 9 Critique)</h2>
-    <ol>
-        <li><strong>Fix Loser Tree Bug:</strong> Refill() currently O(k), should be O(log k) path traversal</li>
-        <li><strong>Add Instrumentation:</strong> Count comparisons to empirically validate 2× reduction claim</li>
-        <li><strong>Run Full JMH Suite:</strong> Execute 40-minute comprehensive benchmarks for production data</li>
-        <li><strong>Production Readiness:</strong> Add error handling, input validation, thread safety, monitoring</li>
-    </ol>
-    <p><em>See <a href="09-critique/REVIEW.html">Stage 9 Critique</a> for complete gap analysis. Overall recommendation: "Conditional Hire with technical deep-dive required."</em></p>
-
-    <hr>
-
-    <footer>
-        <p><small>Generated: October 2025 | CS500 Advanced Algorithms Research Artifact</small></p>
-        <p><small>🤖 Created with <a href="https://claude.com/claude-code">Claude Code</a> research pipeline</small></p>
-    </footer>
+        <footer>
+            <p>Generated: October 2025 | CS500 Advanced Algorithms Research Artifact</p>
+            <p>Created with <a href="https://claude.com/claude-code">Claude Code</a> research pipeline</p>
+        </footer>
+    </main>
 </body>
 </html>
