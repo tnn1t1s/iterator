@@ -1,0 +1,198 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+
+\title{Collating Iterator: Lower Bound Analysis}
+\author{Research Artifact - Stage 2A}
+\date{October 2025}
+
+\begin{document}
+\maketitle
+
+\section{Research Question}
+
+From Stage 1: \textit{``What is the minimum number of comparisons required for any comparison-based k-way merge algorithm?''}
+
+\section{Problem Setup}
+
+We have:
+\begin{itemize}
+    \item $k$ sorted sequences (iterators)
+    \item $N = \sum_{i=0}^{k-1} n_i$ total elements across all sequences
+    \item Each sequence $i$ has $n_i$ elements
+    \item Goal: Merge into single sorted sequence
+    \item Model: Comparison-based (can only use compareTo() operations)
+\end{itemize}
+
+\section{Lower Bound via Decision Tree}
+
+\subsection{Decision Tree Model}
+
+Any comparison-based algorithm can be represented as a decision tree:
+\begin{itemize}
+    \item Internal nodes: comparisons between elements
+    \item Leaves: output permutations
+    \item Path from root to leaf: sequence of comparisons determining output order
+\end{itemize}
+
+\subsection{Counting Possible Outputs}
+
+How many possible merged outputs exist?
+
+\begin{lemma}[Output Permutations]
+The number of distinct merged sequences is the multinomial coefficient:
+\[
+\binom{N}{n_0, n_1, \ldots, n_{k-1}} = \frac{N!}{n_0! \cdot n_1! \cdot \ldots \cdot n_{k-1}!}
+\]
+\end{lemma}
+
+\begin{proof}
+We must choose:
+\begin{itemize}
+    \item Which $n_0$ of $N$ positions for elements from sequence 0
+    \item Which $n_1$ of remaining $N-n_0$ positions for sequence 1
+    \item And so on...
+\end{itemize}
+
+Since elements within each sequence maintain relative order, only the interleaving matters.
+$\square$
+\end{proof}
+
+\subsection{Decision Tree Depth}
+
+\begin{theorem}[Comparison Lower Bound]
+Any comparison-based k-way merge algorithm requires at least
+\[
+\log_2 \binom{N}{n_0, n_1, \ldots, n_{k-1}}
+\]
+comparisons in the worst case.
+\end{theorem}
+
+\begin{proof}
+The decision tree must have at least $\binom{N}{n_0, \ldots, n_{k-1}}$ leaves (one per possible output).
+
+A binary tree of depth $d$ has at most $2^d$ leaves.
+
+Therefore:
+\[
+2^d \geq \binom{N}{n_0, n_1, \ldots, n_{k-1}}
+\]
+
+Taking $\log_2$ of both sides:
+\[
+d \geq \log_2 \binom{N}{n_0, n_1, \ldots, n_{k-1}}
+\]
+
+The depth $d$ is the number of comparisons in the worst case. $\square$
+\end{proof}
+
+\section{Simplified Bounds}
+
+\subsection{Equal-Length Sequences}
+
+When $n_i = N/k$ for all $i$ (equal-length sequences):
+
+\begin{theorem}[Equal-Length Lower Bound]
+For $k$ sequences of equal length $N/k$, any comparison-based merge requires
+\[
+\Omega(N \log k)
+\]
+comparisons.
+\end{theorem}
+
+\begin{proof}
+\begin{align*}
+\log_2 \binom{N}{N/k, \ldots, N/k} &= \log_2 \frac{N!}{(N/k!)^k} \\
+&= \log_2 N! - k \log_2(N/k!) \\
+&\approx N \log N - k \cdot \frac{N}{k} \log \frac{N}{k} \quad \text{(Stirling)} \\
+&= N \log N - N(\log N - \log k) \\
+&= N \log k
+\end{align*}
+
+Therefore, $\Omega(N \log k)$ comparisons required. $\square$
+\end{proof}
+
+\subsection{Worst-Case Bound}
+
+Even without equal lengths:
+
+\begin{theorem}[General Lower Bound]
+For any distribution of $N$ elements across $k$ sequences, a comparison-based merge requires at least $\Omega(N \log k)$ comparisons.
+\end{theorem}
+
+\begin{proof}[Proof Sketch]
+At each output position, we must determine which of $k$ sequences supplies the next element.
+
+This is a k-way decision requiring $\log_2 k$ comparisons per position (in general).
+
+With $N$ positions, total: $\Omega(N \log k)$ comparisons. $\square$
+\end{proof}
+
+\section{Intuitive Argument}
+
+Another way to see this:
+
+\textbf{Per-Element Cost}: For each element output, we must identify the minimum among $k$ candidates (one from each non-empty sequence).
+
+\textbf{Finding Minimum}: Finding the minimum of $k$ elements requires $\log_2 k$ comparisons in a comparison-based model (this is the selection problem).
+
+\textbf{Total Cost}: $N$ elements $\times$ $\log_2 k$ comparisons per element $= \Omega(N \log k)$.
+
+\section{Tightness}
+
+This bound is \textbf{tight} (achievable) because:
+\begin{itemize}
+    \item Sorting $N$ elements requires $\Omega(N \log N)$ comparisons
+    \item K-way merge is easier: we know relative order within each sequence
+    \item The $\Omega(N \log k)$ bound captures exactly the uncertainty from interleaving $k$ sequences
+    \item We will show in subsequent analysis that algorithms achieving this bound exist
+\end{itemize}
+
+\section{Space Lower Bound}
+
+\textbf{Question from Stage 1}: Can we achieve better than $O(N)$ auxiliary space?
+
+\textbf{Answer}: Yes! We only need to track progress through the $k$ iterators.
+
+\begin{theorem}[Space Lower Bound]
+Merging $k$ sorted iterators requires at least $\Omega(k)$ auxiliary space.
+\end{theorem}
+
+\begin{proof}
+We must maintain:
+\begin{itemize}
+    \item State for each of $k$ iterators (e.g., current position)
+    \item At minimum, $k$ references/pointers
+\end{itemize}
+
+Therefore, $\Omega(k)$ space required.
+
+Since $k \ll N$ typically, this is much better than $O(N)$. $\square$
+\end{proof}
+
+\section{Summary of Lower Bounds}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\hline
+\textbf{Resource} & \textbf{Lower Bound} \\
+\hline
+Comparisons (worst-case) & $\Omega(N \log k)$ \\
+Comparisons (average-case) & $\Omega(N \log k)$ \\
+Time (assuming $O(1)$ comparisons) & $\Omega(N \log k)$ \\
+Auxiliary Space & $\Omega(k)$ \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Key Insight}: Any algorithm achieving $O(N \log k)$ time and $O(k)$ space is asymptotically optimal for this problem.
+
+\section{What's Next?}
+
+Stage 2B will explore \textit{which} algorithms (if any) achieve these lower bounds.
+
+\end{document}

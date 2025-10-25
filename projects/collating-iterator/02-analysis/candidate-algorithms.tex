@@ -1,0 +1,291 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{invariant}{Invariant}
+
+\title{Collating Iterator: Candidate Algorithms}
+\author{Research Artifact - Stage 2B}
+\date{October 2025}
+
+\begin{document}
+\maketitle
+
+\section{Research Question}
+
+From Stage 1 and Stage 2A: \textit{``Which algorithms (if any) achieve the $\Omega(N \log k)$ lower bound?''}
+
+We know from Stage 2A that $\Omega(N \log k)$ comparisons are required. Now we explore which algorithms achieve this bound.
+
+\section{Candidate Approaches}
+
+Without assuming the answer, we consider five natural approaches:
+
+\begin{enumerate}
+    \item \textbf{Linear Scan}: Check all $k$ iterators for minimum each time
+    \item \textbf{Priority Queue}: Use a data structure optimized for repeated minimum extraction
+    \item \textbf{Tournament Tree}: Track minimums via complete binary tree
+    \item \textbf{Pairwise Merging}: Recursively merge pairs
+    \item \textbf{Collect-and-Sort}: Materialize all elements, sort, return
+\end{enumerate}
+
+\section{Approach 1: Linear Scan}
+
+\subsection{Algorithm}
+
+\begin{algorithm}
+\caption{Linear Scan K-Way Merge}
+\begin{algorithmic}[1]
+\State \textbf{next()}:
+\State $\text{minVal} \gets \infty$
+\State $\text{minIdx} \gets -1$
+\For{$i \gets 0$ to $k-1$}
+    \If{$\text{iterators}[i].\texttt{hasNext()}$}
+        \State $\text{val} \gets \text{iterators}[i].\texttt{peek()}$
+        \If{$\text{val} < \text{minVal}$}
+            \State $\text{minVal} \gets \text{val}$
+            \State $\text{minIdx} \gets i$
+        \EndIf
+    \EndIf
+\EndFor
+\State $\text{iterators}[\text{minIdx}].\texttt{next()}$
+\State \Return $\text{minVal}$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Analysis}
+
+\textbf{Time Complexity}:
+\begin{itemize}
+    \item Per \texttt{next()}: $O(k)$ (scan all iterators)
+    \item Total: $O(Nk)$ for $N$ elements
+\end{itemize}
+
+\textbf{Space Complexity}:
+\begin{itemize}
+    \item Auxiliary: $O(k)$ (iterator references only)
+\end{itemize}
+
+\textbf{Comparison to Lower Bound}:
+\[
+O(Nk) \gg \Omega(N \log k) \quad \text{for } k > \log k
+\]
+
+\textbf{Verdict}: \textcolor{red}{Sub-optimal asymptotically for $k > $ constant}
+
+\textbf{When Competitive}: For small $k$ (say $k \leq 8$), the simplicity and cache locality may make this practical despite poor asymptotics.
+
+\section{Approach 2: Priority Queue}
+
+\subsection{Algorithm Idea}
+
+Maintain a priority queue (min-heap or similar structure) containing:
+\begin{itemize}
+    \item One element from each non-empty iterator
+    \item Each entry: (element value, source iterator)
+\end{itemize}
+
+Operations:
+\begin{itemize}
+    \item \texttt{extractMin()}: Remove minimum from queue
+    \item Refill: Advance source iterator, insert next element
+\end{itemize}
+
+\subsection{Binary Min-Heap Implementation}
+
+\begin{algorithm}
+\caption{Priority Queue K-Way Merge}
+\begin{algorithmic}[1]
+\State \textbf{Initialize}:
+\State $H \gets \text{empty min-heap}$
+\For{each iterator $I_i$}
+    \If{$I_i.\texttt{hasNext()}$}
+        \State $H.\texttt{insert}((I_i.\texttt{next}(), I_i))$
+    \EndIf
+\EndFor
+\State
+\State \textbf{next()}:
+\State $(val, iter) \gets H.\texttt{extractMin}()$
+\If{$iter.\texttt{hasNext()}$}
+    \State $H.\texttt{insert}((iter.\texttt{next}(), iter))$
+\EndIf
+\State \Return $val$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Analysis}
+
+\textbf{Heap Operations}:
+\begin{itemize}
+    \item \texttt{insert()}: $O(\log k)$ (sift-up)
+    \item \texttt{extractMin()}: $O(\log k)$ (sift-down)
+    \item Heap size: At most $k$ elements
+\end{itemize}
+
+\textbf{Time Complexity}:
+\begin{itemize}
+    \item Initialization: $O(k \log k)$ (or $O(k)$ with heapify)
+    \item Per \texttt{next()}: $O(\log k)$
+    \item Total: $O(k \log k + N \log k) = O(N \log k)$
+\end{itemize}
+
+\textbf{Space Complexity}:
+\begin{itemize}
+    \item Auxiliary: $O(k)$ (heap storage)
+\end{itemize}
+
+\textbf{Comparison to Lower Bound}:
+\[
+O(N \log k) = \Omega(N \log k)
+\]
+
+\textbf{Verdict}: \textcolor{green}{Asymptotically optimal! Matches lower bound.}
+
+\subsection{Correctness}
+
+\begin{invariant}[Heap Invariant]
+At the start of each \texttt{next()} call:
+\begin{enumerate}
+    \item $H$ contains at most one element from each non-exhausted iterator
+    \item Each element in $H$ is the next unconsumed element from its source iterator (the minimum remaining)
+    \item All elements output so far are $\leq$ all elements in $H$
+\end{enumerate}
+\end{invariant}
+
+\begin{proof}[Correctness Proof]
+\textbf{Initialization}: Insert first element from each iterator. By definition, first elements are minimums of their iterators. Invariant holds.
+
+\textbf{Maintenance}:
+\begin{itemize}
+    \item Extract minimum $v$ from $H$
+    \item By heap property: $v \leq $ all other elements in $H$
+    \item By invariant (2): Elements in $H$ are minimums of their iterators
+    \item Therefore: $v \leq $ all remaining elements globally
+    \item Refill from source iterator: New element is next minimum from that iterator
+    \item Invariant maintained
+\end{itemize}
+
+\textbf{Termination}: $H$ becomes empty iff all iterators exhausted. All $N$ elements extracted in sorted order. $\square$
+\end{proof}
+
+\section{Approach 3: Tournament Tree}
+
+\subsection{Algorithm Idea}
+
+Build a complete binary tree with:
+\begin{itemize}
+    \item $k$ leaves (one per iterator)
+    \item Each internal node: minimum of its children
+    \item Root: global minimum
+\end{itemize}
+
+\subsection{Analysis}
+
+\textbf{Time Complexity}:
+\begin{itemize}
+    \item Per \texttt{next()}: Extract root, refill leaf, propagate up
+    \item Propagation cost: $O(\log k)$ (tree height)
+    \item Total: $O(N \log k)$
+\end{itemize}
+
+\textbf{Space Complexity}:
+\begin{itemize}
+    \item Auxiliary: $O(k)$ (tree nodes)
+\end{itemize}
+
+\textbf{Comparison to Lower Bound}:
+\[
+O(N \log k) = \Omega(N \log k)
+\]
+
+\textbf{Verdict}: \textcolor{green}{Asymptotically optimal! Matches lower bound.}
+
+\textbf{Comparison to Heap}: Same asymptotic complexity. Constant factors differ (see Stage 3).
+
+\section{Approach 4: Pairwise Merging}
+
+\subsection{Algorithm Idea}
+
+Recursively merge iterators in pairs:
+\[
+((I_0 \oplus I_1) \oplus (I_2 \oplus I_3)) \oplus \ldots
+\]
+
+\subsection{Analysis}
+
+\textbf{Problem}: Violates lazy evaluation requirement!
+
+Pairwise merging forces materialization of intermediate results. For example, $(I_0 \oplus I_1)$ must complete before merging with $(I_2 \oplus I_3)$.
+
+\textbf{Time Complexity}: $O(N \log k)$ if we materialize intermediates.
+
+\textbf{Space Complexity}: $O(N)$ (must store intermediate merged sequences).
+
+\textbf{Verdict}: \textcolor{red}{Violates problem constraints (lazy evaluation)}. Space requirement $O(N) \gg O(k)$.
+
+\textbf{When Useful}: Parallel merging (divide-and-conquer parallelizes naturally). Different problem domain.
+
+\section{Approach 5: Collect-and-Sort}
+
+\subsection{Algorithm}
+
+\begin{algorithmic}
+\State Consume all $k$ iterators into array $A$
+\State Sort $A$
+\State Return sequential iterator over $A$
+\end{algorithmic}
+
+\subsection{Analysis}
+
+\textbf{Time Complexity}: $O(N \log N)$
+
+\textbf{Space Complexity}: $O(N)$ (must store all elements)
+
+\textbf{Comparison to Lower Bound}:
+\[
+O(N \log N) \gg O(N \log k) \quad \text{when } k \ll N
+\]
+
+\textbf{Verdict}: \textcolor{red}{Sub-optimal}. Doesn't exploit pre-sorted property of inputs. Violates lazy evaluation and space constraints.
+
+\section{Summary of Candidate Algorithms}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Approach} & \textbf{Time} & \textbf{Space} & \textbf{Lazy?} & \textbf{Optimal?} \\
+\midrule
+Linear Scan & $O(Nk)$ & $O(k)$ & Yes & No \\
+Priority Queue (Heap) & $O(N \log k)$ & $O(k)$ & Yes & \textbf{Yes} \\
+Tournament Tree & $O(N \log k)$ & $O(k)$ & Yes & \textbf{Yes} \\
+Pairwise Merge & $O(N \log k)$ & $O(N)$ & No & No \\
+Collect-and-Sort & $O(N \log N)$ & $O(N)$ & No & No \\
+\bottomrule
+\end{tabular}
+\caption{Comparison of candidate algorithms}
+\end{table}
+
+\section{Conclusion}
+
+\textbf{Discovery}: Two approaches achieve the $\Omega(N \log k)$ lower bound:
+\begin{enumerate}
+    \item \textbf{Priority Queue} (binary min-heap)
+    \item \textbf{Tournament Tree}
+\end{enumerate}
+
+Both are \textbf{asymptotically optimal} with:
+\begin{itemize}
+    \item Time: $O(N \log k)$ (matches lower bound)
+    \item Space: $O(k)$ (matches lower bound)
+    \item Lazy evaluation: Yes
+\end{itemize}
+
+\textbf{Open Question}: Which is better in practice? Both have $O(N \log k)$ complexity, but constant factors differ. This is explored in Stage 3 (Comparative Complexity).
+
+\end{document}
