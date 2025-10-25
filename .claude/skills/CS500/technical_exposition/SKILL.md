@@ -12,7 +12,55 @@ Produce clear, rigorous technical writing suitable for graduate-level systems co
 
 ## Document Structure
 
-### 1. Abstract (150-250 words)
+### 0. One-Page Executive Summary (for senior reviewers)
+
+**Purpose**: L7/L8 engineers scan hundreds of these per week. Make it scannable.
+
+**Format Requirements**:
+- **4 sections**: Problem, Solution, Results, Reflection
+- **Bulleted lists**: No dense paragraphs - bullets for all key points
+- **Quantitative**: Every claim has numbers (50% speedup, 70 tests, 7.4/10)
+- **Scannable**: Senior engineer should grok in 30 seconds
+- **Crisp**: No filler words, direct language
+
+**Structure**:
+
+```markdown
+**Problem:**
+- Challenge: [one sentence]
+- Research question: [what are we discovering, not prescribing]
+- Required: [systematic exploration bullet points]
+
+**Solution:**
+- Lower bounds: [Ω notation with reasoning]
+- Candidates evaluated: [list with O() + key trade-offs]
+- Selected approach: [choice + production validation cite]
+- Multi-variant strategy: [baseline, standard, optimized for empirical comparison]
+
+**Results:**
+- Tests: [number passing, architecture pattern]
+- Benchmarking approach: [comprehensive design, focused execution, documented future work]
+- Validation: [cross-artifact consistency checks]
+- Deliverables: [what's git-committable]
+
+**Reflection:**
+- Methodology wins: [what worked well]
+- Key differentiators: [what separates strong from weak candidates]
+- Gaps acknowledged: [areas for improvement with specifics]
+- Overall demonstration: [senior mindset shown]
+```
+
+**Anti-patterns** (immediate "no hire"):
+- Dense paragraph prose (unreadable for scanning)
+- Missing quantification ("faster" not "50% faster")
+- No self-awareness (doesn't acknowledge gaps)
+- Vague claims (no production validation cites)
+- Meta-commentary about process ("avoided solution leak", "initially missed", "succeeded in")
+- Talking about yourself/interviewer collaboration ("we", "the methodology")
+
+**Voice**: Candidate presenting their work, NOT candidate reflecting on collaboration with interviewer
+
+### 1. Abstract (150-250 words - for full papers)
 - Problem statement
 - Approach
 - Key findings (quantitative)

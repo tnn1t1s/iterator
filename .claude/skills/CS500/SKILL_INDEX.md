@@ -1,6 +1,6 @@
 # CS500 Skills Quick Reference
 
-One-line descriptions for all 19 skills + orchestrator.
+One-line descriptions for all CS500 skills.
 
 ## 🧠 Core Reasoning & Research
 
@@ -28,15 +28,16 @@ One-line descriptions for all 19 skills + orchestrator.
 
 | Skill | Trigger Keywords | Output |
 |-------|-----------------|--------|
-| **multi_language_codegen** | "implement in Java/C++/Rust", "idiomatic code" | Three implementations |
-| **unit_test_generation** | "write tests", "test edge cases", "validate invariants" | JUnit/Catch2/Rust tests |
+| **java_codegen** | "implement in Java", "idiomatic code", "multiple variants" | Java implementations with proper file organization |
+| **unit_test_generation** | "write tests", "test edge cases", "validate invariants" | JUnit tests |
 | **safety_invariants** | "add assertions", "bounds checks", "safety checks" | Code with invariant validation |
 
 ## 📊 Benchmarking & Measurement
 
 | Skill | Trigger Keywords | Output |
 |-------|-----------------|--------|
-| **benchmark_design** | "benchmark", "measure performance", "throughput" | JMH/Google/Criterion benchmarks |
+| **test_data_design** | "test data", "edge cases", "benchmark inputs", "data-driven" | Comprehensive test data catalog with edge cases, outliers, realistic distributions |
+| **benchmark_design** | "benchmark", "measure performance", "throughput" | JMH benchmarks with data-driven parameterization |
 | **performance_interpretation** | "interpret results", "explain bottleneck", "why slower" | Systems-level analysis |
 | **reporting_visualization** | "format results", "tables", "charts" | Markdown tables + charts |
 

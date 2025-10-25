@@ -10,6 +10,8 @@ allowed-tools: Read, Write, Edit, Bash, Grep, Glob
 
 Design rigorous, reproducible benchmarks that isolate performance characteristics and minimize measurement noise.
 
+**CRITICAL**: Before designing benchmarks, use the `test_data_design` skill to create comprehensive test data covering edge cases, outliers, and realistic distributions. Top candidates design data-driven benchmarks that systematically explore the input space.
+
 ## Benchmark Principles (1999-2002 Era)
 
 1. **Measure what matters**: Throughput (ops/sec) and latency (ns/op)
@@ -130,5 +132,6 @@ fn merge_benchmark(c: &mut Criterion) {
 
 ## Cross-Skill Integration
 
-Requires: multi_language_codegen (code to benchmark)
+Requires: java_codegen (code to benchmark), test_data_design (comprehensive test inputs)
 Feeds into: performance_interpretation, reporting_visualization
+Related: test_data_design (use FIRST to design test data catalog)

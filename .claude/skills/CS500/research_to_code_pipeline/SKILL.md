@@ -45,9 +45,9 @@ Coordinate the complete research workflow, ensuring each stage builds on previou
 **Checkpoint**: All tests pass, coverage ≥90%
 
 ### Stage 6: Benchmarking
-**Skills**: benchmark_design, performance_interpretation
-**Output**: Performance measurements and analysis
-**Checkpoint**: Results match theoretical predictions (within ±20%)
+**Skills**: test_data_design (FIRST), benchmark_design, performance_interpretation
+**Output**: Test data catalog, performance measurements, and analysis
+**Checkpoint**: Comprehensive test data covers edge cases; results match theoretical predictions (within ±20%)
 
 ### Stage 7: Reporting
 **Skills**: reporting_visualization, technical_exposition, pedagogical_reflection, temporal_style_adapter

@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>test-data-catalog</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
+</head>
+<body>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#benchmark-test-data-catalog"
+id="toc-benchmark-test-data-catalog">Benchmark Test Data Catalog</a>
+<ul>
+<li><a href="#purpose" id="toc-purpose">Purpose</a></li>
+<li><a href="#dimension-analysis" id="toc-dimension-analysis">Dimension
+Analysis</a>
+<ul>
+<li><a href="#k-number-of-iterators" id="toc-k-number-of-iterators">1. k
+(number of iterators)</a></li>
+<li><a href="#n-total-elements" id="toc-n-total-elements">2. N (total
+elements)</a></li>
+<li><a href="#distribution-how-elements-spread-across-iterators"
+id="toc-distribution-how-elements-spread-across-iterators">3.
+Distribution (how elements spread across iterators)</a></li>
+<li><a href="#value-pattern-how-values-are-distributed"
+id="toc-value-pattern-how-values-are-distributed">4. Value Pattern (how
+values are distributed)</a></li>
+<li><a href="#iterator-exhaustion-pattern"
+id="toc-iterator-exhaustion-pattern">5. Iterator Exhaustion
+Pattern</a></li>
+</ul></li>
+<li><a href="#test-case-matrix" id="toc-test-case-matrix">Test Case
+Matrix</a>
+<ul>
+<li><a href="#baseline-cases-small-scale"
+id="toc-baseline-cases-small-scale">Baseline Cases (Small
+Scale)</a></li>
+<li><a href="#small-k-linear-scan-competitive"
+id="toc-small-k-linear-scan-competitive">Small k (Linear Scan
+Competitive)</a></li>
+<li><a href="#medium-k-heap-vs-tree"
+id="toc-medium-k-heap-vs-tree">Medium k (Heap vs Tree)</a></li>
+<li><a href="#large-k-loser-tree-advantage"
+id="toc-large-k-loser-tree-advantage">Large k (Loser Tree
+Advantage)</a></li>
+<li><a href="#edge-cases" id="toc-edge-cases">Edge Cases</a></li>
+<li><a href="#adversarial-cases" id="toc-adversarial-cases">Adversarial
+Cases</a></li>
+<li><a href="#realistic-cases" id="toc-realistic-cases">Realistic
+Cases</a></li>
+</ul></li>
+<li><a href="#total-test-cases" id="toc-total-test-cases">Total Test
+Cases</a></li>
+<li><a href="#data-generation-specifications"
+id="toc-data-generation-specifications">Data Generation
+Specifications</a>
+<ul>
+<li><a href="#uniform-distribution"
+id="toc-uniform-distribution">Uniform Distribution</a></li>
+<li><a href="#skewed-distribution" id="toc-skewed-distribution">Skewed
+Distribution</a></li>
+<li><a href="#sequential-pattern" id="toc-sequential-pattern">Sequential
+Pattern</a></li>
+<li><a href="#alternating-pattern-adversarial"
+id="toc-alternating-pattern-adversarial">Alternating Pattern
+(Adversarial)</a></li>
+<li><a href="#clustered-pattern" id="toc-clustered-pattern">Clustered
+Pattern</a></li>
+</ul></li>
+<li><a href="#performance-predictions"
+id="toc-performance-predictions">Performance Predictions</a></li>
+<li><a href="#benchmark-methodology"
+id="toc-benchmark-methodology">Benchmark Methodology</a></li>
+<li><a href="#success-criteria" id="toc-success-criteria">Success
+Criteria</a></li>
+<li><a href="#next-steps" id="toc-next-steps">Next Steps</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="benchmark-test-data-catalog">Benchmark Test Data Catalog</h1>
+<h2 id="purpose">Purpose</h2>
+<p>Systematic exploration of k-way merge input space to expose
+performance characteristics across all algorithm variants (LinearScan,
+HeapBased, LoserTree).</p>
+<p><strong>Key insight</strong>: Top candidates design data-driven
+benchmarks that systematically vary independent dimensions rather than
+ad-hoc “typical” cases.</p>
+<h2 id="dimension-analysis">Dimension Analysis</h2>
+<p>For k-way merge CollatingIterator, the critical dimensions are:</p>
+<h3 id="k-number-of-iterators">1. k (number of iterators)</h3>
+<p><strong>Drives asymptotic complexity</strong>: O(Nk) vs O(N log
+k)</p>
+<ul>
+<li><strong>k=1</strong>: Degenerate case (passthrough)</li>
+<li><strong>k=2</strong>: Minimal merge</li>
+<li><strong>k=3-8</strong>: Small k where linear scan competitive (cache
+locality dominates)</li>
+<li><strong>k=10-50</strong>: Medium k where heap/tree advantages
+emerge</li>
+<li><strong>k=100-1000</strong>: Large k where comparison count
+dominates</li>
+</ul>
+<h3 id="n-total-elements">2. N (total elements)</h3>
+<p><strong>Drives total work</strong></p>
+<ul>
+<li><strong>N=1K</strong>: Tiny (overhead dominates)</li>
+<li><strong>N=10K</strong>: Small (typical in-memory)</li>
+<li><strong>N=100K</strong>: Medium (realistic)</li>
+<li><strong>N=1M</strong>: Large (stress test)</li>
+</ul>
+<h3 id="distribution-how-elements-spread-across-iterators">3.
+Distribution (how elements spread across iterators)</h3>
+<p><strong>Affects heap/tree balance</strong></p>
+<ul>
+<li><strong>Uniform</strong>: N/k elements per iterator (balanced)</li>
+<li><strong>Skewed</strong>: First iterator has 80%, rest share 20%
+(unbalanced)</li>
+<li><strong>Power-law</strong>: Few iterators have most elements</li>
+<li><strong>Single-dominant</strong>: One iterator has almost all N
+elements</li>
+</ul>
+<h3 id="value-pattern-how-values-are-distributed">4. Value Pattern (how
+values are distributed)</h3>
+<p><strong>Affects comparison patterns and cache behavior</strong></p>
+<ul>
+<li><strong>Random</strong>: Uniformly random values in [0, MAX)</li>
+<li><strong>Sequential</strong>: Values 0, 1, 2, …, N-1 interleaved
+across iterators</li>
+<li><strong>Clustered</strong>: Values grouped in ranges</li>
+<li><strong>Alternating</strong>: Designed to maximize comparisons
+(adversarial)</li>
+</ul>
+<h3 id="iterator-exhaustion-pattern">5. Iterator Exhaustion Pattern</h3>
+<p><strong>Tests end-game behavior</strong></p>
+<ul>
+<li><strong>Simultaneous</strong>: All iterators finish at roughly same
+time</li>
+<li><strong>Sequential</strong>: Iterators exhaust one-by-one</li>
+<li><strong>Early</strong>: Most iterators finish early, one long
+tail</li>
+<li><strong>Random</strong>: Unpredictable exhaustion order</li>
+</ul>
+<h2 id="test-case-matrix">Test Case Matrix</h2>
+<h3 id="baseline-cases-small-scale">Baseline Cases (Small Scale)</h3>
+<table>
+<thead>
+<tr class="header">
+<th>ID</th>
+<th>k</th>
+<th>N</th>
+<th>Distribution</th>
+<th>Pattern</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>baseline-k2</code></td>
+<td>2</td>
+<td>10K</td>
+<td>Uniform</td>
+<td>Random</td>
+<td>Minimal merge baseline</td>
+</tr>
+<tr class="even">
+<td><code>baseline-k3</code></td>
+<td>3</td>
+<td>10K</td>
+<td>Uniform</td>
+<td>Random</td>
+<td>Classic 3-way merge</td>
+</tr>
+<tr class="odd">
+<td><code>baseline-k5</code></td>
+<td>5</td>
+<td>10K</td>
+<td>Uniform</td>
+<td>Random</td>
+<td>Small k sweet spot</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Prediction</strong>: All algorithms competitive, linear scan
+may win on small k due to cache locality.</p>
+<h3 id="small-k-linear-scan-competitive">Small k (Linear Scan
+Competitive)</h3>
+<table>
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 7%" />
+<col style="width: 7%" />
+<col style="width: 33%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>ID</th>
+<th>k</th>
+<th>N</th>
+<th>Distribution</th>
+<th>Pattern</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>small-k3-uniform</code></td>
+<td>3</td>
+<td>100K</td>
+<td>Uniform</td>
+<td>Random</td>
+<td>Linear scan favorable</td>
+</tr>
+<tr class="even">
+<td><code>small-k5-uniform</code></td>
+<td>5</td>
+<td>100K</td>
+<td>Uniform</td>
+<td>Random</td>
+<td>Linear scan still good</td>
+</tr>
+<tr class="odd">
+<td><code>small-k8-uniform</code></td>
+<td>8</td>
+<td>100K</td>
+<td>Uniform</td>
+<td>Random</td>
+<td>Crossover point?</td>
+</tr>
+<tr class="even">
+<td><code>small-k3-sequential</code></td>
+<td>3</td>
+<td>100K</td>
+<td>Uniform</td>
+<td>Sequential</td>
+<td>Cache-friendly for linear scan</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Prediction</strong>: Linear scan competitive or wins due to
+perfect cache locality, no tree overhead.</p>
+<h3 id="medium-k-heap-vs-tree">Medium k (Heap vs Tree)</h3>
+<table>
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 7%" />
+<col style="width: 7%" />
+<col style="width: 33%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>ID</th>
+<th>k</th>
+<th>N</th>
+<th>Distribution</th>
+<th>Pattern</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>medium-k10-uniform</code></td>
+<td>10</td>
+<td>100K</td>
+<td>Uniform</td>
+<td>Random</td>
+<td>Heap/tree start to win</td>
+</tr>
+<tr class="even">
+<td><code>medium-k50-uniform</code></td>
+<td>50</td>
+<td>100K</td>
+<td>Uniform</td>
+<td>Random</td>
+<td>Clear heap/tree advantage</td>
+</tr>
+<tr class="odd">
+<td><code>medium-k100-uniform</code></td>
+<td>100</td>
+<td>100K</td>
+<td>Uniform</td>
+<td>Random</td>
+<td>Log k dominates</td>
+</tr>
+<tr class="even">
+<td><code>medium-k50-skewed</code></td>
+<td>50</td>
+<td>100K</td>
+<td>Skewed</td>
+<td>Random</td>
+<td>Tests unbalanced heaps</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Prediction</strong>: Heap and loser tree significantly faster
+than linear scan. Loser tree ~10-20% faster than heap (log k vs 2 log k
+comparisons).</p>
+<h3 id="large-k-loser-tree-advantage">Large k (Loser Tree
+Advantage)</h3>
+<table>
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 7%" />
+<col style="width: 7%" />
+<col style="width: 33%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>ID</th>
+<th>k</th>
+<th>N</th>
+<th>Distribution</th>
+<th>Pattern</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>large-k100-uniform</code></td>
+<td>100</td>
+<td>1M</td>
+<td>Uniform</td>
+<td>Random</td>
+<td>Loser tree pulls ahead</td>
+</tr>
+<tr class="even">
+<td><code>large-k500-uniform</code></td>
+<td>500</td>
+<td>1M</td>
+<td>Uniform</td>
+<td>Random</td>
+<td>Comparison count critical</td>
+</tr>
+<tr class="odd">
+<td><code>large-k1000-uniform</code></td>
+<td>1000</td>
+<td>1M</td>
+<td>Uniform</td>
+<td>Random</td>
+<td>Maximum k tested</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Prediction</strong>: Loser tree clearly fastest (half the
+comparisons of heap). Linear scan impractically slow.</p>
+<h3 id="edge-cases">Edge Cases</h3>
+<table>
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 7%" />
+<col style="width: 7%" />
+<col style="width: 33%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>ID</th>
+<th>k</th>
+<th>N</th>
+<th>Distribution</th>
+<th>Pattern</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>edge-k1-single</code></td>
+<td>1</td>
+<td>100K</td>
+<td>N/A</td>
+<td>Random</td>
+<td>Degenerate passthrough</td>
+</tr>
+<tr class="even">
+<td><code>edge-k10-empty</code></td>
+<td>10</td>
+<td>0</td>
+<td>All empty</td>
+<td>N/A</td>
+<td>Handle empty gracefully</td>
+</tr>
+<tr class="odd">
+<td><code>edge-k100-tiny</code></td>
+<td>100</td>
+<td>1K</td>
+<td>Uniform</td>
+<td>Random</td>
+<td>Overhead dominates</td>
+</tr>
+<tr class="even">
+<td><code>edge-k10-onesided</code></td>
+<td>10</td>
+<td>100K</td>
+<td>Single-dominant</td>
+<td>Random</td>
+<td>99% in one iterator</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Prediction</strong>: k=1 all equal (passthrough), empty all
+equal (trivial), overhead cases unpredictable, one-sided favors simpler
+algorithms.</p>
+<h3 id="adversarial-cases">Adversarial Cases</h3>
+<table>
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 7%" />
+<col style="width: 7%" />
+<col style="width: 33%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>ID</th>
+<th>k</th>
+<th>N</th>
+<th>Distribution</th>
+<th>Pattern</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>adversarial-alternating</code></td>
+<td>10</td>
+<td>100K</td>
+<td>Uniform</td>
+<td>Alternating</td>
+<td>Maximize comparisons</td>
+</tr>
+<tr class="even">
+<td><code>adversarial-clustered</code></td>
+<td>50</td>
+<td>100K</td>
+<td>Uniform</td>
+<td>Clustered</td>
+<td>Poor cache locality</td>
+</tr>
+<tr class="odd">
+<td><code>adversarial-sequential-reverse</code></td>
+<td>10</td>
+<td>100K</td>
+<td>Uniform</td>
+<td>Reverse sequential</td>
+<td>Worst-case for some algorithms</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Prediction</strong>: Adversarial cases stress algorithms
+differently. Alternating maximizes comparison cost (favors loser tree).
+Clustered stresses cache (favors linear scan’s locality).</p>
+<h3 id="realistic-cases">Realistic Cases</h3>
+<table>
+<colgroup>
+<col style="width: 8%" />
+<col style="width: 6%" />
+<col style="width: 6%" />
+<col style="width: 30%" />
+<col style="width: 19%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>ID</th>
+<th>k</th>
+<th>N</th>
+<th>Distribution</th>
+<th>Pattern</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>realistic-log-merge</code></td>
+<td>20</td>
+<td>500K</td>
+<td>Power-law</td>
+<td>Random</td>
+<td>Simulates merging log segments (few large, many small)</td>
+</tr>
+<tr class="even">
+<td><code>realistic-db-index</code></td>
+<td>50</td>
+<td>1M</td>
+<td>Uniform</td>
+<td>Clustered</td>
+<td>Simulates database index merge</td>
+</tr>
+<tr class="odd">
+<td><code>realistic-timeseries</code></td>
+<td>100</td>
+<td>1M</td>
+<td>Uniform</td>
+<td>Sequential</td>
+<td>Simulates timeseries data merge</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Prediction</strong>: Realistic cases favor heap/loser tree.
+Real workloads typically have k ≥ 10.</p>
+<h2 id="total-test-cases">Total Test Cases</h2>
+<ul>
+<li><strong>Baseline</strong>: 3 cases</li>
+<li><strong>Small k</strong>: 4 cases</li>
+<li><strong>Medium k</strong>: 4 cases</li>
+<li><strong>Large k</strong>: 3 cases</li>
+<li><strong>Edge cases</strong>: 4 cases</li>
+<li><strong>Adversarial</strong>: 3 cases</li>
+<li><strong>Realistic</strong>: 3 cases</li>
+</ul>
+<p><strong>Total</strong>: 24 test cases</p>
+<p>Plus JMH parameterization will cross some dimensions for total
+~50-100 benchmark combinations.</p>
+<h2 id="data-generation-specifications">Data Generation
+Specifications</h2>
+<h3 id="uniform-distribution">Uniform Distribution</h3>
+<pre><code>k iterators, N total elements
+Each iterator: floor(N/k) or ceil(N/k) elements
+Values: Random integers in [0, 1000000), sorted per iterator
+Seed: Fixed (42) for reproducibility</code></pre>
+<h3 id="skewed-distribution">Skewed Distribution</h3>
+<pre><code>k iterators, N total elements
+Iterator 0: 80% of elements
+Remaining k-1 iterators: 20% of elements divided equally
+Values: Random integers in [0, 1000000), sorted per iterator
+Seed: Fixed (42) for reproducibility</code></pre>
+<h3 id="sequential-pattern">Sequential Pattern</h3>
+<pre><code>k iterators, N total elements
+Iterator i gets values: i, i+k, i+2k, i+3k, ...
+Example (k=3, N=12):
+  iter[0] = [0, 3, 6, 9]
+  iter[1] = [1, 4, 7, 10]
+  iter[2] = [2, 5, 8, 11]
+Already sorted, no randomness needed</code></pre>
+<h3 id="alternating-pattern-adversarial">Alternating Pattern
+(Adversarial)</h3>
+<pre><code>Same as sequential but designed to maximize comparisons
+Forces algorithm to compare across all k iterators at each step</code></pre>
+<h3 id="clustered-pattern">Clustered Pattern</h3>
+<pre><code>k iterators, N total elements
+Divide value space [0, 1000000) into k ranges
+Iterator i gets random values from range i only
+Results in poor cache locality when iterators interleave</code></pre>
+<h2 id="performance-predictions">Performance Predictions</h2>
+<p>Based on Stage 3 theoretical analysis:</p>
+<table>
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 23%" />
+<col style="width: 31%" />
+<col style="width: 26%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Algorithm</th>
+<th>Small k (≤8)</th>
+<th>Medium k (10-100)</th>
+<th>Large k (≥100)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>LinearScan</td>
+<td><strong>Best</strong> (cache locality)</td>
+<td>5-10× slower</td>
+<td>50-100× slower</td>
+</tr>
+<tr class="even">
+<td>HeapBased</td>
+<td>Good</td>
+<td><strong>Best</strong> or tied</td>
+<td>Good</td>
+</tr>
+<tr class="odd">
+<td>LoserTree</td>
+<td>Good</td>
+<td><strong>Best</strong> or tied</td>
+<td><strong>Best</strong> (2× faster than heap)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Crossover points to identify</strong>: 1. When does linear
+scan lose to heap? (Expected: k=8-10) 2. When does loser tree beat heap?
+(Expected: k=50-100) 3. Do cache effects ever make linear scan win for
+k&gt;8? (Investigate)</p>
+<h2 id="benchmark-methodology">Benchmark Methodology</h2>
+<ol type="1">
+<li><strong>Warmup</strong>: 5 iterations, 1 second each (JVM JIT
+warmup)</li>
+<li><strong>Measurement</strong>: 10 iterations, 1 second each</li>
+<li><strong>Fork</strong>: 1 JVM fork (reduces variance)</li>
+<li><strong>Mode</strong>: Average time per operation
+(microseconds)</li>
+<li><strong>Blackhole</strong>: Consume results to prevent dead code
+elimination</li>
+</ol>
+<h2 id="success-criteria">Success Criteria</h2>
+<p>Benchmarks validate Stage 3 predictions if: 1. ✓ Linear scan
+competitive for k ≤ 8 2. ✓ Heap/loser tree 5-10× faster than linear scan
+for k=50 3. ✓ Loser tree 1.5-2× faster than heap for k ≥ 100 4. ✓
+Results within ±30% of theoretical predictions (accounting for constant
+factors)</p>
+<h2 id="next-steps">Next Steps</h2>
+<ol type="1">
+<li>Implement <code>TestDataGenerator.java</code> with all patterns</li>
+<li>Implement JMH benchmark harness with <code>@Param</code> for
+dimensions</li>
+<li>Run benchmarks, collect results</li>
+<li>Analyze with <code>performance_interpretation</code> skill</li>
+<li>Visualize with <code>reporting_visualization</code> skill</li>
+</ol>
+</body>
+</html>

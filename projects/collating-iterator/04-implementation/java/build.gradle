@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'me.champeau.jmh' version '0.7.2'
 }
 
 group = 'com.research'
@@ -21,15 +22,35 @@ dependencies {
 }
 
 application {
-    mainClass = 'com.research.iterator.Example'
+    mainClass = 'com.research.iterator.ComparisonDemo'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
 }
 
-// Custom task to run example
-tasks.register('runExample', JavaExec) {
+// Custom tasks to run individual examples
+tasks.register('runLinearScan', JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'com.research.iterator.Example'
+    mainClass = 'com.research.iterator.LinearScanExample'
+}
+
+tasks.register('runHeapBased', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.research.iterator.HeapBasedExample'
+}
+
+tasks.register('runLoserTree', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.research.iterator.LoserTreeExample'
+}
+
+tasks.register('runComparison', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.research.iterator.ComparisonDemo'
+}
+
+tasks.register('runQuickBenchmark', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.research.iterator.QuickBenchmark'
 }

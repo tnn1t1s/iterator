@@ -95,135 +95,324 @@
 id="toc-stage-4-implementation">Stage 4: Implementation</a>
 <ul>
 <li><a href="#overview" id="toc-overview">Overview</a></li>
-<li><a href="#design-choice" id="toc-design-choice">Design
-Choice</a></li>
-<li><a href="#implementation"
-id="toc-implementation">Implementation</a></li>
-<li><a href="#structure" id="toc-structure">Structure</a></li>
-<li><a href="#building" id="toc-building">Building</a></li>
-<li><a href="#running-example" id="toc-running-example">Running
-Example</a></li>
-<li><a href="#implementation-notes"
-id="toc-implementation-notes">Implementation Notes</a>
+<li><a href="#multi-variant-implementation-strategy"
+id="toc-multi-variant-implementation-strategy">Multi-Variant
+Implementation Strategy</a></li>
+<li><a href="#algorithm-variants" id="toc-algorithm-variants">Algorithm
+Variants</a>
 <ul>
-<li><a href="#loser-tree-algorithm" id="toc-loser-tree-algorithm">Loser
-Tree Algorithm</a></li>
-<li><a href="#edge-cases-handled" id="toc-edge-cases-handled">Edge Cases
-Handled</a></li>
-<li><a href="#correctness-invariants"
-id="toc-correctness-invariants">Correctness Invariants</a></li>
+<li><a href="#linearscaniterator-naive-baseline"
+id="toc-linearscaniterator-naive-baseline">1. LinearScanIterator (Naive
+Baseline)</a></li>
+<li><a href="#heapbasediterator-standard-approach"
+id="toc-heapbasediterator-standard-approach">2. HeapBasedIterator
+(Standard Approach)</a></li>
+<li><a href="#losertreeiterator-optimized---selected"
+id="toc-losertreeiterator-optimized---selected">3. LoserTreeIterator
+(Optimized - Selected)</a></li>
 </ul></li>
-<li><a href="#api" id="toc-api">API</a></li>
+<li><a href="#project-structure" id="toc-project-structure">Project
+Structure</a></li>
+<li><a href="#building" id="toc-building">Building</a></li>
+<li><a href="#running-examples" id="toc-running-examples">Running
+Examples</a>
+<ul>
+<li><a href="#individual-algorithm-demos"
+id="toc-individual-algorithm-demos">Individual Algorithm Demos</a></li>
+<li><a href="#side-by-side-comparison"
+id="toc-side-by-side-comparison">Side-by-Side Comparison</a></li>
+</ul></li>
+<li><a href="#common-interface" id="toc-common-interface">Common
+Interface</a></li>
+<li><a href="#implementation-highlights"
+id="toc-implementation-highlights">Implementation Highlights</a>
+<ul>
+<li><a href="#linearscaniterator"
+id="toc-linearscaniterator">LinearScanIterator</a></li>
+<li><a href="#heapbasediterator"
+id="toc-heapbasediterator">HeapBasedIterator</a></li>
+<li><a href="#losertreeiterator"
+id="toc-losertreeiterator">LoserTreeIterator</a></li>
+</ul></li>
+<li><a href="#edge-cases-handled-all-variants"
+id="toc-edge-cases-handled-all-variants">Edge Cases Handled (All
+Variants)</a></li>
+<li><a href="#correctness-invariants-all-variants"
+id="toc-correctness-invariants-all-variants">Correctness Invariants (All
+Variants)</a></li>
+<li><a href="#performance-predictions-to-be-validated-in-stage-6"
+id="toc-performance-predictions-to-be-validated-in-stage-6">Performance
+Predictions (to be validated in Stage 6)</a></li>
+<li><a href="#gradle-tasks-reference"
+id="toc-gradle-tasks-reference">Gradle Tasks Reference</a></li>
+<li><a href="#next-stages" id="toc-next-stages">Next Stages</a></li>
 <li><a href="#limitations" id="toc-limitations">Limitations</a></li>
-<li><a href="#future-optimizations" id="toc-future-optimizations">Future
-Optimizations</a></li>
-<li><a href="#testing" id="toc-testing">Testing</a></li>
+<li><a href="#future-extensions" id="toc-future-extensions">Future
+Extensions</a></li>
 </ul></li>
 </ul>
 </nav>
 <h1 id="stage-4-implementation">Stage 4: Implementation</h1>
 <h2 id="overview">Overview</h2>
-<p>Java implementation of CollatingIterator using <strong>loser
-tournament tree</strong> algorithm.</p>
-<h2 id="design-choice">Design Choice</h2>
-<p><strong>Algorithm</strong>: Loser Tournament Tree (from Stage 3
-decision)</p>
-<p><strong>Why</strong>: - Production validated (Grafana 2024) - O(N log
-k) time, O(k) space - log k comparisons per element (vs 2 log k for
-heap) - Simpler refill algorithm than winner tree - Knuth’s preference
-(TAOCP §5.4.1)</p>
-<h2 id="implementation">Implementation</h2>
-<p><strong>File</strong>:
-<code>java/src/main/java/com/research/iterator/CollatingIterator.java</code></p>
-<p><strong>Key features</strong>: - Implements
-<code>Iterator&lt;T extends Comparable&lt;? super T&gt;&gt;</code> -
-Loser tree structure: internal nodes store losers, winner tracked
-separately - Handles edge cases: empty iterators, single iterator,
-unequal lengths - Null sentinels for exhausted iterators (always lose
-comparisons)</p>
-<p><strong>Complexity</strong>: - Time: O(N log k) total, O(log k) per
-next() - Space: O(k) for tree structure (k-1 internal nodes + k
-iterators) - Lazy evaluation: Only pulls elements as needed</p>
-<h2 id="structure">Structure</h2>
+<p>Java implementation of k-way merge with <strong>three algorithm
+variants</strong> for empirical comparison: 1.
+<strong>LinearScanIterator</strong> - O(Nk) naive baseline 2.
+<strong>HeapBasedIterator</strong> - O(N log k) standard approach 3.
+<strong>LoserTreeIterator</strong> - O(N log k) optimized (selected in
+Stage 3)</p>
+<h2 id="multi-variant-implementation-strategy">Multi-Variant
+Implementation Strategy</h2>
+<p><strong>Why implement multiple variants?</strong> - Empirical
+validation of theoretical analysis - Benchmark comparison baselines
+(Stage 6) - Demonstrates understanding of trade-offs - Validates design
+decisions with real data - Identifies crossover points (e.g., when naive
+wins for small k)</p>
+<p>Top candidates implement multiple approaches, not just the “optimal”
+solution.</p>
+<h2 id="algorithm-variants">Algorithm Variants</h2>
+<h3 id="linearscaniterator-naive-baseline">1. LinearScanIterator (Naive
+Baseline)</h3>
+<p><strong>File</strong>: <code>LinearScanIterator.java</code></p>
+<p><strong>Algorithm</strong>: Linear scan through k current values to
+find minimum</p>
+<p><strong>Complexity</strong>: - Time: O(Nk) - k comparisons per next()
+- Space: O(k) - cache current values</p>
+<p><strong>When competitive</strong>: Small k (≤8) where cache locality
+dominates asymptotic complexity</p>
+<p><strong>Trade-offs</strong>: - ✓ Perfect cache locality (sequential
+scan) - ✓ No tree overhead - ✓ Branch predictor friendly - ✗ Poor
+asymptotic complexity</p>
+<h3 id="heapbasediterator-standard-approach">2. HeapBasedIterator
+(Standard Approach)</h3>
+<p><strong>File</strong>: <code>HeapBasedIterator.java</code></p>
+<p><strong>Algorithm</strong>: Binary min-heap using Java’s
+PriorityQueue</p>
+<p><strong>Complexity</strong>: - Time: O(N log k) - 2 log k comparisons
+per next() (sift-down) - Space: O(k) - heap structure</p>
+<p><strong>When competitive</strong>: Standard choice for most k values,
+excellent cache locality</p>
+<p><strong>Trade-offs</strong>: - ✓ Simple implementation (leverages
+stdlib) - ✓ Array-based heap has excellent cache locality - ✓
+Well-understood and debuggable - ✗ 2× comparisons vs loser tree</p>
+<h3 id="losertreeiterator-optimized---selected">3. LoserTreeIterator
+(Optimized - Selected)</h3>
+<p><strong>File</strong>: <code>LoserTreeIterator.java</code></p>
+<p><strong>Algorithm</strong>: Loser tournament tree (Knuth TAOCP
+§5.4.1)</p>
+<p><strong>Complexity</strong>: - Time: O(N log k) - log k comparisons
+per next() - Space: O(k) - tree structure (k-1 internal nodes)</p>
+<p><strong>When competitive</strong>: Large k where comparison count
+matters</p>
+<p><strong>Trade-offs</strong>: - ✓ Half the comparisons of binary heap
+(log k vs 2 log k) - ✓ Simpler refill than winner tree (no sibling
+access) - ✓ Production validated (Grafana 2024: Loki, Pyroscope,
+Prometheus) - ✓ Apache DataFusion: 50% speedup in benchmarks - ✗ More
+complex implementation than heap</p>
+<p><strong>Design rationale</strong>: Selected in Stage 3 based on
+production validation and constant factor improvements.</p>
+<h2 id="project-structure">Project Structure</h2>
 <pre><code>java/
-├── build.gradle          # Gradle build configuration
+├── build.gradle                          # Gradle build with run tasks
 └── src/main/java/com/research/iterator/
-    ├── CollatingIterator.java  # Main implementation
-    └── Example.java            # Usage examples</code></pre>
+    ├── LinearScanIterator.java           # O(Nk) naive implementation
+    ├── LinearScanExample.java            # Demo LinearScanIterator
+    ├── HeapBasedIterator.java            # O(N log k) standard (heap)
+    ├── HeapBasedExample.java             # Demo HeapBasedIterator
+    ├── LoserTreeIterator.java            # O(N log k) optimized (loser tree)
+    ├── LoserTreeExample.java             # Demo LoserTreeIterator
+    └── ComparisonDemo.java               # Side-by-side comparison</code></pre>
+<p><strong>File organization principle</strong>: One class per file,
+descriptive names, separate examples for each variant.</p>
 <h2 id="building">Building</h2>
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> java</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./gradlew</span> build</span></code></pre></div>
-<h2 id="running-example">Running Example</h2>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gradle</span> build</span></code></pre></div>
+<p><strong>Output</strong>: Compiles all three implementations
+successfully.</p>
+<h2 id="running-examples">Running Examples</h2>
+<h3 id="individual-algorithm-demos">Individual Algorithm Demos</h3>
 <div class="sourceCode" id="cb3"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./gradlew</span> runExample</span></code></pre></div>
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run LinearScanIterator example</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gradle</span> runLinearScan</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Run HeapBasedIterator example</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">gradle</span> runHeapBased</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Run LoserTreeIterator example</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="ex">gradle</span> runLoserTree</span></code></pre></div>
+<h3 id="side-by-side-comparison">Side-by-Side Comparison</h3>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare all three algorithms (default)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gradle</span> run</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># or</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">gradle</span> runComparison</span></code></pre></div>
 <p><strong>Example output</strong>:</p>
-<pre><code>=== Basic K-Way Merge Example ===
-Merged sequence: 1 2 3 4 5 6 7 8 9 10 11 12
+<pre><code>=== Small k=3 Comparison ===
 
-=== Edge Cases ===
-Single iterator:
-alpha beta gamma
+Input:
+  Iterator 1: [1, 4, 7, 10]
+  Iterator 2: [2, 5, 8, 11]
+  Iterator 3: [3, 6, 9, 12]
 
-Empty iterator in mix:
-1 2 3 4 5 6
+LinearScan (O(Nk)):
+  Output: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  ✓ Sorted correctly
 
-Unequal lengths:
-1 2 3 4 5 6 7 8 10
+HeapBased (O(N log k), 2 log k comparisons):
+  Output: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  ✓ Sorted correctly
 
-Large k (10 iterators):
-0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 ... 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99
-Total elements: 100</code></pre>
-<h2 id="implementation-notes">Implementation Notes</h2>
-<h3 id="loser-tree-algorithm">Loser Tree Algorithm</h3>
-<p><strong>Initialization</strong> (buildTree): 1. Load first element
-from each iterator 2. Build tree bottom-up via tournament 3. Winners
-advance, losers stored in tree nodes 4. Final winner stored
-separately</p>
-<p><strong>Refill</strong> (after extracting winner): 1. Get next
-element from winner’s source 2. Replay tournament: compare against
-losers on path to root 3. If new element loses, swap and continue with
-previous winner 4. Final value becomes new overall winner</p>
-<p><strong>Key advantage over winner tree</strong>: Only compare against
-losers (no sibling access needed)</p>
-<h3 id="edge-cases-handled">Edge Cases Handled</h3>
+LoserTree (O(N log k), log k comparisons):
+  Output: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  ✓ Sorted correctly
+
+=== Large k=10 Comparison ===
+[... all three variants produce identical correct output ...]</code></pre>
+<h2 id="common-interface">Common Interface</h2>
+<p>All three implementations: - Implement
+<code>Iterator&lt;T extends Comparable&lt;? super T&gt;&gt;</code> -
+Handle edge cases: empty iterators, single iterator, unequal lengths -
+Use null sentinels for exhausted iterators - Throw
+<code>NoSuchElementException</code> when exhausted -
+<code>remove()</code> not supported</p>
+<h2 id="implementation-highlights">Implementation Highlights</h2>
+<h3 id="linearscaniterator">LinearScanIterator</h3>
+<p><strong>Key algorithm</strong>:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> T <span class="fu">next</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Linear scan to find minimum among current values</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> k<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>currentValues<span class="op">[</span>i<span class="op">]</span> <span class="op">!=</span> <span class="kw">null</span> <span class="op">&amp;&amp;</span> currentValues<span class="op">[</span>i<span class="op">]</span> <span class="op">&lt;</span> minValue<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>            minValue <span class="op">=</span> currentValues<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>            minIndex <span class="op">=</span> i<span class="op">;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Refill from winner&#39;s source</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    currentValues<span class="op">[</span>minIndex<span class="op">]</span> <span class="op">=</span> sources<span class="op">[</span>minIndex<span class="op">].</span><span class="fu">hasNext</span><span class="op">()</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">?</span> sources<span class="op">[</span>minIndex<span class="op">].</span><span class="fu">next</span><span class="op">()</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">:</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> minValue<span class="op">;</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="heapbasediterator">HeapBasedIterator</h3>
+<p><strong>Key algorithm</strong>:</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> T <span class="fu">next</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    Entry<span class="op">&lt;</span>T<span class="op">&gt;</span> entry <span class="op">=</span> heap<span class="op">.</span><span class="fu">poll</span><span class="op">();</span>  <span class="co">// Extract min (2 log k comparisons)</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    T result <span class="op">=</span> entry<span class="op">.</span><span class="fu">value</span><span class="op">;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Refill from same source</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>entry<span class="op">.</span><span class="fu">source</span><span class="op">.</span><span class="fu">hasNext</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        heap<span class="op">.</span><span class="fu">offer</span><span class="op">(</span><span class="kw">new</span> Entry<span class="op">&lt;&gt;(</span>entry<span class="op">.</span><span class="fu">source</span><span class="op">.</span><span class="fu">next</span><span class="op">(),</span> entry<span class="op">.</span><span class="fu">source</span><span class="op">));</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result<span class="op">;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="losertreeiterator">LoserTreeIterator</h3>
+<p><strong>Key algorithm</strong>:</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> T <span class="fu">next</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    T result <span class="op">=</span> winnerValue<span class="op">;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Refill: replay tournament comparing against losers (log k comparisons)</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    T newValue <span class="op">=</span> sources<span class="op">[</span>winnerIndex<span class="op">].</span><span class="fu">hasNext</span><span class="op">()</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">?</span> sources<span class="op">[</span>winnerIndex<span class="op">].</span><span class="fu">next</span><span class="op">()</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">:</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> tree<span class="op">.</span><span class="fu">length</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>newValue <span class="op">&gt;</span> tree<span class="op">[</span>i<span class="op">].</span><span class="fu">value</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>            <span class="fu">swap</span><span class="op">(</span>newValue<span class="op">,</span> tree<span class="op">[</span>i<span class="op">]);</span>  <span class="co">// Current loses, advance previous winner</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    winnerValue <span class="op">=</span> newValue<span class="op">;</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result<span class="op">;</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 id="edge-cases-handled-all-variants">Edge Cases Handled (All
+Variants)</h2>
 <ol type="1">
-<li><strong>Single iterator</strong>: No tree built, direct
-passthrough</li>
-<li><strong>Empty iterators</strong>: Null sentinels (always lose)</li>
+<li><strong>Single iterator (k=1)</strong>: No tree/heap overhead,
+direct passthrough</li>
+<li><strong>Empty iterators</strong>: Null sentinels (always lose
+comparisons)</li>
 <li><strong>All exhausted</strong>: hasNext() returns false</li>
 <li><strong>Unequal lengths</strong>: Works correctly as iterators
-exhaust</li>
+exhaust independently</li>
+<li><strong>Duplicates</strong>: Handled correctly (stable order not
+guaranteed)</li>
 </ol>
-<h3 id="correctness-invariants">Correctness Invariants</h3>
-<p><strong>Loop invariant</strong>: At start of each next(): - Tree
-stores current losers from previous comparisons - Winner is minimum
-among all remaining elements - All returned elements ≤ all remaining
-elements</p>
-<h2 id="api">API</h2>
-<div class="sourceCode" id="cb5"><pre
-class="sourceCode java"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Constructor</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="fu">CollatingIterator</span><span class="op">(</span><span class="bu">List</span><span class="op">&lt;?</span> <span class="kw">extends</span> <span class="bu">Iterator</span><span class="op">&lt;</span>T<span class="op">&gt;&gt;</span> iterators<span class="op">)</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Iterator interface</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">hasNext</span><span class="op">()</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> T <span class="fu">next</span><span class="op">()</span>  <span class="co">// throws NoSuchElementException if exhausted</span></span></code></pre></div>
+<h2 id="correctness-invariants-all-variants">Correctness Invariants (All
+Variants)</h2>
+<p><strong>Loop invariant</strong>: At start of each next(): - Data
+structure (heap/tree/cache) contains minimum from each non-exhausted
+source - Returned value is global minimum among all remaining elements -
+All previously returned elements ≤ all remaining elements - Output is
+sorted</p>
+<h2 id="performance-predictions-to-be-validated-in-stage-6">Performance
+Predictions (to be validated in Stage 6)</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Algorithm</th>
+<th>Small k (≤8)</th>
+<th>Medium k (10-100)</th>
+<th>Large k (≥1000)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>LinearScan</td>
+<td><strong>Competitive</strong></td>
+<td>Slower</td>
+<td>Much slower</td>
+</tr>
+<tr class="even">
+<td>HeapBased</td>
+<td>Good</td>
+<td><strong>Best</strong></td>
+<td>Good</td>
+</tr>
+<tr class="odd">
+<td>LoserTree</td>
+<td>Good</td>
+<td><strong>Best</strong></td>
+<td><strong>Best</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Crossover analysis</strong>: Linear scan expected to win for
+k ≤ 8 due to cache effects. Loser tree expected to win for k ≥ 100 where
+comparison count dominates.</p>
+<h2 id="gradle-tasks-reference">Gradle Tasks Reference</h2>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gradle</span> build           <span class="co"># Compile all implementations</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gradle</span> test            <span class="co"># Run unit tests (Stage 5)</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="ex">gradle</span> run             <span class="co"># Run ComparisonDemo (default)</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="ex">gradle</span> runLinearScan   <span class="co"># Run LinearScanExample</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="ex">gradle</span> runHeapBased    <span class="co"># Run HeapBasedExample</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="ex">gradle</span> runLoserTree    <span class="co"># Run LoserTreeExample</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="ex">gradle</span> runComparison   <span class="co"># Run ComparisonDemo (same as &#39;run&#39;)</span></span></code></pre></div>
+<h2 id="next-stages">Next Stages</h2>
+<ul>
+<li><strong>Stage 5</strong>: Comprehensive unit testing (JUnit)</li>
+<li><strong>Stage 6</strong>: Empirical benchmarking (JMH) to validate
+predictions</li>
+<li><strong>Stage 7</strong>: Technical report synthesizing theory +
+implementation + benchmarks</li>
+<li><strong>Stage 8</strong>: Cross-artifact consistency validation</li>
+</ul>
 <h2 id="limitations">Limitations</h2>
 <ul>
 <li><code>remove()</code> not supported (throws
 UnsupportedOperationException)</li>
 <li>Not thread-safe</li>
-<li>Iterators must be pre-sorted (not validated)</li>
-<li>Generic type must be Comparable</li>
+<li>Input iterators must be pre-sorted (not validated - caller
+responsibility)</li>
+<li>Generic type must implement Comparable</li>
+<li>No custom comparator support</li>
 </ul>
-<h2 id="future-optimizations">Future Optimizations</h2>
-<p>From Stage 3 analysis, could consider: - Small-k optimization (k ≤
-8): Linear scan - Primitive specializations (int, long) to avoid boxing
-- Custom comparator support (not just Comparable) - Concurrent variant
-for parallel processing</p>
-<h2 id="testing">Testing</h2>
-<p>See Stage 5 for comprehensive test suite including: - Correctness:
-sorted output, all elements present - Edge cases: empty, single,
-duplicates - Properties: laziness, comparison count</p>
+<h2 id="future-extensions">Future Extensions</h2>
+<p>From Stage 3 analysis: - Adaptive algorithm selection (switch based
+on k) - Primitive specializations (int, long) to avoid boxing - Custom
+comparator support (Comparator<T> parameter) - Concurrent variant for
+parallel processing - Iterator validation mode (debug builds check
+sortedness)</p>
 </body>
 </html>

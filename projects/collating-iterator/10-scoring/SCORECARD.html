@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>SCORECARD</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
+</head>
+<body>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#stage-10-skills-scorecard"
+id="toc-stage-10-skills-scorecard">Stage 10: Skills Scorecard</a>
+<ul>
+<li><a href="#scoring-rubric" id="toc-scoring-rubric">Scoring
+Rubric</a></li>
+<li><a href="#skills-assessment" id="toc-skills-assessment">Skills
+Assessment</a>
+<ul>
+<li><a href="#problem_specification-stage-1"
+id="toc-problem_specification-stage-1">1. problem_specification (Stage
+1)</a></li>
+<li><a href="#algorithmic_analysis-stage-2"
+id="toc-algorithmic_analysis-stage-2">2. algorithmic_analysis (Stage
+2)</a></li>
+<li><a href="#arxiv_research-stage-2c"
+id="toc-arxiv_research-stage-2c">3. arxiv_research (Stage 2C)</a></li>
+<li><a href="#comparative_complexity-stage-2-3"
+id="toc-comparative_complexity-stage-2-3">4. comparative_complexity
+(Stage 2-3)</a></li>
+<li><a href="#systems_design_patterns-stage-3"
+id="toc-systems_design_patterns-stage-3">5. systems_design_patterns
+(Stage 3)</a></li>
+<li><a href="#java_codegen-stage-4" id="toc-java_codegen-stage-4">6.
+java_codegen (Stage 4)</a></li>
+<li><a href="#test_data_design-stage-6"
+id="toc-test_data_design-stage-6">7. test_data_design (Stage 6)</a></li>
+<li><a href="#unit_test_generation-stage-5"
+id="toc-unit_test_generation-stage-5">8. unit_test_generation (Stage
+5)</a></li>
+<li><a href="#benchmark_design-stage-6"
+id="toc-benchmark_design-stage-6">9. benchmark_design (Stage 6)</a></li>
+<li><a href="#self_consistency_checker-stage-7"
+id="toc-self_consistency_checker-stage-7">10. self_consistency_checker
+(Stage 7)</a></li>
+</ul></li>
+<li><a href="#overall-assessment" id="toc-overall-assessment">Overall
+Assessment</a>
+<ul>
+<li><a href="#score-distribution" id="toc-score-distribution">Score
+Distribution</a></li>
+<li><a href="#strengths" id="toc-strengths">Strengths</a></li>
+<li><a href="#critical-weaknesses" id="toc-critical-weaknesses">Critical
+Weaknesses</a></li>
+<li><a href="#recommendation"
+id="toc-recommendation">Recommendation</a></li>
+<li><a href="#score-justification-by-category"
+id="toc-score-justification-by-category">Score Justification by
+Category</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="stage-10-skills-scorecard">Stage 10: Skills Scorecard</h1>
+<h2 id="scoring-rubric">Scoring Rubric</h2>
+<ul>
+<li><strong>1-3</strong>: Weak - Major gaps, incorrect application,
+would not pass review</li>
+<li><strong>4-6</strong>: Competent - Basic application, some gaps,
+meets minimum bar</li>
+<li><strong>7-8</strong>: Strong - Solid application, minor gaps,
+exceeds expectations</li>
+<li><strong>9-10</strong>: Exceptional - Exemplary execution, could be
+teaching material</li>
+</ul>
+<h2 id="skills-assessment">Skills Assessment</h2>
+<h3 id="problem_specification-stage-1">1. problem_specification (Stage
+1)</h3>
+<p><strong>Score: 8/10</strong> - Strong</p>
+<p><strong>Evidence</strong>: - ✓ Corrected from prescriptive to
+research-question format - ✓ Avoids solution leak (no mention of O(N log
+k) or heap in spec) - ✓ Poses genuine discovery questions - ✓ Clear
+input/output contracts - ✓ Iterator protocol specified</p>
+<p><strong>Gaps</strong>: - Missing formal pre/postcondition notation -
+No discussion of iterator mutation semantics - Space complexity
+constraints not specified</p>
+<p><strong>Justification</strong>: Demonstrates understanding that spec
+should pose problems not prescribe solutions. Self-corrected after user
+feedback shows learning. Strong for interview setting.</p>
+<hr />
+<h3 id="algorithmic_analysis-stage-2">2. algorithmic_analysis (Stage
+2)</h3>
+<p><strong>Score: 7/10</strong> - Strong</p>
+<p><strong>Evidence</strong>: - ✓ Correct lower bound proof (Ω(N log k)
+via decision tree) - ✓ Space lower bound (Ω(k)) - ✓ Literature review
+before enumeration (TAOCP, CLRS) - ✓ Found 4 optimal algorithms - ✓
+Identified loser tree variant after user hint</p>
+<p><strong>Gaps</strong>: - No amortized analysis for heap operations -
+Comparison count analysis theoretical only (not instrumented) - Cache
+complexity hand-wavy - No worst-case input construction</p>
+<p><strong>Justification</strong>: Solid theoretical analysis with
+correct bounds. Literature review was key to finding loser tree. Missing
+instrumentation to validate theory hurts score.</p>
+<hr />
+<h3 id="arxiv_research-stage-2c">3. arxiv_research (Stage 2C)</h3>
+<p><strong>Score: 9/10</strong> - Exceptional</p>
+<p><strong>Evidence</strong>: - ✓ Found Grafana 2024 production use
+(critical modern validation) - ✓ Identified Apache DataFusion benchmarks
+(50% speedup) - ✓ Bridged gap between classical textbooks and
+cutting-edge practice - ✓ Multiple query strategies attempted - ✓
+Documented lack of new sequential algorithms (validates classical
+approach)</p>
+<p><strong>Gaps</strong>: - Could have searched for recent comparison
+count optimizations - No search for production failure cases</p>
+<p><strong>Justification</strong>: Exactly what this skill should do -
+find modern production validation that textbooks lack. Grafana blog post
+was the key find that justified loser tree selection.</p>
+<hr />
+<h3 id="comparative_complexity-stage-2-3">4. comparative_complexity
+(Stage 2-3)</h3>
+<p><strong>Score: 7/10</strong> - Strong</p>
+<p><strong>Evidence</strong>: - ✓ Systematic comparison table of 8
+algorithms - ✓ Clear identification of 4 optimal candidates - ✓
+Comparison count analysis (log k vs 2 log k) - ✓ Cache locality
+trade-offs discussed - ✓ Crossover point predictions (k=8-10)</p>
+<p><strong>Gaps</strong>: - No quantitative cache model (just
+hand-waving) - Predictions not empirically validated (benchmarks too
+limited) - No sensitivity analysis (what if comparison is cheap?)</p>
+<p><strong>Justification</strong>: Good systematic comparison, but lacks
+empirical rigor to validate the constant factor claims.</p>
+<hr />
+<h3 id="systems_design_patterns-stage-3">5. systems_design_patterns
+(Stage 3)</h3>
+<p><strong>Score: 8/10</strong> - Strong</p>
+<p><strong>Evidence</strong>: - ✓ Production validation (Grafana 2024)
+as primary decision criterion - ✓ Comparison count vs cache locality
+trade-off - ✓ Knuth’s preference cited (authoritative source) - ✓
+Discussion of when each algorithm wins - ✓ Adaptive selection mentioned
+as future work</p>
+<p><strong>Gaps</strong>: - No discussion of memory allocation patterns
+- Thread safety not addressed - No degradation strategies for production
+- Monitoring/observability not considered</p>
+<p><strong>Justification</strong>: Strong design thinking with
+production validation. Knows when to trust battle-tested solutions.
+Missing operational concerns.</p>
+<hr />
+<h3 id="java_codegen-stage-4">6. java_codegen (Stage 4)</h3>
+<p><strong>Score: 6/10</strong> - Competent</p>
+<p><strong>Evidence</strong>: - ✓ Three variants implemented (exactly
+right approach) - ✓ One class per file (proper organization) - ✓
+Descriptive names, separate examples - ✓ Proper package structure - ✓
+All implementations compile and run</p>
+<p><strong>Gaps</strong>: - ✗ <strong>CRITICAL BUG</strong>: LoserTree
+refill() is O(k) not O(log k) (iterates all nodes) - No comparison count
+instrumentation - No error handling (assumes valid inputs) - No thread
+safety mechanisms - No primitive specializations</p>
+<p><strong>Justification</strong>: Multi-variant strategy is exemplary,
+file organization professional, BUT the loser tree bug is a red flag.
+Theory not validated against code. Competent implementation skills with
+critical gap in algorithmic correctness.</p>
+<hr />
+<h3 id="test_data_design-stage-6">7. test_data_design (Stage 6)</h3>
+<p><strong>Score: 9/10</strong> - Exceptional</p>
+<p><strong>Evidence</strong>: - ✓ Systematic dimension analysis (k, N,
+distribution, pattern, exhaustion) - ✓ 24 comprehensive test cases
+designed - ✓ Predictions documented for each scenario - ✓
+Edge/adversarial/realistic cases identified - ✓ TestDataGenerator with
+4×4 pattern combinations - ✓ Demonstrates methodology that distinguishes
+top candidates</p>
+<p><strong>Gaps</strong>: - Generator not fuzz-tested itself - No
+validation that generated data actually stresses claimed dimensions</p>
+<p><strong>Justification</strong>: Textbook-quality test data design.
+Shows exactly the systematic thinking interviewers want to see. Slight
+deduction for not validating the generator, but overall exceptional.</p>
+<hr />
+<h3 id="unit_test_generation-stage-5">8. unit_test_generation (Stage
+5)</h3>
+<p><strong>Score: 8/10</strong> - Strong</p>
+<p><strong>Evidence</strong>: - ✓ 70 tests, 0 failures - ✓ Shared test
+base pattern (excellent design) - ✓ Contract tests (hasNext consistency,
+exhaustion, remove) - ✓ Correctness tests (parameterized) - ✓ Edge cases
+(11 scenarios) - ✓ Property tests (3 invariants) - ✓ Ensures all
+variants pass identical tests</p>
+<p><strong>Gaps</strong>: - No fuzz testing - No mutation testing - No
+coverage metrics reported - Property tests basic (no QuickCheck-style
+generation)</p>
+<p><strong>Justification</strong>: Excellent test architecture (shared
+base is senior-level pattern). Good coverage of cases. Missing advanced
+testing techniques.</p>
+<hr />
+<h3 id="benchmark_design-stage-6">9. benchmark_design (Stage 6)</h3>
+<p><strong>Score: 5/10</strong> - Competent</p>
+<p><strong>Evidence</strong>: - ✓ Comprehensive JMH infrastructure
+designed - ✓ Pragmatic decision (quick validation vs 40-min suite) - ✓
+Parameterized benchmarks ready - ✓ Future work clearly documented - ✓
+Understands time constraints</p>
+<p><strong>Gaps</strong>: - ✗ JMH benchmarks not actually run (only
+noisy quick benchmark) - ✗ No statistical significance testing - ✗ No
+comparison count validation (core thesis unproven) - ✗ No cache miss
+measurements - Quick benchmark results too noisy to validate
+anything</p>
+<p><strong>Justification</strong>: Design is solid, pragmatism is
+appropriate, BUT no actual rigorous results. Theory remains unvalidated.
+Competent design with weak execution.</p>
+<hr />
+<h3 id="self_consistency_checker-stage-7">10. self_consistency_checker
+(Stage 7)</h3>
+<p><strong>Score: 7/10</strong> - Strong</p>
+<p><strong>Evidence</strong>: - ✓ Systematic cross-artifact consistency
+checks - ✓ Completeness audit (all stages present) - ✓ Build system
+validation (gradle works) - ✓ Identified warnings (noisy benchmarks,
+k=100 untested) - ✓ Honest about limitations</p>
+<p><strong>Gaps</strong>: - Didn’t catch loser tree O(k) bug (critical
+miss) - No automated checking (manual inspection only) - No quantitative
+consistency metrics</p>
+<p><strong>Justification</strong>: Good systematic approach to
+validation. Honest about limitations. Major gap: missed the algorithmic
+bug that reviewer caught. Human review isn’t enough for complex
+code.</p>
+<hr />
+<h2 id="overall-assessment">Overall Assessment</h2>
+<h3 id="score-distribution">Score Distribution</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Skill</th>
+<th>Score</th>
+<th>Rating</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>problem_specification</td>
+<td>8</td>
+<td>Strong</td>
+</tr>
+<tr class="even">
+<td>algorithmic_analysis</td>
+<td>7</td>
+<td>Strong</td>
+</tr>
+<tr class="odd">
+<td>arxiv_research</td>
+<td>9</td>
+<td>Exceptional</td>
+</tr>
+<tr class="even">
+<td>comparative_complexity</td>
+<td>7</td>
+<td>Strong</td>
+</tr>
+<tr class="odd">
+<td>systems_design_patterns</td>
+<td>8</td>
+<td>Strong</td>
+</tr>
+<tr class="even">
+<td>java_codegen</td>
+<td>6</td>
+<td>Competent</td>
+</tr>
+<tr class="odd">
+<td>test_data_design</td>
+<td>9</td>
+<td>Exceptional</td>
+</tr>
+<tr class="even">
+<td>unit_test_generation</td>
+<td>8</td>
+<td>Strong</td>
+</tr>
+<tr class="odd">
+<td>benchmark_design</td>
+<td>5</td>
+<td>Competent</td>
+</tr>
+<tr class="even">
+<td>self_consistency_checker</td>
+<td>7</td>
+<td>Strong</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Mean Score</strong>: 7.4/10 <strong>Median Score</strong>:
+7.5/10</p>
+<h3 id="strengths">Strengths</h3>
+<ol type="1">
+<li><strong>Exceptional methodology</strong>: test_data_design (9) and
+arxiv_research (9) show senior-level systematic thinking</li>
+<li><strong>Strong theoretical foundation</strong>: algorithmic_analysis
+(7), comparative_complexity (7), systems_design_patterns (8)</li>
+<li><strong>Good test architecture</strong>: unit_test_generation (8)
+with shared base pattern</li>
+<li><strong>Self-awareness</strong>: Honest about limitations,
+documented future work</li>
+</ol>
+<h3 id="critical-weaknesses">Critical Weaknesses</h3>
+<ol type="1">
+<li><strong>Loser tree bug</strong>: O(k) refill destroys algorithmic
+advantage - theory not validated against code</li>
+<li><strong>Unvalidated thesis</strong>: Comparison count claims never
+instrumented or measured</li>
+<li><strong>Benchmark execution gap</strong>: Designed comprehensive
+suite but didn’t run it</li>
+<li><strong>Production readiness</strong>: No error handling,
+monitoring, thread safety</li>
+</ol>
+<h3 id="recommendation">Recommendation</h3>
+<p><strong>Overall Rating: 7.4/10 - Strong with Critical
+Gaps</strong></p>
+<p><strong>Hire Decision: Conditional Hire - Technical Deep-Dive
+Required</strong></p>
+<p><strong>Justification</strong>:</p>
+<p>The candidate demonstrates senior-level systematic methodology
+(exceptional test data design, strong literature review) and makes the
+right strategic choices (multi-variant implementation, pragmatic time
+management). The 8-stage pipeline shows ability to decompose complex
+problems.</p>
+<p>However, the loser tree implementation bug is a <strong>critical red
+flag</strong> that suggests theory understanding without implementation
+validation. A senior engineer would instrument comparison counts to
+verify the 2× claim empirically. The gap between designed benchmarks and
+executed benchmarks raises questions about follow-through.</p>
+<p><strong>Recommendation</strong>: Advance to technical deep-dive with
+focus on: 1. Walk through loser tree code - can candidate spot the O(k)
+bug? 2. How would you instrument comparison counting? 3. Why didn’t you
+run the full JMH suite? (Good answer: time constraints. Bad answer:
+didn’t know how.) 4. Discuss production deployment - error handling,
+monitoring, SLOs</p>
+<p>If candidate acknowledges gaps honestly and demonstrates
+debugging/instrumentation skills in real-time, <strong>Hire</strong>. If
+candidate defends buggy code or can’t explain trade-offs, <strong>No
+Hire</strong>.</p>
+<h3 id="score-justification-by-category">Score Justification by
+Category</h3>
+<p><strong>Exceptional (9-10)</strong>: 2 skills - Shows what candidate
+does best: systematic methodology and modern research</p>
+<p><strong>Strong (7-8)</strong>: 6 skills - Solid execution, minor
+gaps, generally exceeds mid-level</p>
+<p><strong>Competent (5-6)</strong>: 2 skills - Meets minimum bar but
+has notable gaps that concern</p>
+<p><strong>Weak (1-4)</strong>: 0 skills - No fundamental incompetence,
+but critical bug in java_codegen is borderline</p>
+<p>The distribution (60% strong+, 20% exceptional) suggests a candidate
+who thinks like a senior but needs more rigor in validation and
+production concerns. With mentorship on instrumentation and operational
+thinking, could be strong senior hire.</p>
+</body>
+</html>
