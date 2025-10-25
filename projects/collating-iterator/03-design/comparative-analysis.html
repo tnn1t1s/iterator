@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Research Artifact - Stage 3" />
+  <title>Collating Iterator: Comparative Design Analysis</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Collating Iterator: Comparative Design Analysis</h1>
+<p class="author">Research Artifact - Stage 3</p>
+<p class="date">October 2025</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#research-question" id="toc-research-question">Research
+Question</a></li>
+<li><a href="#candidates-from-stage-2"
+id="toc-candidates-from-stage-2">Candidates from Stage 2</a></li>
+<li><a href="#asymptotic-comparison"
+id="toc-asymptotic-comparison">Asymptotic Comparison</a></li>
+<li><a href="#constant-factor-analysis"
+id="toc-constant-factor-analysis">Constant Factor Analysis</a>
+<ul>
+<li><a href="#exact-comparison-counts"
+id="toc-exact-comparison-counts">Exact Comparison Counts</a></li>
+<li><a href="#memory-layout-and-cache-behavior"
+id="toc-memory-layout-and-cache-behavior">Memory Layout and Cache
+Behavior</a></li>
+<li><a href="#refill-complexity" id="toc-refill-complexity">Refill
+Complexity</a></li>
+</ul></li>
+<li><a href="#empirical-evidence-and-production-use"
+id="toc-empirical-evidence-and-production-use">Empirical Evidence and
+Production Use</a>
+<ul>
+<li><a href="#crossover-points" id="toc-crossover-points">Crossover
+Points</a></li>
+<li><a href="#production-validation-grafana-2024"
+id="toc-production-validation-grafana-2024">Production Validation:
+Grafana (2024)</a></li>
+<li><a href="#apache-datafusion-benchmark-tournament-tree"
+id="toc-apache-datafusion-benchmark-tournament-tree">Apache DataFusion
+Benchmark (Tournament Tree)</a></li>
+<li><a href="#academic-benchmarks" id="toc-academic-benchmarks">Academic
+Benchmarks</a></li>
+</ul></li>
+<li><a href="#implementation-complexity"
+id="toc-implementation-complexity">Implementation Complexity</a></li>
+<li><a href="#decision-matrix" id="toc-decision-matrix">Decision
+Matrix</a></li>
+<li><a href="#recommendation" id="toc-recommendation">Recommendation</a>
+<ul>
+<li><a href="#primary-implementation-loser-tournament-tree"
+id="toc-primary-implementation-loser-tournament-tree">Primary
+Implementation: Loser Tournament Tree</a></li>
+<li><a href="#alternative-binary-min-heap"
+id="toc-alternative-binary-min-heap">Alternative: Binary
+Min-Heap</a></li>
+<li><a href="#special-cases" id="toc-special-cases">Special
+Cases</a></li>
+</ul></li>
+<li><a href="#final-decision" id="toc-final-decision">Final
+Decision</a></li>
+<li><a href="#whats-next" id="toc-whats-next">What’s Next?</a></li>
+</ul>
+</nav>
+<h1 id="research-question">Research Question</h1>
+<p>From Stage 2: <em>“Four algorithms achieve <span
+class="math inline">\(O(N \log k)\)</span> optimal complexity. Which is
+better in practice?”</em></p>
+<h1 id="candidates-from-stage-2">Candidates from Stage 2</h1>
+<p>Four asymptotically optimal algorithms discovered:</p>
+<ol>
+<li><p><strong>Binary Min-Heap</strong> (CLRS Ch 6) - Array-based
+priority queue</p></li>
+<li><p><strong>Winner Tournament Tree</strong> (TAOCP §5.4.1) - Binary
+tree, internal nodes store winners</p></li>
+<li><p><strong>Loser Tournament Tree</strong> (TAOCP §5.4.1, Knuth
+preferred) - Binary tree, internal nodes store losers</p></li>
+<li><p><strong>D-ary Heap</strong> (CLRS Problem 6-2, d=4 common) -
+Generalized heap with d children</p></li>
+</ol>
+<p>All achieve <span class="math inline">\(O(N \log k)\)</span> time,
+<span class="math inline">\(O(k)\)</span> space, lazy evaluation.</p>
+<p><strong>Decision criteria</strong>: Constant factors, cache behavior,
+implementation complexity, production validation.</p>
+<h1 id="asymptotic-comparison">Asymptotic Comparison</h1>
+<table>
+<caption>All candidates are asymptotically optimal</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><strong>Algorithm</strong></th>
+<th style="text-align: center;"><strong>Time (per next())</strong></th>
+<th style="text-align: center;"><strong>Space</strong></th>
+<th style="text-align: center;"><strong>Lazy?</strong></th>
+<th style="text-align: center;"><strong>Optimal?</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Binary Heap</td>
+<td style="text-align: center;"><span class="math inline">\(O(\log
+k)\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(O(k)\)</span></td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Winner Tree</td>
+<td style="text-align: center;"><span class="math inline">\(O(\log
+k)\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(O(k)\)</span></td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Loser Tree</td>
+<td style="text-align: center;"><span class="math inline">\(O(\log
+k)\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(O(k)\)</span></td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">D-ary Heap (d=4)</td>
+<td style="text-align: center;"><span class="math inline">\(O(\log
+k)\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(O(k)\)</span></td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Conclusion</strong>: Asymptotic analysis does not distinguish
+candidates. Must examine constant factors.</p>
+<h1 id="constant-factor-analysis">Constant Factor Analysis</h1>
+<h2 id="exact-comparison-counts">Exact Comparison Counts</h2>
+<table>
+<caption>Exact comparison counts</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><strong>Algorithm</strong></th>
+<th style="text-align: center;"><strong>Comparisons per
+next()</strong></th>
+<th style="text-align: center;"><strong>Source</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Binary Heap</td>
+<td style="text-align: center;"><span class="math inline">\(2 \log_2
+k\)</span></td>
+<td style="text-align: center;">Sift-down: 2 children per level</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Winner Tree</td>
+<td style="text-align: center;"><span class="math inline">\(\log_2
+k\)</span></td>
+<td style="text-align: center;">One comparison per level (siblings)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Loser Tree</td>
+<td style="text-align: center;"><span class="math inline">\(\log_2
+k\)</span></td>
+<td style="text-align: center;">One comparison per level (against
+losers)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">D-ary Heap (d=4)</td>
+<td style="text-align: center;"><span class="math inline">\(3 \log_4 k
+\approx 1.5 \log_2 k\)</span></td>
+<td style="text-align: center;">d-1 comparisons per level</td>
+</tr>
+</tbody>
+</table>
+<div class="observation">
+<p><strong>Observation 1</strong> (Comparison Efficiency).
+<em>Tournament trees (winner/loser) perform exactly half as many
+comparisons as binary heap: <span class="math display">\[\log_2 k \text{
+vs } 2\log_2 k\]</span> D-ary heap with d=4 reduces comparisons by 25%
+compared to binary heap.</em></p>
+</div>
+<p><strong>Implication</strong>: For expensive comparison operations
+(large objects, complex comparators), tournament trees have significant
+advantage.</p>
+<h2 id="memory-layout-and-cache-behavior">Memory Layout and Cache
+Behavior</h2>
+<table>
+<caption>Memory characteristics</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><strong>Algorithm</strong></th>
+<th style="text-align: center;"><strong>Storage</strong></th>
+<th style="text-align: center;"><strong>Access Pattern</strong></th>
+<th style="text-align: center;"><strong>Cache Friendliness</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Binary Heap</td>
+<td style="text-align: center;">Array (contiguous)</td>
+<td style="text-align: center;">Sequential indices</td>
+<td style="text-align: center;">Excellent</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Winner Tree</td>
+<td style="text-align: center;">Pointer-based nodes</td>
+<td style="text-align: center;">Tree traversal</td>
+<td style="text-align: center;">Poor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Loser Tree</td>
+<td style="text-align: center;">Pointer-based nodes</td>
+<td style="text-align: center;">Tree traversal</td>
+<td style="text-align: center;">Poor</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">D-ary Heap (d=4)</td>
+<td style="text-align: center;">Array (contiguous)</td>
+<td style="text-align: center;">Sequential indices</td>
+<td style="text-align: center;">Excellent</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Analysis</strong>:</p>
+<p><strong>Array-based heaps</strong> (binary, d-ary):</p>
+<ul>
+<li><p>Contiguous memory: entire heap often fits in cache</p></li>
+<li><p>Index arithmetic: parent(i) = (i-1)/d, child(i) = d*i+1</p></li>
+<li><p>No pointer chasing</p></li>
+<li><p>Cache lines utilized efficiently (8 elements per 64-byte
+line)</p></li>
+</ul>
+<p><strong>Pointer-based trees</strong> (winner, loser):</p>
+<ul>
+<li><p>Scattered allocation: nodes may be distant in memory</p></li>
+<li><p>Pointer chasing: each level = potential cache miss</p></li>
+<li><p>Overhead: 2-3 pointers per node (left, right, parent)</p></li>
+<li><p>Space overhead: <span class="math inline">\(2k-1\)</span> nodes
+vs <span class="math inline">\(k\)</span> array slots</p></li>
+</ul>
+<div class="observation">
+<p><strong>Observation 2</strong> (Cache Tradeoff). <em>Heaps trade more
+comparisons for better cache behavior.</em></p>
+<p><em>Trees trade cache misses for fewer comparisons.</em></p>
+<p><em>On modern processors where memory access &gt;&gt; computation,
+cache usually dominates.</em></p>
+</div>
+<h2 id="refill-complexity">Refill Complexity</h2>
+<p>After extracting minimum, must refill from source iterator:</p>
+<p><strong>Binary Heap</strong>:</p>
+<ol>
+<li><p>Extract root (minimum)</p></li>
+<li><p>Replace with new element from same iterator</p></li>
+<li><p>Sift-down: compare with both children, swap with smaller,
+repeat</p></li>
+<li><p>Cost: <span class="math inline">\(2 \log_2 k\)</span>
+comparisons</p></li>
+</ol>
+<p><strong>Winner Tournament Tree</strong>:</p>
+<ol>
+<li><p>Read root (winner index)</p></li>
+<li><p>Replace winning leaf with new element</p></li>
+<li><p>Recompute path to root: at each level, compare siblings,
+propagate winner</p></li>
+<li><p>Cost: <span class="math inline">\(\log_2 k\)</span>
+comparisons</p></li>
+</ol>
+<p><strong>Loser Tournament Tree</strong>:</p>
+<ol>
+<li><p>Read root pointer (overall winner)</p></li>
+<li><p>Replace winning leaf with new element</p></li>
+<li><p>Traverse path to root: at each level, compare NEW element against
+STORED LOSER</p></li>
+<li><p>If new element loses, swap and continue with previous
+winner</p></li>
+<li><p>Cost: <span class="math inline">\(\log_2 k\)</span>
+comparisons</p></li>
+</ol>
+<p><strong>Key Difference (Winner vs Loser)</strong>:</p>
+<p><strong>Winner tree</strong>: Must compare siblings at each level
+(need to access both children).</p>
+<p><strong>Loser tree</strong>: Only compare against stored losers on
+path (no sibling access needed).</p>
+<div class="observation">
+<p><strong>Observation 3</strong> (Loser Tree Advantage). <em>Loser tree
+refill algorithm is simpler:</em></p>
+<ul>
+<li><p><em>No sibling access required</em></p></li>
+<li><p><em>Fewer branches in code</em></p></li>
+<li><p><em>More cache-friendly path traversal (no left-right
+decisions)</em></p></li>
+</ul>
+<p><em>This is why Knuth preferred loser trees in TAOCP §5.4.1.</em></p>
+</div>
+<h1 id="empirical-evidence-and-production-use">Empirical Evidence and
+Production Use</h1>
+<h2 id="crossover-points">Crossover Points</h2>
+<p><strong>Small k</strong> (<span class="math inline">\(k \leq
+8\)</span>):</p>
+<p>Linear scan competitive despite <span
+class="math inline">\(O(k)\)</span> vs <span
+class="math inline">\(O(\log k)\)</span>:</p>
+<ul>
+<li><p>8 comparisons (linear) vs 6 comparisons (2 log 8, binary
+heap)</p></li>
+<li><p>Linear scan: perfect cache locality, no tree overhead</p></li>
+<li><p>Branch predictor learns sequential pattern</p></li>
+</ul>
+<p><strong>Recommendation</strong>: Linear scan or SIMD branchless min
+for <span class="math inline">\(k \leq 8\)</span>.</p>
+<p><strong>Medium k</strong> (<span class="math inline">\(8 &lt; k \leq
+1000\)</span>):</p>
+<p>Heap vs tree tradeoff:</p>
+<ul>
+<li><p>Heap: Array fits in L1/L2 cache (1000 elements <span
+class="math inline">\(\approx\)</span> 8KB)</p></li>
+<li><p>Tree: Pointer chasing, scattered allocation</p></li>
+<li><p>Modern processors: Memory access dominates comparison
+cost</p></li>
+</ul>
+<p><strong>Conventional wisdom</strong>: Binary heap wins due to
+cache.</p>
+<p><strong>Production reality</strong>: Loser tree wins! (See below)</p>
+<h2 id="production-validation-grafana-2024">Production Validation:
+Grafana (2024)</h2>
+<p><strong>Source</strong>: Grafana Labs blog (April 2024), Bryan
+Boreham (GopherCon 2023)</p>
+<p><strong>Problem</strong>: K-way merge bottleneck in Prometheus, Loki,
+Pyroscope</p>
+<ul>
+<li><p>Flamegraph showed container/heap (Go stdlib) as hotspot</p></li>
+<li><p>Heap implementation used interface calls (indirect,
+slow)</p></li>
+</ul>
+<p><strong>Solution</strong>: Replaced binary heap with loser tree using
+Go generics</p>
+<p><strong>Results</strong>:</p>
+<ul>
+<li><p><strong>Grafana Loki</strong>: Merging thousands of log streams
+by timestamp</p></li>
+<li><p><strong>Grafana Pyroscope</strong>: Profile
+deduplication</p></li>
+<li><p><strong>Prometheus</strong>: Query optimization</p></li>
+<li><p><strong>Performance gain</strong>: Significant speedup (exact
+metrics: internal benchmarks)</p></li>
+</ul>
+<p><strong>Why loser tree won</strong>:</p>
+<ol>
+<li><p>Fewer comparisons (<span class="math inline">\(\log k\)</span> vs
+<span class="math inline">\(2 \log k\)</span>) - matters when k is large
+(thousands)</p></li>
+<li><p>Simpler refill logic - fewer branches, better branch
+prediction</p></li>
+<li><p>Comparison cost dominated memory access (log timestamps =
+expensive)</p></li>
+</ol>
+<h2 id="apache-datafusion-benchmark-tournament-tree">Apache DataFusion
+Benchmark (Tournament Tree)</h2>
+<p><strong>Source</strong>: GitHub issue #4300 (tournament tree for
+sort-merge)</p>
+<p><strong>Result</strong>: Merging time <strong> 50% shorter</strong>
+after switching from heap to tournament tree.</p>
+<p><strong>Context</strong>: External sorting, k-way merge of sorted
+runs.</p>
+<h2 id="academic-benchmarks">Academic Benchmarks</h2>
+<p>From literature review:</p>
+<ul>
+<li><p><strong>Cache-aware priority queues</strong>: 2x faster than
+binary heap for large inputs</p></li>
+<li><p><strong>4-ary heap</strong>: 75% performance improvement over
+binary heap (aligned)</p></li>
+<li><p><strong>Tournament trees</strong>: Consistently faster in
+practice despite cache disadvantage</p></li>
+</ul>
+<p><strong>Explanation</strong>: Comparison cost matters more than
+expected, especially for:</p>
+<ul>
+<li><p>Complex comparators (not just integer comparison)</p></li>
+<li><p>Large k (where log k levels accumulate)</p></li>
+<li><p>Modern branch predictors (tree traversal is predictable)</p></li>
+</ul>
+<h1 id="implementation-complexity">Implementation Complexity</h1>
+<table>
+<caption>Implementation complexity estimates</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><strong>Algorithm</strong></th>
+<th style="text-align: center;"><strong>LoC (est.)</strong></th>
+<th style="text-align: center;"><strong>Tricky Bits</strong></th>
+<th style="text-align: center;"><strong>Maintenance</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Binary Heap</td>
+<td style="text-align: center;"> 60</td>
+<td style="text-align: center;">Heapify, index arithmetic</td>
+<td style="text-align: center;">Low</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Winner Tree</td>
+<td style="text-align: center;"> 100</td>
+<td style="text-align: center;">Tree construction, sibling access</td>
+<td style="text-align: center;">Medium</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Loser Tree</td>
+<td style="text-align: center;"> 90</td>
+<td style="text-align: center;">Tree construction, winner tracking</td>
+<td style="text-align: center;">Medium</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">D-ary Heap</td>
+<td style="text-align: center;"> 70</td>
+<td style="text-align: center;">Generalized sift (d children)</td>
+<td style="text-align: center;">Low-Medium</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Binary Heap</strong>:</p>
+<ul>
+<li><p><strong>Pros</strong>: Simple, well-understood, standard textbook
+algorithm</p></li>
+<li><p><strong>Cons</strong>: Index arithmetic can be error-prone
+(off-by-one)</p></li>
+</ul>
+<p><strong>Loser Tree</strong>:</p>
+<ul>
+<li><p><strong>Pros</strong>: Cleaner refill logic than winner
+tree</p></li>
+<li><p><strong>Cons</strong>: Tree construction more complex, need to
+track overall winner separately</p></li>
+</ul>
+<p><strong>Winner Tree</strong>:</p>
+<ul>
+<li><p><strong>Pros</strong>: Intuitive (winners propagate up)</p></li>
+<li><p><strong>Cons</strong>: Sibling access during refill adds
+complexity</p></li>
+</ul>
+<p><strong>D-ary Heap</strong>:</p>
+<ul>
+<li><p><strong>Pros</strong>: Generalization of binary heap, tune d for
+workload</p></li>
+<li><p><strong>Cons</strong>: Choosing optimal d requires
+profiling</p></li>
+</ul>
+<h1 id="decision-matrix">Decision Matrix</h1>
+<table>
+<caption>Qualitative comparison across decision criteria</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><strong>Criterion</strong></th>
+<th style="text-align: center;"><strong>Binary Heap</strong></th>
+<th style="text-align: center;"><strong>Winner Tree</strong></th>
+<th style="text-align: center;"><strong>Loser Tree</strong></th>
+<th style="text-align: center;"><strong>D-ary Heap</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Comparisons</td>
+<td style="text-align: center;">Poor (2 log k)</td>
+<td style="text-align: center;">Good (log k)</td>
+<td style="text-align: center;">Good (log k)</td>
+<td style="text-align: center;">Better (1.5 log k)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cache Locality</td>
+<td style="text-align: center;">Excellent</td>
+<td style="text-align: center;">Poor</td>
+<td style="text-align: center;">Poor</td>
+<td style="text-align: center;">Excellent</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Refill Simplicity</td>
+<td style="text-align: center;">Medium</td>
+<td style="text-align: center;">Medium</td>
+<td style="text-align: center;"><strong>Best</strong></td>
+<td style="text-align: center;">Medium</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Implementation</td>
+<td style="text-align: center;">Simple</td>
+<td style="text-align: center;">Medium</td>
+<td style="text-align: center;">Medium</td>
+<td style="text-align: center;">Simple</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Production Proven</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Rare</td>
+<td style="text-align: center;"><strong>Yes (2024)</strong></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Score</strong></td>
+<td style="text-align: center;">3/5</td>
+<td style="text-align: center;">2/5</td>
+<td style="text-align: center;"><strong>4/5</strong></td>
+<td style="text-align: center;">3.5/5</td>
+</tr>
+</tbody>
+</table>
+<h1 id="recommendation">Recommendation</h1>
+<h2 id="primary-implementation-loser-tournament-tree">Primary
+Implementation: Loser Tournament Tree</h2>
+<p><strong>Rationale</strong>:</p>
+<ol>
+<li><p><strong>Production validated</strong>: Grafana (Loki, Pyroscope,
+Prometheus) chose loser tree in 2024 for exactly this problem</p></li>
+<li><p><strong>Empirical evidence</strong>: Apache DataFusion benchmark
+shows 50% speedup over heap</p></li>
+<li><p><strong>Fewer comparisons</strong>: <span
+class="math inline">\(\log k\)</span> vs <span class="math inline">\(2
+\log k\)</span> - matters for complex comparators</p></li>
+<li><p><strong>Simpler refill</strong>: Only compare against losers on
+path (cleaner than winner tree)</p></li>
+<li><p><strong>Knuth’s preference</strong>: Recommended in TAOCP §5.4.1
+as superior to winner tree</p></li>
+</ol>
+<p><strong>When loser tree excels</strong>:</p>
+<ul>
+<li><p>Large k (hundreds to thousands of iterators)</p></li>
+<li><p>Expensive comparisons (complex comparators, not simple
+integers)</p></li>
+<li><p>Production systems (proven at scale by Grafana)</p></li>
+</ul>
+<h2 id="alternative-binary-min-heap">Alternative: Binary Min-Heap</h2>
+<p><strong>When to prefer</strong>:</p>
+<ul>
+<li><p>Small k (<span class="math inline">\(k \leq 100\)</span>): Cache
+advantage matters, comparisons cheap</p></li>
+<li><p>Simple comparators (primitive types): Memory access
+dominates</p></li>
+<li><p>Simplicity preferred: Heap is simpler, more familiar to
+maintainers</p></li>
+</ul>
+<p><strong>Justification</strong>: For small k, heap’s cache locality
+compensates for extra comparisons. Standard implementation, widely
+understood.</p>
+<h2 id="special-cases">Special Cases</h2>
+<p><strong>Very small k</strong> (<span class="math inline">\(k \leq
+8\)</span>):</p>
+<ul>
+<li><p>Linear scan competitive</p></li>
+<li><p>Consider SIMD branchless min (4-8 elements)</p></li>
+<li><p>Simplicity wins</p></li>
+</ul>
+<p><strong>D-ary heap</strong> (d=4):</p>
+<ul>
+<li><p>Good compromise: better than binary heap, simpler than
+tree</p></li>
+<li><p>Tunable parameter d</p></li>
+<li><p>Worth considering if heap approach preferred</p></li>
+</ul>
+<h1 id="final-decision">Final Decision</h1>
+<p><strong>For this project</strong>: Implement <strong>Loser Tournament
+Tree</strong></p>
+<p><strong>Justification</strong>:</p>
+<ol>
+<li><p>Matches production choice by industry leaders (Grafana,
+2024)</p></li>
+<li><p>Best constant factors for comparison-heavy workloads</p></li>
+<li><p>Demonstrates awareness of modern optimizations beyond classical
+textbooks</p></li>
+<li><p>Stage 6 benchmarks will validate against heap baseline</p></li>
+</ol>
+<p><strong>Fallback</strong>: If implementation complexity exceeds
+estimates, revert to binary heap as proven baseline.</p>
+<h1 id="whats-next">What’s Next?</h1>
+<p><strong>Stage 4 (Implementation)</strong> will:</p>
+<ul>
+<li><p>Implement loser tournament tree in Java</p></li>
+<li><p>Clean interface: Iterator&lt;T extends
+Comparable&lt;T&gt;&gt;</p></li>
+<li><p>Correctness: Loop invariants, edge cases</p></li>
+<li><p>Simplicity: Despite tree structure, aim for clean code</p></li>
+</ul>
+<p><strong>Stage 6 (Benchmarking)</strong> will empirically
+validate:</p>
+<ul>
+<li><p>Loser tree vs binary heap performance</p></li>
+<li><p>Crossover point for linear scan (small k)</p></li>
+<li><p>Comparison count confirms theory</p></li>
+</ul>
+</body>
+</html>
