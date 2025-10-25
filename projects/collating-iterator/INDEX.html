@@ -140,10 +140,11 @@
 
         <p><strong>What was submitted:</strong></p>
         <ul>
-            <li>Three Java implementations: naive O(Nk), standard O(N log k), optimized O(N log k)</li>
-            <li>Seventy unit tests employing shared base pattern</li>
-            <li>Systematic benchmark design covering twenty-four test scenarios</li>
-            <li>Literature review: TAOCP, CLRS, arxiv, Grafana 2024 production validation</li>
+            <li>Three Java implementations for empirical comparison: LinearScan (naive baseline), HeapBased (standard approach), LoserTree (selected based on Grafana 2024 production validation showing 50% speedup)</li>
+            <li>Multi-variant strategy demonstrates understanding that comparison, not single "answer," validates algorithmic claims</li>
+            <li>Seventy unit tests employing shared base pattern ensuring identical specification compliance across variants</li>
+            <li>Systematic benchmark design covering twenty-four test scenarios across five dimensions (k, N, distribution, pattern, exhaustion)</li>
+            <li>Literature review beyond textbooks: TAOCP, CLRS, arxiv, Grafana 2024 blog posts, Apache DataFusion benchmarks</li>
         </ul>
 
         <p><strong>Critical deficiencies identified:</strong></p>
