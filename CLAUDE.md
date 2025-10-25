@@ -6,6 +6,11 @@
 
 **Philosophy**: Question before solution. Empirical validation of theory. Multiple implementations for comparison. Honest acknowledgment of limitations.
 
+**Quick links**:
+- **New to skills?** → [SKILLS.md](SKILLS.md) (beginner-friendly guide to all 19 skills)
+- **See example output** → [projects/collating-iterator/INDEX.html](projects/collating-iterator/INDEX.html)
+- **Technical reference** → [.claude/skills/CS500/SKILL_INDEX.md](.claude/skills/CS500/SKILL_INDEX.md)
+
 ---
 
 ## What This Is
@@ -45,7 +50,9 @@ A research methodology framework demonstrating:
 
 **Location**: `.claude/skills/CS500/` (19 specialized skills)
 
-**Full documentation**: [SKILL_INDEX.md](.claude/skills/CS500/SKILL_INDEX.md)
+**For newcomers**: [SKILLS.md](SKILLS.md) - Beginner-friendly guide to all 19 skills
+
+**Full technical reference**: [SKILL_INDEX.md](.claude/skills/CS500/SKILL_INDEX.md)
 
 ### Core Research (3 skills)
 - `problem_specification`: Vague → formal spec (types, invariants, contracts)
