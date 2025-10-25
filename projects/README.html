@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>README</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
+</head>
+<body>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#research-projects" id="toc-research-projects">Research
+Projects</a>
+<ul>
+<li><a href="#what-youre-looking-at" id="toc-what-youre-looking-at">What
+You’re Looking At</a></li>
+<li><a href="#project-index" id="toc-project-index">Project Index</a>
+<ul>
+<li><a href="#collating-iterator"
+id="toc-collating-iterator">collating-iterator</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="research-projects">Research Projects</h1>
+<p>This directory contains complete research artifacts demonstrating
+systematic methodology from problem specification through
+implementation, testing, benchmarking, and critical evaluation.</p>
+<h2 id="what-youre-looking-at">What You’re Looking At</h2>
+<p>Each project follows a rigorous pipeline: -
+<strong>Specification</strong>: Formal problem definition with research
+questions (not prescriptive solutions) - <strong>Analysis</strong>:
+Lower bounds, candidate algorithms, literature review (TAOCP, CLRS,
+arxiv) - <strong>Design</strong>: Comparative analysis with production
+validation - <strong>Implementation</strong>: Multi-variant approach
+(baseline, standard, optimized) - <strong>Testing</strong>:
+Comprehensive test suites with shared base patterns -
+<strong>Benchmarking</strong>: Systematic test data design + pragmatic
+execution - <strong>Validation</strong>: Cross-artifact consistency
+checks - <strong>Summary</strong>: Scannable one-page format for senior
+reviewers (L7/L8) - <strong>Critique</strong>: Independent evaluation
+identifying strengths and gaps - <strong>Scoring</strong>: Skills
+assessment (1-10 scale)</p>
+<p><strong>Target audience</strong>: Senior engineers (L7/L8) reviewing
+research artifacts, technical interviewers evaluating systematic
+thinking, educators demonstrating CS500-level methodology.</p>
+<p><strong>Philosophy</strong>: Question before solution. Empirical
+validation of theory. Multiple implementations for comparison. Honest
+acknowledgment of limitations.</p>
+<h2 id="project-index">Project Index</h2>
+<h3 id="collating-iterator"><a
+href="collating-iterator/INDEX.html">collating-iterator</a></h3>
+<p><strong>Status</strong>: Complete (10 stages) |
+<strong>Assessment</strong>: Mean 7.4/10, “Conditional Hire - Technical
+Deep-Dive Required”</p>
+<p><strong>Problem</strong>: Design efficient k-way merge for sorted
+iterators</p>
+<p><strong>Solution</strong>: 3 algorithm variants (LinearScan O(Nk),
+HeapBased O(N log k), LoserTree O(N log k))</p>
+<p><strong>Deliverables</strong>: - 70 passing JUnit tests (shared base
+pattern) - JMH benchmark infrastructure - Systematic test data catalog
+(24 scenarios across 5 dimensions) - Git-committable artifacts with full
+documentation</p>
+<p><strong>Key findings</strong>: - Loser tree selected based on Grafana
+2024 production validation (50% speedup) - Literature review (TAOCP,
+CLRS, arxiv) identified 4 optimal algorithms - Multi-variant strategy
+enables empirical comparison</p>
+<p><strong>Critical gaps identified</strong>: - Loser tree
+implementation bug (O(k) instead of O(log k) refill) - Build tooling
+struggles (reverted to javac hacks) - Comparison count not instrumented
+- Production concerns missing (error handling, thread safety)</p>
+<p><strong>Skills demonstrated</strong>: Exceptional arxiv research
+(9/10), test data design (9/10). Strong theoretical analysis, systematic
+methodology.</p>
+<hr />
+<p><strong>Framework</strong>: 19 CS500 skills in
+<code>.claude/skills/CS500/</code> - see <a
+href="../.claude/skills/CS500/SKILL_INDEX.md">SKILL_INDEX.md</a></p>
+</body>
+</html>
