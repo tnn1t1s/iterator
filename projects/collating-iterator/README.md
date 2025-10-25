@@ -45,6 +45,12 @@ cd 07-report
 pdflatex technical-report.tex
 ```
 
+## Quick Start
+
+**📖 View Documentation**: Open `INDEX.html` in your browser for easy navigation of all artifacts.
+
+All LaTeX documents have been converted to HTML for easy viewing without PDF tools.
+
 ## Overview
 
 This project implements and analyzes CollatingIterator, an interface for merging multiple sorted Iterator<T> streams into a single sorted output stream. The implementation uses a binary min-heap to achieve O(N log k) time complexity where N is the total number of elements and k is the number of input iterators.
