@@ -50,8 +50,20 @@ id="toc-preconditions">Preconditions</a></li>
 id="toc-postconditions">Postconditions</a></li>
 <li><a href="#exceptions" id="toc-exceptions">Exceptions</a></li>
 </ul></li>
-<li><a href="#complexity-requirements"
-id="toc-complexity-requirements">Complexity Requirements</a></li>
+<li><a href="#research-questions" id="toc-research-questions">Research
+Questions</a>
+<ul>
+<li><a href="#theoretical-complexity"
+id="toc-theoretical-complexity">Theoretical Complexity</a></li>
+<li><a href="#design-alternatives" id="toc-design-alternatives">Design
+Alternatives</a></li>
+<li><a href="#constant-factors-can-we-do-better"
+id="toc-constant-factors-can-we-do-better">Constant Factors (“Can We Do
+Better?”)</a></li>
+<li><a href="#implementation-considerations"
+id="toc-implementation-considerations">Implementation
+Considerations</a></li>
+</ul></li>
 </ul>
 </nav>
 <h1 id="problem-statement">Problem Statement</h1>
@@ -171,20 +183,59 @@ called when <code>hasNext()</code> returns <code>false</code></p></li>
 <li><p><code>UnsupportedOperationException</code>: if
 <code>remove()</code> called (optional operation)</p></li>
 </ul>
-<h1 id="complexity-requirements">Complexity Requirements</h1>
-<ul>
-<li><p><strong>Time</strong>: <span class="math inline">\(O(N \log
-k)\)</span> where <span class="math inline">\(N = \sum_{i=0}^{k-1}
-|I_i|\)</span></p></li>
-<li><p><strong>Space</strong>: <span class="math inline">\(O(k)\)</span>
-auxiliary space for heap</p></li>
-<li><p><strong>Per Operation</strong>:</p>
-<ul>
-<li><p><code>hasNext()</code>: <span
-class="math inline">\(O(1)\)</span></p></li>
-<li><p><code>next()</code>: <span class="math inline">\(O(\log
-k)\)</span> amortized</p></li>
-</ul></li>
-</ul>
+<h1 id="research-questions">Research Questions</h1>
+<p>This specification defines the problem. The following questions guide
+the analysis and design phases:</p>
+<h2 id="theoretical-complexity">Theoretical Complexity</h2>
+<ol>
+<li><p><strong>Lower Bound</strong>: What is the minimum number of
+comparisons required for any comparison-based k-way merge
+algorithm?</p></li>
+<li><p><strong>Time Complexity</strong>: What is the optimal asymptotic
+time complexity achievable? Express in terms of <span
+class="math inline">\(N = \sum_{i=0}^{k-1} |I_i|\)</span> (total
+elements) and <span class="math inline">\(k\)</span> (number of
+iterators).</p></li>
+<li><p><strong>Space Complexity</strong>: What is the minimum auxiliary
+space required? Can we achieve better than <span
+class="math inline">\(O(N)\)</span>?</p></li>
+<li><p><strong>Per-Operation Costs</strong>: What are the costs of
+<code>hasNext()</code> and <code>next()</code> in an optimal
+implementation?</p></li>
+</ol>
+<h2 id="design-alternatives">Design Alternatives</h2>
+<ol>
+<li><p>What data structures can support k-way merge?</p></li>
+<li><p>What are the trade-offs between alternatives (comparisons, memory
+access patterns, implementation complexity)?</p></li>
+<li><p>Are there crossover points where one approach becomes preferable
+(e.g., based on <span class="math inline">\(k\)</span> size)?</p></li>
+</ol>
+<h2 id="constant-factors-can-we-do-better">Constant Factors (“Can We Do
+Better?”)</h2>
+<p>Given an asymptotically optimal algorithm:</p>
+<ol>
+<li><p>How many comparisons per element in practice (not just
+big-O)?</p></li>
+<li><p>What are the cache behavior characteristics?</p></li>
+<li><p>What are the constant factor differences between theoretically
+equivalent approaches?</p></li>
+<li><p>Can we improve constants without changing asymptotic
+complexity?</p></li>
+</ol>
+<h2 id="implementation-considerations">Implementation
+Considerations</h2>
+<ol>
+<li><p>How do constant factors vary across languages/platforms (Java,
+C++, Rust)?</p></li>
+<li><p>What are the practical performance characteristics for typical
+<span class="math inline">\(k\)</span> values (2, 10, 100,
+1000)?</p></li>
+<li><p>When do naive approaches (e.g., linear scan) outperform
+sophisticated algorithms?</p></li>
+</ol>
+<p><strong>Goal</strong>: The analysis phase should answer these
+questions rigorously, comparing alternatives and justifying design
+choices with both asymptotic analysis and empirical measurement.</p>
 </body>
 </html>

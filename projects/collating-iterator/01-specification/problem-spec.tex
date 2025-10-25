@@ -115,16 +115,45 @@ Let $I = \{I_0, I_1, \ldots, I_{k-1}\}$ be the set of input iterators and $H$ be
     \item \texttt{UnsupportedOperationException}: if \texttt{remove()} called (optional operation)
 \end{itemize}
 
-\section{Complexity Requirements}
+\section{Research Questions}
 
-\begin{itemize}
-    \item \textbf{Time}: $O(N \log k)$ where $N = \sum_{i=0}^{k-1} |I_i|$
-    \item \textbf{Space}: $O(k)$ auxiliary space for heap
-    \item \textbf{Per Operation}:
-    \begin{itemize}
-        \item \texttt{hasNext()}: $O(1)$
-        \item \texttt{next()}: $O(\log k)$ amortized
-    \end{itemize}
-\end{itemize}
+This specification defines the problem. The following questions guide the analysis and design phases:
+
+\subsection{Theoretical Complexity}
+
+\begin{enumerate}
+    \item \textbf{Lower Bound}: What is the minimum number of comparisons required for any comparison-based k-way merge algorithm?
+    \item \textbf{Time Complexity}: What is the optimal asymptotic time complexity achievable? Express in terms of $N = \sum_{i=0}^{k-1} |I_i|$ (total elements) and $k$ (number of iterators).
+    \item \textbf{Space Complexity}: What is the minimum auxiliary space required? Can we achieve better than $O(N)$?
+    \item \textbf{Per-Operation Costs}: What are the costs of \texttt{hasNext()} and \texttt{next()} in an optimal implementation?
+\end{enumerate}
+
+\subsection{Design Alternatives}
+
+\begin{enumerate}
+    \item What data structures can support k-way merge?
+    \item What are the trade-offs between alternatives (comparisons, memory access patterns, implementation complexity)?
+    \item Are there crossover points where one approach becomes preferable (e.g., based on $k$ size)?
+\end{enumerate}
+
+\subsection{Constant Factors (``Can We Do Better?'')}
+
+Given an asymptotically optimal algorithm:
+\begin{enumerate}
+    \item How many comparisons per element in practice (not just big-O)?
+    \item What are the cache behavior characteristics?
+    \item What are the constant factor differences between theoretically equivalent approaches?
+    \item Can we improve constants without changing asymptotic complexity?
+\end{enumerate}
+
+\subsection{Implementation Considerations}
+
+\begin{enumerate}
+    \item How do constant factors vary across languages/platforms (Java, C++, Rust)?
+    \item What are the practical performance characteristics for typical $k$ values (2, 10, 100, 1000)?
+    \item When do naive approaches (e.g., linear scan) outperform sophisticated algorithms?
+\end{enumerate}
+
+\textbf{Goal}: The analysis phase should answer these questions rigorously, comparing alternatives and justifying design choices with both asymptotic analysis and empirical measurement.
 
 \end{document}
