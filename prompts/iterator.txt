@@ -1,0 +1,1 @@
+We're going to come up with a variety of implementations of a CollatingIterator. It will be an interface that takes multiple Iterator<T extends Comparable<T>> as input. Each of the iterators passed in will have the guarantee that they return elements in the order implied by the comparator.

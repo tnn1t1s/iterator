@@ -19,6 +19,10 @@
             font-size: 0.85rem;
             margin-left: 0.5rem;
         }
+        .badge-pending {
+            background: #ffc107;
+            color: #000;
+        }
     </style>
 </head>
 <body>
@@ -33,87 +37,67 @@
 
     <hr>
 
-    <div class="stage">
-        <h2>📋 Stage 1: Formal Specification</h2>
-        <ul class="file-list">
-            <li>📄 <a href="01-specification/problem-spec.html">Problem Specification</a>
-                <span class="badge">HTML</span></li>
-        </ul>
-        <p><em>Type constraints, invariants, contracts, complexity requirements</em></p>
-    </div>
-
-    <div class="stage">
-        <h2>🧮 Stage 2: Algorithmic Analysis</h2>
-        <ul class="file-list">
-            <li>📄 <a href="02-analysis/algorithmic-analysis.html">Algorithmic Analysis</a>
-                <span class="badge">HTML</span></li>
-            <li>📄 <a href="02-analysis/comparative-complexity.html">Comparative Complexity</a>
-                <span class="badge">HTML</span></li>
-        </ul>
-        <p><em>Correctness proofs, O(N log k) complexity, comparison of 5 design alternatives</em></p>
-    </div>
-
-    <div class="stage">
-        <h2>🏗️ Stage 3: Design Selection</h2>
-        <ul class="file-list">
-            <li>📄 <a href="03-design/design-selection.html">Design Selection & Justification</a>
-                <span class="badge">HTML</span></li>
-        </ul>
-        <p><em>Why array-based binary heap beats tournament tree (cache locality wins)</em></p>
-    </div>
-
-    <div class="stage">
-        <h2>💻 Stage 4: Implementation</h2>
-        <ul class="file-list">
-            <li>☕ <a href="04-implementation/java/src/main/java/com/iterator/CollatingIterator.java">Java Implementation</a></li>
-            <li>🧪 <a href="04-implementation/java/src/test/java/com/iterator/CollatingIteratorTest.java">Java Tests (14 tests)</a></li>
-            <li>📦 <a href="04-implementation/java/build.gradle">Gradle Build</a></li>
-        </ul>
-        <p><em>Production-ready Java with PriorityQueue-based heap, comprehensive test suite</em></p>
-    </div>
-
-    <div class="stage">
-        <h2>✅ Stage 5: Testing</h2>
-        <ul class="file-list">
-            <li>📄 <a href="05-testing/test-strategy.md">Test Strategy</a></li>
-            <li>📄 <a href="05-testing/test-results.md">Expected Test Results</a></li>
-        </ul>
-        <p><em>14 tests covering edge cases, duplicates, large k (100 iterators)</em></p>
-    </div>
-
-    <div class="stage">
-        <h2>⚡ Stage 6: Benchmarking</h2>
-        <ul class="file-list">
-            <li>📄 <a href="06-benchmarks/benchmark-design.md">Benchmark Design</a></li>
-            <li>📂 <a href="06-benchmarks/results/README.md">Results Directory</a></li>
-        </ul>
-        <p><em>JMH framework, k ∈ {2, 10, 100, 1000}, empirical validation of O(N log k)</em></p>
-    </div>
-
-    <div class="stage">
-        <h2>📝 Stage 7: Technical Report</h2>
-        <ul class="file-list">
-            <li>📄 <a href="07-report/technical-report.html">Complete CS500-Level Report</a>
-                <span class="badge">HTML</span></li>
-        </ul>
-        <p><em>Abstract, intro, theory, implementation, evaluation, discussion, conclusion</em></p>
-    </div>
-
-    <div class="stage">
-        <h2>🔍 Stage 8: Validation</h2>
-        <ul class="file-list">
-            <li>📄 <a href="08-validation/consistency-check.md">Consistency Check</a></li>
-        </ul>
-        <p><em>10 cross-artifact checks - all passed ✓</em></p>
+    <h2>⚠️ Status: Clean Slate</h2>
+    <div style="background: #fff3cd; padding: 1rem; border-left: 4px solid #ffc107; margin: 1rem 0;">
+        <p><strong>Stages 2-8 have been removed.</strong></p>
+        <p><strong>Reason:</strong> Original problem specification prescribed the solution (O(N log k), heap-based) before analysis. This "poisoned" all subsequent stages - they were justifying a known answer rather than discovering it.</p>
+        <p><strong>Current State:</strong> Stage 1 has been corrected to pose research questions instead of prescribing solutions. Ready for clean pipeline execution.</p>
     </div>
 
     <hr>
 
-    <h2>📚 Additional Resources</h2>
-    <ul>
-        <li>📄 <a href="README.md">Project README</a></li>
-        <li>📄 <a href="BUILD-STATUS.md">Build Status & Instructions</a></li>
-    </ul>
+    <div class="stage">
+        <h2>✅ Stage 1: Formal Specification</h2>
+        <ul class="file-list">
+            <li>📄 <a href="01-specification/problem-spec.html">Problem Specification</a>
+                <span class="badge">HTML</span></li>
+        </ul>
+        <p><em>Problem definition with research questions - poses questions, doesn't prescribe solutions</em></p>
+    </div>
+
+    <div class="stage" style="border-left-color: #ccc;">
+        <h2>⏳ Stage 2: Algorithmic Analysis</h2>
+        <p><em><span class="badge badge-pending">PENDING</span> Discovery phase: What is the optimal complexity? Lower bounds, correctness proofs</em></p>
+    </div>
+
+    <div class="stage" style="border-left-color: #ccc;">
+        <h2>⏳ Stage 3: Design Selection</h2>
+        <p><em><span class="badge badge-pending">PENDING</span> Comparative analysis: Evaluate alternatives, justify design choice</em></p>
+    </div>
+
+    <div class="stage" style="border-left-color: #ccc;">
+        <h2>⏳ Stage 4: Implementation</h2>
+        <p><em><span class="badge badge-pending">PENDING</span> Code generation in Java (simplified from multi-language)</em></p>
+    </div>
+
+    <div class="stage" style="border-left-color: #ccc;">
+        <h2>⏳ Stage 5: Testing</h2>
+        <p><em><span class="badge badge-pending">PENDING</span> Test strategy and comprehensive test suite</em></p>
+    </div>
+
+    <div class="stage" style="border-left-color: #ccc;">
+        <h2>⏳ Stage 6: Benchmarking</h2>
+        <p><em><span class="badge badge-pending">PENDING</span> Empirical validation of complexity predictions</em></p>
+    </div>
+
+    <div class="stage" style="border-left-color: #ccc;">
+        <h2>⏳ Stage 7: Technical Report</h2>
+        <p><em><span class="badge badge-pending">PENDING</span> CS500-level writeup synthesizing all stages</em></p>
+    </div>
+
+    <div class="stage" style="border-left-color: #ccc;">
+        <h2>⏳ Stage 8: Validation</h2>
+        <p><em><span class="badge badge-pending">PENDING</span> Cross-artifact consistency check</em></p>
+    </div>
+
+    <hr>
+
+    <h2>🔄 Next Steps</h2>
+    <ol>
+        <li><strong>Re-run Pipeline:</strong> Execute research_to_code_pipeline with clean Stage 1</li>
+        <li><strong>True Discovery:</strong> Let analysis discover O(N log k), not justify it</li>
+        <li><strong>Unbiased Comparison:</strong> Evaluate heap vs alternatives without predetermined winner</li>
+    </ol>
 
     <hr>
 
