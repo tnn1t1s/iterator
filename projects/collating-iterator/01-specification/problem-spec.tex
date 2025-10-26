@@ -41,32 +41,33 @@ Design and implement \texttt{CollatingIterator<T>}, an iterator that merges $k$ 
 
 \section{Invariants}
 
-Let $I = \{I_0, I_1, \ldots, I_{k-1}\}$ be the set of input iterators and $H$ be the internal heap.
+Let $I = \{I_0, I_1, \ldots, I_{k-1}\}$ be the set of input iterators and $O$ be the sequence of elements yielded so far.
 
 \begin{enumerate}
-    \item \textbf{Heap Property}: $H$ contains at most one element from each non-exhausted input iterator
+    \item \textbf{Sorted Output Prefix}: Elements yielded so far form non-decreasing sequence
     \[
-    \forall i \in [0, k): I_i.\texttt{exhausted} \lor \exists! e \in H : \texttt{source}(e) = I_i
+    \forall i < j \text{ where both in } O: O[i] \leq O[j]
     \]
 
-    \item \textbf{Heap Size}:
+    \item \textbf{Conservation}: Total elements yielded equals elements consumed from inputs
     \[
-    |H| = |\{i : \neg I_i.\texttt{exhausted}\}|
+    |O| = \sum_{i=0}^{k-1} |\texttt{consumed}(I_i)|
     \]
 
-    \item \textbf{Minimum Guarantee}: Each element in heap is minimum of its source iterator
+    \item \textbf{Completeness}: Output exhausted if and only if all inputs exhausted
     \[
-    \forall e \in H: e = \min(\texttt{remaining}(\texttt{source}(e)))
+    \neg \texttt{hasNext()} \Leftrightarrow \forall i \in [0, k): \neg I_i.\texttt{hasNext()}
     \]
 
-    \item \textbf{Sorted Output}: Elements output so far form non-decreasing sequence
+    \item \textbf{Uniqueness}: Each element from each input appears exactly once in output
     \[
-    \forall i < j \text{ in output sequence}: \texttt{output}[i] \leq \texttt{output}[j]
+    \texttt{multiset}(O \cup \texttt{remaining}) = \bigcup_{i=0}^{k-1} \texttt{multiset}(I_i)
     \]
+    where $\texttt{remaining}$ is the multiset of elements not yet yielded.
 
-    \item \textbf{Conservation}: Total elements output equals elements consumed from inputs
+    \item \textbf{Laziness}: No element consumed from any input until output element requested
     \[
-    |\texttt{outputted}| = \sum_{i=0}^{k-1} |\texttt{consumed}(I_i)|
+    \texttt{consumed}(I_i) \text{ monotonically increases only when } \texttt{next()} \text{ called}
     \]
 \end{enumerate}
 

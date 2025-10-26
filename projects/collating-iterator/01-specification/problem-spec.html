@@ -110,27 +110,29 @@ exhausted</p></li>
 <h1 id="invariants">Invariants</h1>
 <p>Let <span class="math inline">\(I = \{I_0, I_1, \ldots,
 I_{k-1}\}\)</span> be the set of input iterators and <span
-class="math inline">\(H\)</span> be the internal heap.</p>
+class="math inline">\(O\)</span> be the sequence of elements yielded so
+far.</p>
 <ol>
-<li><p><strong>Heap Property</strong>: <span
-class="math inline">\(H\)</span> contains at most one element from each
-non-exhausted input iterator <span class="math display">\[\forall i \in
-[0, k): I_i.\texttt{exhausted} \lor \exists! e \in H :
-\texttt{source}(e) = I_i\]</span></p></li>
-<li><p><strong>Heap Size</strong>: <span class="math display">\[|H| =
-|\{i : \neg I_i.\texttt{exhausted}\}|\]</span></p></li>
-<li><p><strong>Minimum Guarantee</strong>: Each element in heap is
-minimum of its source iterator <span class="math display">\[\forall e
-\in H: e =
-\min(\texttt{remaining}(\texttt{source}(e)))\]</span></p></li>
-<li><p><strong>Sorted Output</strong>: Elements output so far form
-non-decreasing sequence <span class="math display">\[\forall i &lt; j
-\text{ in output sequence}: \texttt{output}[i] \leq
-\texttt{output}[j]\]</span></p></li>
-<li><p><strong>Conservation</strong>: Total elements output equals
-elements consumed from inputs <span
-class="math display">\[|\texttt{outputted}| = \sum_{i=0}^{k-1}
-|\texttt{consumed}(I_i)|\]</span></p></li>
+<li><p><strong>Sorted Output Prefix</strong>: Elements yielded so far
+form non-decreasing sequence <span class="math display">\[\forall i &lt;
+j \text{ where both in } O: O[i] \leq O[j]\]</span></p></li>
+<li><p><strong>Conservation</strong>: Total elements yielded equals
+elements consumed from inputs <span class="math display">\[|O| =
+\sum_{i=0}^{k-1} |\texttt{consumed}(I_i)|\]</span></p></li>
+<li><p><strong>Completeness</strong>: Output exhausted if and only if
+all inputs exhausted <span class="math display">\[\neg
+\texttt{hasNext()} \Leftrightarrow \forall i \in [0, k): \neg
+I_i.\texttt{hasNext()}\]</span></p></li>
+<li><p><strong>Uniqueness</strong>: Each element from each input appears
+exactly once in output <span class="math display">\[\texttt{multiset}(O
+\cup \texttt{remaining}) = \bigcup_{i=0}^{k-1}
+\texttt{multiset}(I_i)\]</span> where <span
+class="math inline">\(\texttt{remaining}\)</span> is the multiset of
+elements not yet yielded.</p></li>
+<li><p><strong>Laziness</strong>: No element consumed from any input
+until output element requested <span
+class="math display">\[\texttt{consumed}(I_i) \text{ monotonically
+increases only when } \texttt{next()} \text{ called}\]</span></p></li>
 </ol>
 <h1 id="assumptions">Assumptions</h1>
 <ol>
