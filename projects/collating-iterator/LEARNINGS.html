@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>LEARNINGS</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
+</head>
+<body>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#learnings-index.html-design-for-research-artifacts"
+id="toc-learnings-index.html-design-for-research-artifacts">Learnings:
+INDEX.html Design for Research Artifacts</a>
+<ul>
+<li><a href="#context" id="toc-context">Context</a></li>
+<li><a href="#key-insights" id="toc-key-insights">Key Insights</a>
+<ul>
+<li><a href="#hegelian-dialectic-structure-works"
+id="toc-hegelian-dialectic-structure-works">1. Hegelian Dialectic
+Structure Works</a></li>
+<li><a href="#outline-must-come-before-details"
+id="toc-outline-must-come-before-details">2. Outline Must Come BEFORE
+Details</a></li>
+<li><a href="#scannability-completeness"
+id="toc-scannability-completeness">3. Scannability &gt;
+Completeness</a></li>
+<li><a href="#praise-good-choices-with-evidence"
+id="toc-praise-good-choices-with-evidence">4. Praise Good Choices with
+Evidence</a></li>
+<li><a href="#clinical-third-person-tone"
+id="toc-clinical-third-person-tone">5. Clinical Third-Person
+Tone</a></li>
+<li><a href="#each-stage-needs-three-elements"
+id="toc-each-stage-needs-three-elements">6. Each Stage Needs Three
+Elements</a></li>
+<li><a href="#section-names-must-be-concrete"
+id="toc-section-names-must-be-concrete">7. Section Names Must Be
+Concrete</a></li>
+</ul></li>
+<li><a href="#document-structure-that-worked"
+id="toc-document-structure-that-worked">Document Structure That
+Worked</a></li>
+<li><a href="#skills-updated" id="toc-skills-updated">Skills
+Updated</a></li>
+<li><a href="#what-changed-across-iterations"
+id="toc-what-changed-across-iterations">What Changed Across
+Iterations</a></li>
+<li><a href="#reusable-patterns" id="toc-reusable-patterns">Reusable
+Patterns</a>
+<ul>
+<li><a href="#for-future-research-artifacts"
+id="toc-for-future-research-artifacts">For Future Research
+Artifacts</a></li>
+<li><a href="#for-senior-reviewers-l7l8"
+id="toc-for-senior-reviewers-l7l8">For Senior Reviewers (L7/L8)</a></li>
+</ul></li>
+<li><a href="#next-steps" id="toc-next-steps">Next Steps</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="learnings-index.html-design-for-research-artifacts">Learnings:
+INDEX.html Design for Research Artifacts</h1>
+<h2 id="context">Context</h2>
+<p>Iteratively refined INDEX.html landing page for collating-iterator
+research project to be scannable by L7/L8 senior engineers.</p>
+<h2 id="key-insights">Key Insights</h2>
+<h3 id="hegelian-dialectic-structure-works">1. Hegelian Dialectic
+Structure Works</h3>
+<p><strong>Discovery</strong>: Splitting “Review Summary” into two
+sections created clarity - <strong>Thesis</strong>: Original Prompt
+(what was asked) - <strong>Antithesis</strong>: Candidate Submission
+(what was delivered) - <strong>Synthesis</strong>: Reviewer Assessment
+(independent critique + verdict)</p>
+<p><strong>Why it matters</strong>: Separates submission from critique,
+making bias transparent</p>
+<h3 id="outline-must-come-before-details">2. Outline Must Come BEFORE
+Details</h3>
+<p><strong>Mistake</strong>: Initially removed stage outline entirely
+<strong>Fix</strong>: Placed “Stages Overview” between assessment and
+stage details <strong>Lesson</strong>: Readers need roadmap before
+diving into content</p>
+<h3 id="scannability-completeness">3. Scannability &gt;
+Completeness</h3>
+<p><strong>Pattern</strong>: L7/L8 reviewers scan hundreds of artifacts
+<strong>Requirements</strong>: - 3 bullets max per section - Specific
+algorithm names (LinearScan, HeapBased, LoserTree) not generic labels -
+Quantitative claims (70 tests, 50% speedup, 7.4/10) - No dense
+paragraphs</p>
+<h3 id="praise-good-choices-with-evidence">4. Praise Good Choices with
+Evidence</h3>
+<p><strong>Mistake</strong>: Initially wrote “naive, standard,
+optimized” <strong>Fix</strong>: “LinearScan (naive baseline), HeapBased
+(standard approach), LoserTree (selected based on Grafana 2024
+production validation showing 50% speedup)” <strong>Lesson</strong>:
+Assess candidate decisions, cite production validation</p>
+<h3 id="clinical-third-person-tone">5. Clinical Third-Person Tone</h3>
+<p><strong>Reference</strong>: “like Freud or Derrida analyzing a case”
+<strong>Application</strong>: Detached observer documenting what was
+submitted vs what gaps exist <strong>Avoids</strong>: Cheerleading,
+vague praise, personal voice</p>
+<h3 id="each-stage-needs-three-elements">6. Each Stage Needs Three
+Elements</h3>
+<p><strong>Structure</strong>: 1. Link to detailed HTML 2. One-paragraph
+inline summary 3. Full verbatim content from original file</p>
+<p><strong>Why</strong>: Quick scan (summary) + deep dive (verbatim) in
+same page</p>
+<h3 id="section-names-must-be-concrete">7. Section Names Must Be
+Concrete</h3>
+<p><strong>Bad</strong>: “Review Summary” (vague, what happened?)
+<strong>Good</strong>: “Candidate Submission” + “Reviewer Assessment”
+(clear roles) <strong>Lesson</strong>: Avoid abstract meta-labels</p>
+<h2 id="document-structure-that-worked">Document Structure That
+Worked</h2>
+<pre><code>1. Original Prompt (blockquote)
+2. Candidate Submission (3 bullets)
+3. Reviewer Assessment (deficiencies + verdict)
+4. Stages Overview (10-item outline with links)
+5. Stage 1: Title (link + summary + verbatim)
+6. Stage 2: Title (link + summary + verbatim)
+   ...
+10. Stage 10: Title (link + summary + verbatim)</code></pre>
+<h2 id="skills-updated">Skills Updated</h2>
+<ul>
+<li><code>.claude/skills/CS500/technical_exposition/SKILL.md</code>
+section 0a</li>
+<li>Documented format to prevent p-hacking on future projects</li>
+<li>Added anti-pattern: “Combining submission and assessment in one
+section”</li>
+</ul>
+<h2 id="what-changed-across-iterations">What Changed Across
+Iterations</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Iteration</th>
+<th>Problem</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Gray text on white unreadable</td>
+<td>Custom CSS, high contrast</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>TL;DR + collapsed prompt “stupid”</td>
+<td>Remove TL;DR, show prompt</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Abstract jargon not scannable</td>
+<td>Concrete facts, quantitative</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Dense paragraphs</td>
+<td>Bullet lists</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Generic algorithm labels</td>
+<td>Specific names + evidence</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>Too many bullets (5)</td>
+<td>Constrain to 3</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>“Review Summary” vague</td>
+<td>Split into two sections</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>No outline visible</td>
+<td>Add “Stages Overview” before details</td>
+</tr>
+</tbody>
+</table>
+<h2 id="reusable-patterns">Reusable Patterns</h2>
+<h3 id="for-future-research-artifacts">For Future Research
+Artifacts</h3>
+<ol type="1">
+<li>Always use dialectic structure (prompt → submission →
+assessment)</li>
+<li>Outline before details</li>
+<li>3-bullet constraint on summaries</li>
+<li>Name specific algorithms/choices, not generic labels</li>
+<li>Cite production validation evidence</li>
+<li>Clinical third-person tone</li>
+<li>Each stage: link + summary + verbatim</li>
+</ol>
+<h3 id="for-senior-reviewers-l7l8">For Senior Reviewers (L7/L8)</h3>
+<ul>
+<li>Can scan in 30 seconds: prompt → what was built → what’s wrong →
+verdict</li>
+<li>Outline shows scope</li>
+<li>Can drill into any stage</li>
+<li>Evidence-based claims (not handwaving)</li>
+</ul>
+<h2 id="next-steps">Next Steps</h2>
+<ul>
+<li>Apply this format to future research projects</li>
+<li>Template generation from technical_exposition skill</li>
+<li>Consider automating outline generation from stage directories</li>
+</ul>
+</body>
+</html>
