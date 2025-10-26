@@ -14,6 +14,7 @@ find projects -name "*.tex" -type f | while read -r tex_file; do
         --mathjax=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js \
         --standalone \
         --toc \
+        --include-before-body=scripts/pandoc-header.html \
         --css="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" \
         -o "$html_file"
 
@@ -30,6 +31,7 @@ find projects -name "*.md" -type f | while read -r md_file; do
         -t html \
         --standalone \
         --toc \
+        --include-before-body=scripts/pandoc-header.html \
         --css="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" \
         -o "$html_file"
 
