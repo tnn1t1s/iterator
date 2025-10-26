@@ -11,7 +11,7 @@ find projects -name "*.tex" -type f | while read -r tex_file; do
     pandoc "$tex_file" \
         -f latex \
         -t html \
-        --mathjax \
+        --mathjax=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js \
         --standalone \
         --toc \
         --css="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" \
