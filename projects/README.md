@@ -22,7 +22,7 @@ Each project follows a rigorous pipeline:
 
 ## Project Index
 
-### [collating-iterator](https://htmlpreview.github.io/?https://github.com/tnn1t1s/iterator/blob/main/projects/collating-iterator/INDEX.html)
+### [collating-iterator](https://tnn1t1s.github.io/iterator/projects/collating-iterator/INDEX.html)
 **Status**: Complete (10 stages) | **Assessment**: Mean 7.4/10, "Conditional Hire - Technical Deep-Dive Required"
 
 **Problem**: Design efficient k-way merge for sorted iterators
